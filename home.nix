@@ -1,0 +1,1 @@
+/etc/nixos/profiles/work/home.nix

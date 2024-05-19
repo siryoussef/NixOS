@@ -20,7 +20,7 @@
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-label/Store";
+    { device = "/dev/disk/by-label/Nix";
       fsType = "ext4";
     };
 
@@ -37,7 +37,12 @@
 
   fileSystems."/Volume" =
     { device = "/dev/disk/by-label/Volume";
-      fsType = "btrfs";
+      fsType = "auto";
+    };
+
+  fileSystems."/Shared" =
+    { device = "/dev/disk/by-label/Shared";
+      fsType = "auto";
     };
 
   fileSystems."/boot/efi" =
@@ -51,7 +56,7 @@ swapDevices = [ { device = "/dev/disk/by-label/NixSwap"; } ];
   ## Bind Mounts
 
   fileSystems."/etc/nixos" =
-    { device = "/Volume/@Repo/nixos";
+    { device = "/Shared/@Repo/nixos";
       fsType = "none";
       options = [ "bind" ];
     };
@@ -63,25 +68,25 @@ swapDevices = [ { device = "/dev/disk/by-label/NixSwap"; } ];
     };
 
   fileSystems."/home/youssef/.floorp" =
-    { device = "/Volume/@Shared/Home/.floorp";
+    { device = "/Shared/@Home/.floorp";
       fsType = "none";
       options = [ "bind" ];
     };
 
   fileSystems."/home/youssef/.vscode" =
-    { device = "/Volume/@Shared/Home/.vscode";
+    { device = "/Shared/@Home/.vscode";
       fsType = "none";
       options = [ "bind" ];
     };
 
   fileSystems."/home/youssef/.local/share/fish" =
-    { device = "/Volume/@Shared/Home/fish";
+    { device = "/Shared/@Home/fish";
       fsType = "none";
       options = [ "bind" ];
     };
 
   fileSystems."/home/youssef/.config/GitHub Desktop" =
-    { device = "/Volume/@Shared/Home/.config/GitHub Desktop";
+    { device = "/Shared/@Home/.config/GitHub Desktop";
       fsType = "none";
       options = [ "bind" ];
     };

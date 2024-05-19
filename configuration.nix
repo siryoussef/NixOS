@@ -1,1 +1,1 @@
-/etc/nixos/profiles/work/configuration.nix
+./profiles/work/configuration.nix

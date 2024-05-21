@@ -1,7 +1,7 @@
 {
   description = "Flake of Snowyfrank";
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, nixpkgs-r2211, nixpkgs-python, emacs-pin-nixpkgs, kdenlive-pin-nixpkgs,
+  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, nixpkgs-r2211, nixpkgs-python, nix-data, emacs-pin-nixpkgs, kdenlive-pin-nixpkgs,
   fh,
   fleek, blincus, disko, vscode, ytdlp-gui,
   nix-gui, nixos-hardware, plasma-manager,
@@ -118,7 +118,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
 
          # ... the rest of your modules here ...
          #./configuration.nix
-         ./snowflake.nix
+
          inputs.snowflake.nixosModules.snowflake
          inputs.nix-data.nixosModules.nix-data
          inputs.snowfall-lib.mkFlake {
@@ -167,6 +167,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/configuration.nix")
+            #(./snowflakeos.nix)
           ]; # load configuration.nix from selected PROFILE
           specialArgs = {
             # pass config variables from above
@@ -210,7 +211,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
 
     snowfall-lib.url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
-    snowfall-lib.inputs.nixpks.follows = "nixpks";
+    snowfall-lib.inputs.nixpkgs.follows = "nixpkgs";
     snowfall-flake.url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
     snowfall-flake.inputs.nixpkgs.follows = "nixpkgs" ;
     snowfall-thaw = {
@@ -227,6 +228,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
       inputs.nixpkgs.follows = "nixpkgs";
       };
     nix-data.url = "github:snowfallorg/nix-data";
+#    nix-data.inputs.nixpkgs.follows = "nixpkgs" ;
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";

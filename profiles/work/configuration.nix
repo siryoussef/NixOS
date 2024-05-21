@@ -116,6 +116,8 @@ users = {
     betterbird-unwrapped
     #vscodium-fhs
     github-desktop
+    obsidian
+    logseq
     ];
     uid = 1000;
   };
@@ -202,6 +204,10 @@ environment = {
     win-spice
     virt-manager-qt
     virter
+    rclone
+    rclone-browser
+    syncthing
+    syncthing-tray
     wsysmon
     tldr
     kcalc
@@ -216,9 +222,9 @@ environment = {
    # grafana
     wget
     #gcc
-
+    
    python311Packages.jupyterlab
-
+   
     refind
     efibootmgr
     efitools
@@ -244,7 +250,6 @@ environment = {
    # xen
    # grub2_xen
   ]; };
-
 
 
 
@@ -307,7 +312,7 @@ i18n.extraLocaleSettings = {
 
 services = {
 # Set the keyboard layout.
-  xserver.xkb.layout = "us";
+
   emacs = { enable = true; install = true; startWithGraphical = true; defaultEditor = true; };
   upower.enable = true;
   acpid.enable = true;
@@ -382,10 +387,8 @@ services = {
   # Enable the X11 windowing system.
   xserver = {
   enable = true;
-
+  xkb.layout = "us";
   displayManager = {
-    # Enable automatic login for the user.
-    autoLogin = { enable = true; user = userSettings.username; };
   # Enable the GNOME Desktop Environment.
     gdm = { enable = false; wayland = true; autoSuspend = true; };
     };
@@ -393,6 +396,7 @@ services = {
     gnome.enable = false;
   };
   };
+  displayManager.autoLogin = { enable = true; user = userSettings.username; };
   spice-vdagentd.enable = true ;
   pipewire = {
     enable = true;

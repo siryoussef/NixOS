@@ -8,7 +8,18 @@ imports = [
   i18n.inputMethod.fcitx5.plasma6Support = config.services.desktopManager.plasma6.enable ;
   services = {
     xserver = {
-      displayManager = {
+
+      desktopManager = {
+        plasma5 = {
+          enable = false;
+          phononBackend = "vlc";
+          runUsingSystemd = true;
+          useQtScaling = true;
+          };
+        };
+      };
+
+    displayManager = {
         #autoLogin.enable = true;
         defaultSession = "plasma"; # plasma for plasma6 on wayland , plasmax11 for plasma6 on x11 (was plasmawayland & plasma on plasma5)
         sddm = {
@@ -20,15 +31,7 @@ imports = [
           #settings.Wayland.SessionDir = "${pkgs.plasma5Packages.plasma-workspace}/share/wayland-sessions";
           };
         };
-      desktopManager = {
-        plasma5 = {
-          enable = false;
-          phononBackend = "vlc";
-          runUsingSystemd = true;
-          useQtScaling = true;
-          };
-        };
-      };
+
     desktopManager = {
         plasma6 = {
           enable = true;

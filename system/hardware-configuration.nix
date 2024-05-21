@@ -56,7 +56,7 @@ swapDevices = [ { device = "/dev/disk/by-label/NixSwap"; } ];
   ## Bind Mounts
 
   fileSystems."/etc/nixos" =
-    { device = "/Shared/@Repo/nixos";
+    { device = "/Shared/@Repo/NixOS";
       fsType = "none";
       options = [ "bind" ];
     };
@@ -87,6 +87,12 @@ swapDevices = [ { device = "/dev/disk/by-label/NixSwap"; } ];
 
   fileSystems."/home/youssef/.config/GitHub Desktop" =
     { device = "/Shared/@Home/.config/GitHub Desktop";
+      fsType = "none";
+      options = [ "bind" ];
+    };
+
+  fileSystems."/home/youssef/Documents/GitHub" =
+    { device = "/Shared/@Repo";
       fsType = "none";
       options = [ "bind" ];
     };

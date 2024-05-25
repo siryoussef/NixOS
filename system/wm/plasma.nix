@@ -55,7 +55,7 @@ imports = [
   };
 
 environment = {
-  plasma5.excludePackages = [ pkgs.kdePackages.elisa ];
+  #plasma5.excludePackages = [ pkgs.kdePackages.elisa ];
   plasma6.excludePackages = [ pkgs.kdePackages.elisa ];
   systemPackages = with pkgs; [
     plasma-hud
@@ -68,7 +68,12 @@ environment = {
     kdePackages.filelight
     kdePackages.kdenlive
     kdePackages.neochat
+    kdePackages.plasmatube
     kdePackages.appstream-qt
+#     kdePackages.kdevelop
+#     kdePackages.kdev-python
+    libsForQt5.kdevelop-unwrapped
+    libsForQt5.kdev-python
 
   ];
 

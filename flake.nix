@@ -8,7 +8,7 @@
                      home-manager, nix-doom-emacs, nix-straight, stylix, blocklist-hosts,
                      hyprland-plugins, rust-overlay, org-nursery, org-yaap, org-side-tree,
                      org-timeblock, phscroll,
-snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
+snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowflakeos-module-manager, nixos-conf-editor, nix-software-center, ...}:
 
     let
 
@@ -228,7 +228,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, ...}:
       inputs.nixpkgs.follows = "nixpkgs";
       };
     nix-data.url = "github:snowfallorg/nix-data";
-#    nix-data.inputs.nixpkgs.follows = "nixpkgs" ;
+    nix-data.inputs.nixpkgs.follows = "nixpkgs" ;
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";

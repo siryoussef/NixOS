@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, system, ... }:
+{ config, pkgs, inputs, system, lib, ... }:
 {
   environment.systemPackages = [
     inputs.nix-software-center.packages.${system}.nix-software-center
@@ -6,13 +6,14 @@
     inputs.snow.packages.${system}.snow
     pkgs.git # For rebuiling with github flakes
   ];
- /* programs.nix-data = {
+  /*
+  programs.nix-data = {
     systemconfig = "/etc/nixos/configuration.nix";
     flake = "/etc/nixos/flake.nix";
     flakearg = "Snowyfrank";
   };
-
+*/
   snowflakeos.gnome.enable = false;
   snowflakeos.osInfo.enable = true;
-*/
+
   }

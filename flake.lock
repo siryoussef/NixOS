@@ -152,11 +152,19 @@
     "blocklist-hosts": {
       "flake": false,
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716214890,
         "narHash": "sha256-/zk5wn2NC8yOZLd6IxpmiVnnSj8mZUznDTngXvNM/vU=",
         "owner": "StevenBlack",
         "repo": "hosts",
         "rev": "7dc5651e1edcc5268fd72dfb90bd1c5c9fba942d",
+=======
+        "lastModified": 1716859594,
+        "narHash": "sha256-wllEikCX/bMY/ZyRszXvar+AzYqmAx6fcjvcDJBkzfU=",
+        "owner": "StevenBlack",
+        "repo": "hosts",
+        "rev": "6b6cba7dc79b459f80ffc44b3dd9973effdbed34",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -744,16 +752,17 @@
         "flake-utils": "flake-utils_8"
       },
       "locked": {
-        "lastModified": 1657226504,
-        "narHash": "sha256-GIYNjuq4mJlFgqKsZ+YrgzWm0IpA4axA3MCrdKYj7gs=",
+        "lastModified": 1715533576,
+        "narHash": "sha256-fT4ppWeCJ0uR300EH3i7kmgRZnAVxrH+XtK09jQWihk=",
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
-        "rev": "2bf0f91643c2e5ae38c1b26893ac2927ac9bd82a",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       },
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       }
     },
@@ -762,16 +771,17 @@
         "flake-utils": "flake-utils_9"
       },
       "locked": {
-        "lastModified": 1657226504,
-        "narHash": "sha256-GIYNjuq4mJlFgqKsZ+YrgzWm0IpA4axA3MCrdKYj7gs=",
+        "lastModified": 1715533576,
+        "narHash": "sha256-fT4ppWeCJ0uR300EH3i7kmgRZnAVxrH+XtK09jQWihk=",
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
-        "rev": "2bf0f91643c2e5ae38c1b26893ac2927ac9bd82a",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       },
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       }
     },
@@ -790,6 +800,7 @@
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       }
     },
@@ -798,16 +809,17 @@
         "flake-utils": "flake-utils_11"
       },
       "locked": {
-        "lastModified": 1696331477,
-        "narHash": "sha256-YkbRa/1wQWdWkVJ01JvV+75KIdM37UErqKgTf0L54Fk=",
+        "lastModified": 1715533576,
+        "narHash": "sha256-fT4ppWeCJ0uR300EH3i7kmgRZnAVxrH+XtK09jQWihk=",
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
-        "rev": "bfc53579db89de750b25b0c5e7af299e0c06d7d3",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       },
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "rev": "3542fe9126dc492e53ddd252bb0260fe035f2c0f",
         "type": "github"
       }
     },
@@ -1163,11 +1175,19 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716457508,
         "narHash": "sha256-ZxzffLuWRyuMrkVVq7wastNUqeO0HJL9xqfY1QsYaqo=",
         "owner": "nix-community",
         "repo": "home-manager",
         "rev": "850cb322046ef1a268449cf1ceda5fd24d930b05",
+=======
+        "lastModified": 1716847642,
+        "narHash": "sha256-rjEswRV0o23eBBils8lJXyIGha+l/VjV73IPg+ztxgk=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "10c7c219b7dae5795fb67f465a0d86cbe29f25fa",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -1512,11 +1532,19 @@
     },
     "nixos-hardware": {
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716173274,
         "narHash": "sha256-FC21Bn4m6ctajMjiUof30awPBH/7WjD0M5yqrWepZbY=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
         "rev": "d9e0b26202fd500cf3e79f73653cce7f7d541191",
+=======
+        "lastModified": 1716881121,
+        "narHash": "sha256-oTf3enbe/lbiNzsyZ8ria+422hx4e/FB3xQcY2LPnJw=",
+        "owner": "NixOS",
+        "repo": "nixos-hardware",
+        "rev": "806e9d4a933dd1e75592e88894d4bd2f296f5bbf",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -1578,12 +1606,21 @@
     },
     "nixpkgs-stable": {
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716408587,
         "narHash": "sha256-el71IUaQdEmntmd51GBpkJs/Hqh6S4dmfmUGP8GQaME=",
         "rev": "1a7abfa62e8a36f7f2dbe463722ed9ea31be5e43",
         "revCount": 630175,
         "type": "tarball",
         "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2405.630175%2Brev-1a7abfa62e8a36f7f2dbe463722ed9ea31be5e43/018fa5e1-f8e3-7559-ac27-a2e6bbbb54a9/source.tar.gz"
+=======
+        "lastModified": 1716542732,
+        "narHash": "sha256-0Y9fRr0CUqWT4KgBITmaGwlnNIGMYuydu2L8iLTfHU4=",
+        "rev": "d12251ef6e8e6a46e05689eeccd595bdbd3c9e60",
+        "revCount": 630312,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2405.630312%2Brev-d12251ef6e8e6a46e05689eeccd595bdbd3c9e60/018faf94-e6fb-7392-bbbf-2ebe86d55f64/source.tar.gz"
+>>>>>>> Stashed changes
       },
       "original": {
         "type": "tarball",
@@ -1608,11 +1645,19 @@
     },
     "nixpkgs_11": {
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716330097,
         "narHash": "sha256-8BO3B7e3BiyIDsaKA0tY8O88rClYRTjvAp66y+VBUeU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
         "rev": "5710852ba686cc1fd0d3b8e22b3117d43ba374c2",
+=======
+        "lastModified": 1716509168,
+        "narHash": "sha256-4zSIhSRRIoEBwjbPm3YiGtbd8HDWzFxJjw5DYSDy1n8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "bfb7a882678e518398ce9a31a881538679f6f092",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -1824,6 +1869,25 @@
     },
     "nixpkgs_6": {
       "locked": {
+<<<<<<< Updated upstream
+=======
+        "lastModified": 1698318101,
+        "narHash": "sha256-gUihHt3yPD7bVqg+k/UVHgngyaJ3DMEBchbymBMvK1E=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "63678e9f3d3afecfeafa0acead6239cdb447574c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_7": {
+      "locked": {
+>>>>>>> Stashed changes
         "lastModified": 1623304913,
         "narHash": "sha256-utltyZjSbz6eJ7aF412VEyR+AWNlY1GoB8P7fd4xFYA=",
         "owner": "nixos",
@@ -2202,11 +2266,19 @@
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716603336,
         "narHash": "sha256-81u/zd7V+XRTq88zwRLxw5GnwZyEiAvGA2BvAXUe864=",
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "4d0f1e4d5d65c23cdbb77e4b0d91940be7309bd4",
+=======
+        "lastModified": 1716862669,
+        "narHash": "sha256-7oTPM9lcdwiI1cpRC313B+lHawocgpY5F07N+Rbm5Uk=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "47b2d15658b37716393b2463a019000dbd6ce4bc",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
@@ -2317,12 +2389,21 @@
         "snowfall-lib": "snowfall-lib_3"
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716444294,
         "narHash": "sha256-m9Oi+O9l0MNTr0f+cEBrhoIFjX3ifQxvRw7yvwe50Ds=",
         "rev": "863ce18a8071f210263b776830f4d6a5576f4b5a",
         "revCount": 8,
         "type": "tarball",
         "url": "https://api.flakehub.com/f/pinned/snowfallorg/dotbox/0.1.8%2Brev-863ce18a8071f210263b776830f4d6a5576f4b5a/018fa40e-08ba-7565-8af2-c81cbdb9c9b9/source.tar.gz"
+=======
+        "lastModified": 1716675423,
+        "narHash": "sha256-CbEdppD2ZdbgnhXkjMoTUhkEX/0jc0bf6FwxiKzVrJs=",
+        "rev": "c013f4251de3f356a83780fb9fb6583543b8b577",
+        "revCount": 9,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/snowfallorg/dotbox/0.1.9%2Brev-c013f4251de3f356a83780fb9fb6583543b8b577/018fb1d4-c79f-7e6f-b6b9-cb520b158c01/source.tar.gz"
+>>>>>>> Stashed changes
       },
       "original": {
         "type": "tarball",
@@ -2338,12 +2419,21 @@
         "snowfall-lib": "snowfall-lib_4"
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716444083,
         "narHash": "sha256-CRZrai0zuVSncU5+phQ9bIJ3mmgOx75beJHVuVeJsgU=",
         "rev": "b05c4c706f323bd76b3b2827d82bad6b5aafa8cc",
         "revCount": 38,
         "type": "tarball",
         "url": "https://api.flakehub.com/f/pinned/snowfallorg/flake/1.4.0/018fa40b-3662-7852-a6a0-2c76cf1e8b91/source.tar.gz"
+=======
+        "lastModified": 1716675632,
+        "narHash": "sha256-AOgmoVZvMPUMSlHMrRjWaPykNS5YWxnUNp7STgfjGdA=",
+        "rev": "d3b1167f7265d28549930b95b98327c277ef8afd",
+        "revCount": 39,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/snowfallorg/flake/1.4.1/018fb1d8-371f-7082-9272-c8e78f932cd8/source.tar.gz"
+>>>>>>> Stashed changes
       },
       "original": {
         "type": "tarball",
@@ -2406,16 +2496,28 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716433572,
         "narHash": "sha256-JzUSwdANQyTVZiKkTpGVB9rTCu2y8kn3vbrp8kUsozE=",
         "owner": "snowfallorg",
         "repo": "lib",
         "rev": "c58023878d6720c525446cb67d8fcbe7c3a5d84c",
+=======
+        "lastModified": 1716675292,
+        "narHash": "sha256-7TFvVE4HR/b65/0AAhewYHEJzUXxIEJn82ow5bCkrDo=",
+        "owner": "snowfallorg",
+        "repo": "lib",
+        "rev": "5d6e9f235735393c28e1145bec919610b172a20f",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
         "owner": "snowfallorg",
+<<<<<<< Updated upstream
         "ref": "v3.0.0",
+=======
+        "ref": "v3.0.2",
+>>>>>>> Stashed changes
         "repo": "lib",
         "type": "github"
       }
@@ -2430,16 +2532,28 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716433572,
         "narHash": "sha256-JzUSwdANQyTVZiKkTpGVB9rTCu2y8kn3vbrp8kUsozE=",
         "owner": "snowfallorg",
         "repo": "lib",
         "rev": "c58023878d6720c525446cb67d8fcbe7c3a5d84c",
+=======
+        "lastModified": 1716675292,
+        "narHash": "sha256-7TFvVE4HR/b65/0AAhewYHEJzUXxIEJn82ow5bCkrDo=",
+        "owner": "snowfallorg",
+        "repo": "lib",
+        "rev": "5d6e9f235735393c28e1145bec919610b172a20f",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
         "owner": "snowfallorg",
+<<<<<<< Updated upstream
         "ref": "v3.0.0",
+=======
+        "ref": "v3.0.2",
+>>>>>>> Stashed changes
         "repo": "lib",
         "type": "github"
       }
@@ -2453,12 +2567,21 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716433572,
         "narHash": "sha256-JzUSwdANQyTVZiKkTpGVB9rTCu2y8kn3vbrp8kUsozE=",
         "rev": "c58023878d6720c525446cb67d8fcbe7c3a5d84c",
         "revCount": 68,
         "type": "tarball",
         "url": "https://api.flakehub.com/f/pinned/snowfallorg/lib/3.0.0/018fa36d-f2db-76cd-9844-d84f813d0c86/source.tar.gz"
+=======
+        "lastModified": 1716675292,
+        "narHash": "sha256-7TFvVE4HR/b65/0AAhewYHEJzUXxIEJn82ow5bCkrDo=",
+        "rev": "5d6e9f235735393c28e1145bec919610b172a20f",
+        "revCount": 77,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/snowfallorg/lib/3.0.2/018fb1d3-4215-7007-a83e-c3d1d5e22b4c/source.tar.gz"
+>>>>>>> Stashed changes
       },
       "original": {
         "type": "tarball",
@@ -2475,16 +2598,28 @@
         ]
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716433572,
         "narHash": "sha256-JzUSwdANQyTVZiKkTpGVB9rTCu2y8kn3vbrp8kUsozE=",
         "owner": "snowfallorg",
         "repo": "lib",
         "rev": "c58023878d6720c525446cb67d8fcbe7c3a5d84c",
+=======
+        "lastModified": 1716675292,
+        "narHash": "sha256-7TFvVE4HR/b65/0AAhewYHEJzUXxIEJn82ow5bCkrDo=",
+        "owner": "snowfallorg",
+        "repo": "lib",
+        "rev": "5d6e9f235735393c28e1145bec919610b172a20f",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {
         "owner": "snowfallorg",
+<<<<<<< Updated upstream
         "ref": "v3.0.0",
+=======
+        "ref": "v3.0.2",
+>>>>>>> Stashed changes
         "repo": "lib",
         "type": "github"
       }
@@ -2544,12 +2679,21 @@
         "snowfall-lib": "snowfall-lib_6"
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716435838,
         "narHash": "sha256-QI1O5CuD19tI3ZnUKT5j708pfLxt/gq0dpxGVCcZJt0=",
         "rev": "0c4daeae174b244de6fa59d9c39b672990e3c917",
         "revCount": 9,
         "type": "tarball",
         "url": "https://api.flakehub.com/f/pinned/snowfallorg/thaw/1.0.6/018fa38f-e111-7610-9f9b-c3fc04bef5b4/source.tar.gz"
+=======
+        "lastModified": 1716675831,
+        "narHash": "sha256-mw0cYdYENEYxEbA9W8x33Ig91pHoWJ9jKC+zh9z/ips=",
+        "rev": "029cdf961be5c3a39e4aa7dd5ea13ca00a904ae7",
+        "revCount": 10,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/snowfallorg/thaw/1.0.7/018fb1db-42e9-7184-a56f-25958f58cf1d/source.tar.gz"
+>>>>>>> Stashed changes
       },
       "original": {
         "type": "tarball",
@@ -2637,11 +2781,19 @@
         "nixpkgs": "nixpkgs_17"
       },
       "locked": {
+<<<<<<< Updated upstream
         "lastModified": 1716456264,
         "narHash": "sha256-s9Tyj5pEivl/AsvrpkUkfR1Iu3zHfXpviPfe4HbPJ5I=",
         "owner": "danth",
         "repo": "stylix",
         "rev": "290c8aef476ce98fff9cefc059284429d561a085",
+=======
+        "lastModified": 1716744577,
+        "narHash": "sha256-YvYYKLuf+SNj129k6SS/bhVybaLYgUlnznTa7rKv904=",
+        "owner": "danth",
+        "repo": "stylix",
+        "rev": "00a11ba2f0b52f761c0bc77daebb00cb4d44ba09",
+>>>>>>> Stashed changes
         "type": "github"
       },
       "original": {

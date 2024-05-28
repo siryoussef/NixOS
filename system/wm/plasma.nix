@@ -69,6 +69,11 @@ environment = {
     kdePackages.kdenlive
     kdePackages.neochat
     kdePackages.appstream-qt
+    libsForQt5.qmltermwidget
+    libsForQt5.discover
+    libreoffice-qt
+    krusader
+    kcalc
 
   ];
 
@@ -77,7 +82,7 @@ environment = {
   programs = {
     chromium = {
       enablePlasmaBrowserIntegration = true;
-      #plasmaBrowserIntegrationPackage = pkgs.plasma5Packages.plasma-browser-integration;
+      #plasmaBrowserIntegrationPackage = pkgs.kdePackages.plasma-browser-integration;
     };
 
   };

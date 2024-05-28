@@ -168,7 +168,8 @@ environment = {
     pacman
     apt
     aptly
-   # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
+    kdePackages.kdevelop
+    kdePackages.kdev-python # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
    # pkgs-r2211.spyder
    # python311Packages.spyder
    # python311Packages.spyder-kernels

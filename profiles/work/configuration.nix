@@ -18,6 +18,7 @@
       #../../system/app/flatpak.nix
       ../../system/app/virtualization.nix
       ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit userSettings lib;} )
+      ../../system/app/syncthing.nix
       ../../system/security/doas.nix
       ../../system/security/gpg.nix
       ../../system/security/blocklist.nix
@@ -105,7 +106,7 @@ users = {
   users.${userSettings.username} = {
     isNormalUser = true;
     description = userSettings.name;
-    extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" ];
+    extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
     packages = with pkgs; [
     zoom-us
     kotatogram-desktop
@@ -195,25 +196,13 @@ environment = {
     smplayer
     obs-studio
     handbrake
-<<<<<<< Updated upstream
-    krusader
-    libreoffice-qt
-    kdePackages.discover
-    virt-viewer
-    spice spice-gtk
-    spice-protocol
-    win-virtio
-    win-spice
-    virt-manager-qt
-    virter
-=======
 
-
->>>>>>> Stashed changes
     rclone
     rclone-browser
     syncthing
     syncthing-tray
+    grsync
+
     wsysmon
     tldr
     kcalc

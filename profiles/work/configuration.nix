@@ -398,6 +398,13 @@ services = {
     alsa = { enable = true; support32Bit = true; };
     pulse.enable = true;
   };
+  samba = {
+    enable = true;
+    shares =
+    { Shared = { path = "/Shared"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky shared volume"; };
+      Labvol = { path = "/Volume"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky Main Volume"; };
+    };
+  };
 };
 console.useXkbConfig = true;
 programs.gnupg.agent.pinentryPackage = pkgs.pinentry-qt ;

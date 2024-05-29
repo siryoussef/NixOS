@@ -1,4 +1,4 @@
-{ config, lib, pkgs, font, plasma-manager, ... }:
+{ config, lib, pkgs, pkgs-stable, font, plasma-manager, ... }:
 {
 imports = [
             ./wayland.nix
@@ -57,7 +57,7 @@ imports = [
 environment = {
   plasma5.excludePackages = [ /* pkgs.kdePackages.elisa */ ];
   plasma6.excludePackages = [ /* pkgs.kdePackages.elisa */ ];
-  systemPackages = with pkgs; [
+  systemPackages = with pkgs;/*with pkgs-stable*/ [
     kdePackages.plasma5support
     plasma-hud
     kdePackages.sddm-kcm
@@ -77,9 +77,9 @@ environment = {
     kcalc
 #     kdePackages.kdevelop
 #     kdePackages.kdev-python
-
+    libsForQt5.kdevelop
+    libsForQt5.kdev-python
   ];
-
 };
 
   programs = {

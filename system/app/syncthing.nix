@@ -10,8 +10,8 @@
             enable = true;
             systemService = true;
             user = userSettings.username;
-            dataDir = "/home/"+userSettings.username+"/syncthing";
-            configDir = "/home/"+userSettings.username+"/syncthing/./config";
+            dataDir = "/Shared"; # "/home/"+userSettings.username+"syncthing";
+            configDir = "/Shared/.syncthing"; # "/home/"+userSettings.username+"/syncthing/./config";
 
         };
     };

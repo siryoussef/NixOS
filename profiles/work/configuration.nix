@@ -41,7 +41,7 @@
   loader = {
   # Use systemd-boot if uefi, default to grub otherwise
   systemd-boot.enable = /*if (systemSettings.bootMode == "uefi") then true else*/ false;
-  efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
+  #efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
    # Bootloader.
   generationsDir.copyKernels = true;
   timeout = 3;
@@ -49,7 +49,7 @@
   grub = {enable = /*if (systemSettings.bootMode == "uefi") then false else*/ true;
           device = systemSettings.grubDevice; # does nothing if running uefi rather than bios
           efiSupport = true;
-          efiInstallAsRemovable = false;
+          efiInstallAsRemovable = true;
 #         zfsSupport = true;
           copyKernels = true;
           default = 0;
@@ -169,8 +169,7 @@ environment = {
     pacman
     apt
     aptly
-    kdePackages.kdevelop
-    kdePackages.kdev-python # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
+    # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
    # pkgs-r2211.spyder
    # python311Packages.spyder
    # python311Packages.spyder-kernels
@@ -683,6 +682,6 @@ programs = {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system = {
     stateVersion = config.system.nixos.release; # Did you read the comment?
-    copySystemConfiguration = false;
+    copySystemConfiguration = false; # can't be used in a flake system
     };
 }

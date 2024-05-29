@@ -24,12 +24,12 @@
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
   ## Bind Mounts
     "/etc/nixos" = { device = "/Shared/@Repo/NixOS"; fsType = "none"; options = [ "bind" ]; };
-    "Downloads" = { mountpoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume"]; };
-    "floorp"= { mountpoint = "/home/"+userSettings.username+"/.floorp"; device = "/Shared/@Home/.floorp"; fsType = "none"; options = [ "bind" ]; };
-    "vscode"= { mountpoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
-    "fish"= { mountpoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
-    "Github"={ mountpoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
-   "GitRepos" ={ mountpoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
+    "Downloads" = { mountPoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume"]; };
+    "floorp"= { mountPoint = "/home/"+userSettings.username+"/.floorp"; device = "/Shared/@Home/.floorp"; fsType = "none"; options = [ "bind" ]; };
+    "vscode"= { mountPoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
+    "fish"= { mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
+    "Github"={ mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
+   "GitRepos" ={ mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
   };
 
 boot.loader.efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi

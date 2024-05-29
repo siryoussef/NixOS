@@ -55,9 +55,10 @@ imports = [
   };
 
 environment = {
-  plasma5.excludePackages = [ pkgs.kdePackages.elisa ];
-  plasma6.excludePackages = [ pkgs.kdePackages.elisa ];
+  plasma5.excludePackages = [ /* pkgs.kdePackages.elisa */ ];
+  plasma6.excludePackages = [ /* pkgs.kdePackages.elisa */ ];
   systemPackages = with pkgs; [
+    kdePackages.plasma5support
     plasma-hud
     kdePackages.sddm-kcm
     kdePackages.kcmutils
@@ -74,6 +75,8 @@ environment = {
     libreoffice-qt
     krusader
     kcalc
+#     kdePackages.kdevelop
+#     kdePackages.kdev-python
 
   ];
 

@@ -9,6 +9,7 @@
     ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "btrfs"];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.kernelParams = ["DP-2=1280x1024"];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   boot.supportedFilesystems = ["btrfs" "ntfs"];
@@ -30,7 +31,8 @@
     "fish"={ mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
     "Github"={ mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
    "GitRepos"= { mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
-   "logseq"= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Home/.logseq"; fsType = "none"; options = [ "bind" ]; };
+   "logseq"= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq"; fsType = "none"; options = [ "bind" ]; };
+   "Note"= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
   };
 
 boot.loader.efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi

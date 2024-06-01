@@ -60,9 +60,11 @@ environment = {
   systemPackages = with pkgs;/*with pkgs-stable*/ [
     kdePackages.plasma5support
     plasma-hud
+    kdePackages.kcmutils
     kdePackages.sddm-kcm
     kdePackages.kcmutils
     kdePackages.flatpak-kcm
+    kdePackages.plymouth-kcm
     kate
    # plasma-browser-integration
     kdePackages.plasma-disks

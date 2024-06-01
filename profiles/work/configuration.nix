@@ -33,27 +33,27 @@
   boot = {
   # Kernel modules
   #kernel.enable = true;
-  kernelModules = [ "i2c-dev" "i2c-piix4" "cpufreq_powersave" ];
-  plymouth.enable = true;
-  enableContainers = true;
-  hardwareScan = true;
+    kernelModules = [ "i2c-dev" "i2c-piix4" "cpufreq_powersave" ];
+    plymouth.enable = true;
+    enableContainers = true;
+    hardwareScan = true;
   # Bootloader
-  loader = {
+    loader = {
   # Use systemd-boot if uefi, default to grub otherwise
-  systemd-boot.enable = /*if (systemSettings.bootMode == "uefi") then true else*/ false;
+      systemd-boot.enable = /*if (systemSettings.bootMode == "uefi") then true else*/ false;
   #efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
    # Bootloader.
-  generationsDir.copyKernels = true;
-  timeout = 3;
+      generationsDir.copyKernels = true;
+      timeout = 3;
 
-  grub = {enable = /*if (systemSettings.bootMode == "uefi") then false else*/ true;
+      grub = {enable = /*if (systemSettings.bootMode == "uefi") then false else*/ true;
           device = systemSettings.grubDevice; # does nothing if running uefi rather than bios
           efiSupport = true;
           efiInstallAsRemovable = true;
 #         zfsSupport = true;
           copyKernels = true;
           default = 0;
- #        timeoutStyle = "menu";
+#         timeoutStyle = "menu";
           useOSProber = true;
         devices = [
   "/dev/disk/by-label/BEFI"
@@ -225,6 +225,7 @@ environment = {
     efivar
     gnu-efi
     beefi
+    ectool
 
 #     # support both 32- and 64-bit applications
 #     wineWowPackages.stable
@@ -398,8 +399,13 @@ services = {
     alsa = { enable = true; support32Bit = true; };
     pulse.enable = true;
   };
+  samba-wsdd.enable = true;
   samba = {
     enable = true;
+    enableNmbd = true;
+    enableWinbindd = true;
+    openFirewall= true;
+    nsswins = true;
     shares =
     { Shared = { path = "/Shared"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky shared volume"; };
       Labvol = { path = "/Volume"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky Main Volume"; };

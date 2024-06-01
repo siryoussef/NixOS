@@ -28,7 +28,8 @@
         layout = "us";
         variant = "";
         options = "caps:escape";
-    };
+      };
+      resolutions = [ {x = 1920; y= 1080; } { x = 1600; y = 1200; } { x = 1280; y = 1024; } ];
 
     };
 

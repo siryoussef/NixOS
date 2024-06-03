@@ -11,7 +11,7 @@
   imports = [
               (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then nix-doom-emacs.hmModule else null)
               stylix.homeManagerModules.stylix
-              (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
+             # (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
               ../../user/bin/phoenix.nix # My nix command wrapper
@@ -21,7 +21,8 @@
               ../../user/app/keepass/keepass.nix # My password manager
               (./. + "../../../user/app/browser"+("/"+userSettings.browser)+".nix") # My default browser selected from flake
               ../../user/app/virtualization/virtualization.nix # Virtual machines
-              ../../user/app/AI/chat-gpt-retrieval-plugin.nix
+              #../../user/app/AI/chat-gpt-retrieval-plugin.nix
+              #../../user/app/AI/ollama.nix
               #../../user/app/flatpak/flatpak.nix # Flatpaks
               ../../user/style/stylix.nix # Styling and themes for my apps
               ../../user/lang/cc/cc.nix # C and C++ tools
@@ -63,6 +64,7 @@
 
     wine
     bottles
+    qbittorrent
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
     # With a bottle name of "FL Studio"
     /*

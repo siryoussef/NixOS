@@ -27,6 +27,7 @@
       ../../system/security/openvpn.nix
       ../../system/security/automount.nix
       ../../system/style/stylix.nix
+      ../../system/app/sh.nix
     ];
 
 
@@ -120,14 +121,13 @@ users = {
     github-desktop
     obsidian
     logseq
+
     ];
     uid = 1000;
   };
-  extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+  extraGroups.vboxusers.members = [  ];
 };
 
-  # I use zsh btw
-  programs.zsh.enable = true;
   fonts.fontDir.enable = true;
   xdg.portal = {
     enable = true;
@@ -201,6 +201,7 @@ environment = {
     syncthing
     syncthing-tray
     grsync
+    unrar
 
     wsysmon
     tldr
@@ -582,23 +583,10 @@ programs = {
   virt-manager = { enable = true; package = pkgs.virt-manager; };
   partition-manager.enable = true;
   git.enable = true;
-  nix-index = { enable = true;
-                enableBashIntegration = true;
-                enableFishIntegration = true;
-                };
   #cfs-zen-tweaks.enable = true;
   dconf.enable = true;
   fuse.userAllowOther = true;
   nano.syntaxHighlight = true;
-  bash = {
-    enableCompletion = true;
-    enableLsColors = true;
-    blesh.enable = true;
-    };
-  fish = {
-    enable = true;
-    useBabelfish = true;
-    };
   #wayfire.enable = true;
   atop = { enable = true; atopgpu.enable = false; };
   system-config-printer.enable = false;

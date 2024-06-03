@@ -16,24 +16,52 @@ let
   };
 in
 {
-  programs.zsh = {
-    enable = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    enableCompletion = true;
-    shellAliases = myAliases;
-    initExtra = ''
-    PROMPT=" ◉ %U%F{magenta}%n%f%u@%U%F{blue}%m%f%u:%F{yellow}%~%f
-     %F{green}→%f "
-    RPROMPT="%F{red}▂%f%F{yellow}▄%f%F{green}▆%f%F{cyan}█%f%F{blue}▆%f%F{magenta}▄%f%F{white}▂%f"
-    [ $TERM = "dumb" ] && unsetopt zle && PS1='$ '
-    '';
-  };
+  programs = {
+    zsh = {
+      enable = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      enableCompletion = true;
+#       enableBashCompletion = true;
+#       enableLsColors = true;
+      shellAliases = myAliases;
+      initExtra = ''
+      PROMPT=" ◉ %U%F{magenta}%n%f%u@%U%F{blue}%m%f%u:%F{yellow}%~%f
+      %F{green}→%f "
+      RPROMPT="%F{red}▂%f%F{yellow}▄%f%F{green}▆%f%F{cyan}█%f%F{blue}▆%f%F{magenta}▄%f%F{white}▂%f"
+      [ $TERM = "dumb" ] && unsetopt zle && PS1='$ '
+      '';
+    };
 
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    shellAliases = myAliases;
+    bash = {
+      enable = true;
+      enableCompletion = true;
+      shellAliases = myAliases;
+#       enableLsColors = true;
+#       blesh.enable = true;
+    };
+
+    fish = {
+      enable = true;
+#       useBabelfish = true;
+      shellAbbrs = { gco = "git checkout"; npu = "nix-prefetch-url"; }; # set of fish sell abbreviations
+      shellAliases = myAliases;
+#       vendor = { config.enable = true; completions.enable = true; functions.enable = true;};
+      interactiveShellInit = "";
+      loginShellInit = "";
+    };
+    nix-index = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      };
+
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+      };
   };
 
   home.packages = with pkgs; [
@@ -43,7 +71,5 @@ in
     direnv nix-direnv
   ];
 
-  programs.direnv.enable = true;
-  programs.direnv.enableZshIntegration = true;
-  programs.direnv.nix-direnv.enable = true;
+
 }

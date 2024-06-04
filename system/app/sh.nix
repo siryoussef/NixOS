@@ -4,7 +4,7 @@
   programs = {
     zsh = {
       enable = true;
-      autosuggestion.enable = true;
+      autosuggestions = { enable = true; };
       syntaxHighlighting = { enable = true; };
       enableCompletion = true;
       enableBashCompletion = true;
@@ -16,7 +16,7 @@
       enableCompletion = true;
       enableLsColors = true;
       blesh.enable = true;
-      undistractme = {enable = true; playsound = true; timeout= 21; };
+      undistractMe = {enable = true; playSound = true; timeout= 21; };
     };
 
     fish = {
@@ -36,7 +36,6 @@
 
     direnv = {
       enable = true;
-      enableZshIntegration = true;
       nix-direnv.enable = true;
       };
   };

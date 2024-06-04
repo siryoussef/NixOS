@@ -132,7 +132,7 @@ in
   };
   qt = {
     enable = true;
-    style.package = pkgs.libsForQt5.breeze-qt5;
+    style.package = pkgs.kdePackages.breeze-qt6;
     style.name = "breeze-dark";
   };
 }

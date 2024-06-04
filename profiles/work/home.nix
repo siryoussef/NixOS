@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-kdenlive, nix-doom-emacs, stylix, userSettings, ... }:
+{ config, pkgs, pkgs-kdenlive, nix-doom-emacs, /*stylix,*/ userSettings, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -10,7 +10,7 @@
 
   imports = [
               (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then nix-doom-emacs.hmModule else null)
-              stylix.homeManagerModules.stylix
+#               stylix.homeManagerModules.stylix
              # (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
@@ -24,7 +24,7 @@
               #../../user/app/AI/chat-gpt-retrieval-plugin.nix
               #../../user/app/AI/ollama.nix
               #../../user/app/flatpak/flatpak.nix # Flatpaks
-              ../../user/style/stylix.nix # Styling and themes for my apps
+              #../../user/style/stylix.nix # Styling and themes for my apps
               ../../user/lang/cc/cc.nix # C and C++ tools
               ../../user/lang/godot/godot.nix # Game development
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure
@@ -32,7 +32,7 @@
 
             ];
 
-  home.stateVersion = "22.11"; # Please read the comment before changing.
+  home.stateVersion = "23.11"; # Please read the comment before changing.
 
   home.packages = (with pkgs; [
     # Core

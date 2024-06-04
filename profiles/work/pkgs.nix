@@ -1,4 +1,4 @@
- { config, pkgs, ... }:
+ { config, pkgs, pkgs-stable, ... }:
 let
 InstalledUnstable = with pkgs; [
     vim
@@ -110,7 +110,7 @@ InstalledUnstable = with pkgs; [
   InstalledStable = with pkgs-stable; [
   floorp
   ];
-  Installed = InstalledStable + InstalledUnstable ;
+  Installed = InstalledStable ++ InstalledUnstable ;
 in {
 
 environment = {

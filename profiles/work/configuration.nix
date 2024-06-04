@@ -519,6 +519,7 @@ programs = {
   */
   gnome-disks.enable = true;
   };
+
   appstream.enable = true;
 #   qt.style = "adwaita-dark";
 #   qt.platformTheme = "kde";

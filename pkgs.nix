@@ -1,6 +1,7 @@
- { config, pkgs, pkgs-stable, ... }:
+ { config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, ... }:
 let
-InstalledUnstable = with pkgs; [
+pkgSettings = {
+UnStable = with pkgs; [
     vim
     wget
     zsh
@@ -107,17 +108,17 @@ InstalledUnstable = with pkgs; [
    # grub2_xen
 
   ];
-  InstalledStable = with pkgs-stable; [
+  Stable = with pkgs-stable; [
   floorp
   ];
-  Installed = InstalledStable ++ InstalledUnstable ;
+  };
 in {
 
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
   # List packages installed in system profile.
-  systemPackages = Installed;
+  systemPackages = pkgSettings = {Stable ++ UnStable};
 
  };
  }

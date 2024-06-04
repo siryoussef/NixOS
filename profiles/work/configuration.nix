@@ -28,7 +28,7 @@
       ../../system/security/automount.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
-      ./pkgs.nix
+      ../../pkgs.nix
     ];
 
 

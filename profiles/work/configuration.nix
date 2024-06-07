@@ -28,7 +28,7 @@
       ../../system/security/automount.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
-      ../../pkgs.nix
+      ../../syspkgs.nix
     ];
 
 
@@ -126,9 +126,15 @@ users = {
     ];
     uid = 1000;
   };
-  extraGroups.vboxusers.members = [  ];
+  extraGroups.vboxusers.members = [ userSettings.username ];
 };
 
+environment = {
+  shells = with pkgs; [ fish zsh bash ];
+  sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+  # List packages installed in system profile.
+  #systemPackages = with pkgslists;(UnStable++Stable);
+  };
   fonts.fontDir.enable = true;
   xdg.portal = {
     enable = true;

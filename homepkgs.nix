@@ -110,7 +110,7 @@
     libffi zlib
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
-  ++ with pkgs-stable;[
+  ++ (with pkgs-stable;[
   floorp
-  ]);
+  ]));
   }

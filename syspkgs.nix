@@ -112,7 +112,7 @@ pkglists={
     Stable = with pkgs-stable; [
     floorp
     ];
-    }
+    };
 
 in {
 #     pkgSettings = {
@@ -127,6 +127,5 @@ environment = {
   systemPackages = with pkglists;(UnStable ++ Stable);
 
  };
- */
  }
 

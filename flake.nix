@@ -133,6 +133,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
           ]; }
 ];
     in {
+      outputs.pkgSettings = import ./pkgs.nix ;
       homeConfigurations = {
         user = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -203,8 +204,9 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
     };
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
+    nixpkgs-stable.url = "nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
 

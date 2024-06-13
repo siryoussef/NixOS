@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, systemSettings, userSettings, ... }:
+{ config, pkgs, pkgs-stable, lib, systemSettings, userSettings, ... }:
 {
   imports =
     [ #../../configuration.nix
@@ -15,7 +15,7 @@
       ../../system/hardware/printing.nix
       ../../system/hardware/bluetooth.nix
       (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
-      #../../system/app/flatpak.nix
+      ../../system/app/appsupport.nix
       ../../system/app/virtualization.nix
       ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit userSettings lib;} )
       ../../system/app/syncthing.nix
@@ -229,7 +229,7 @@ services = {
 
   jupyterhub = {
     enable = true;
-    jupyterlabEnv = pkgs.python3.withPackages (p: with p; [
+    jupyterlabEnv = pkgs-stable.python3.withPackages (p: with p; [
   jupyterhub
   jupyterlab
   numpy
@@ -237,10 +237,10 @@ services = {
 ]); };
   jupyter = { enable = true; user = "youssef"; group = "jupyter"; password = "'sha1:1b961dc713fb:88483270a63e57d18d43cf337e629539de1436ba'"; };
 
-  /*
+
   jupyter.kernels = {
   python3 = let
-    env = (pkgs.python312.withPackages (pythonPackages: with pythonPackages; [
+    env = (pkgs-stable.python312.withPackages (pythonPackages: with pythonPackages; [
             ipykernel
             pandas
            # scikit-learn
@@ -267,8 +267,8 @@ services = {
     };
   };
 };
-  jupyter.package = pkgs.python312.pkgs.notebook;
-  */
+  jupyter.package = pkgs-stable.python312.pkgs.notebook;
+
 
   thermald.enable = true;
   auto-cpufreq.enable = true;
@@ -506,7 +506,7 @@ programs = {
 
   firefox = {
     enable = true;
-    package = pkgs.floorp;
+    package = pkgs-stable.floorp;
     nativeMessagingHosts = {
     packages = with pkgs; [ uget-integrator browserpass];
   # uget-integrator = true;

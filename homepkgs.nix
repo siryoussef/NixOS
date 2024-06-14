@@ -3,7 +3,6 @@
     # Core
     zsh
     alacritty
-    brave
     qutebrowser
     dmenu
     rofi
@@ -29,6 +28,7 @@
     wine
     bottles
     qbittorrent
+    yt-dlg
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
     # With a bottle name of "FL Studio"
     /*
@@ -111,6 +111,6 @@
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
   ++ (with pkgs-stable;[
-  floorp
+#   floorp
   ]));
   }

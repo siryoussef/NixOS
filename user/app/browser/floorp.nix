@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs,pkgs-stable, ... }:
 
 {
   # Module installing  as default browser

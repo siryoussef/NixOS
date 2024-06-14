@@ -28,6 +28,7 @@
       ../../system/security/automount.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
+      ../../system/app/develop.nix
       ../../syspkgs.nix
     ];
 
@@ -227,49 +228,6 @@ services = {
   gvfs.enable = true;
   devmon.enable = true;
 
-  jupyterhub = {
-    enable = true;
-    jupyterlabEnv = pkgs-stable.python3.withPackages (p: with p; [
-  jupyterhub
-  jupyterlab
-  numpy
-  pandas
-]); };
-  jupyter = { enable = true; user = "youssef"; group = "jupyter"; password = "'sha1:1b961dc713fb:88483270a63e57d18d43cf337e629539de1436ba'"; };
-
-
-  jupyter.kernels = {
-  python3 = let
-    env = (pkgs-stable.python312.withPackages (pythonPackages: with pythonPackages; [
-            ipykernel
-            pandas
-           # scikit-learn
-           # spyder
-           # jedi
-           # qdarkstyle
-           # pyls-spyder
-           # spyder-kernels
-          ]));
-  in {
-    displayName = "Python 3 for machine learning";
-    argv = [
-      "${env.interpreter}"
-      "-m"
-      "ipykernel_launcher"
-      "-f"
-      "{connection_file}"
-    ];
-    language = "python";
-    #logo32 = null;
-    #logo64 = "${env.sitePackages}/ipykernel/resources/logo-64x64.png";
-    extraPaths = {
-      #"cool.txt" = pkgs.writeText "cool" "cool content";
-    };
-  };
-};
-  jupyter.package = pkgs-stable.python312.pkgs.notebook;
-
-
   thermald.enable = true;
   auto-cpufreq.enable = true;
   #logind.hibernateKey = "hibernate";
@@ -400,20 +358,7 @@ systemd = {
 
 
   #nixpkgs.overlays = [ (import ./overlays.nix) ];
-  /*[
-  (self: super: {
-    spyder = super.spyder.override {
-      postPatch = ''
-    sed -i /pyqtwebengine/d setup.py
-    substituteInPlace setup.py \
-      --replace "qdarkstyle>=3.0.2,<3.1.0" "qdarkstyle" \
-      --replace "ipython>=7.31.1,<9.0.0,!=8.8.0,!=8.9.0,!=8.10.0,!=8.11.0,!=8.12.0,!=8.12.1" "ipython" \
-      --replace "jedi>=0.17.2,<0.19.0" "jedi" \
-      --replace "pylsp>=1.7.4,<1.8.0" "pylsp"
-'';
-    };
-  })
-];*/
+
 
 
 /*
@@ -432,8 +377,6 @@ systemd = {
 
   services.logrotate.checkConfig = false; #logrotate is disabled due to an error during buildnixpkgs.config.allowUnfree = true;
 
-
-  #linkedPackages = { "python311Packages.spyder". "python311Packages.spyder-kernels", "python311Packages.pyls-spyder", "python311Packages.qdarkstyle" }; };
 
 
   /*

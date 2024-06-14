@@ -31,17 +31,12 @@ pkglists={
       pacman
       apt
       aptly
-      # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
-    # pkgs-r2211.spyder
-    # python311Packages.spyder
-    # python311Packages.spyder-kernels
-    # python311Packages.pyls-spyder
-    # python311Packages.qdarkstyle
-      #python310Packages.spyder
       pmutils
       ## Appimage support (currently broken due to " error : execve : No such file or directory ")
       appimage-run
       appimagekit
+      libappimage
+
       distrobox
       gnome.gnome-disk-utility
       gparted
@@ -49,7 +44,6 @@ pkglists={
       btrfs-assistant
       snapper-gui
       #librewolf
-      #floorp
       #chromium
       protonvpn-gui
       pitch-black
@@ -73,19 +67,11 @@ pkglists={
       woeusb-ng
       wimboot
       gnome.adwaita-icon-theme
-      mysqltuner
-      mysql-workbench
-      pkgs.rPackages.Anaconda
-    # grafana
+
       wget
       gcc
 
-    python311Packages.jupyterlab
-
       refind
-      efibootmgr
-      efitools
-      efivar
       gnu-efi
       beefi
       ectool
@@ -110,7 +96,10 @@ pkglists={
 
     ];
     Stable = with pkgs-stable; [
-    floorp
+#     floorp
+    efibootmgr
+    efitools
+    efivar
     ];
     };
 

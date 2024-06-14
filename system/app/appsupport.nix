@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs,... }:
 
 {
   # Need some flatpaks

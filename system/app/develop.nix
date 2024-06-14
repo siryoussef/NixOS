@@ -1,8 +1,7 @@
  { config, pkgs, pkgs-stable, pkgs-r2211, userSettings, systemSettings, ... }:
 {
-enviroment.systemPackages= with pkgs;[
+environment.systemPackages= ((with pkgs;[
     jupyter-all
-    python311Packages.ipykernel
     mysqltuner
     mysql-workbench
     pkgs.rPackages.Anaconda
@@ -14,7 +13,12 @@ enviroment.systemPackages= with pkgs;[
     # python311Packages.pyls-spyder
     # python311Packages.qdarkstyle
       #python310Packages.spyder
-    ];
+    ]) ++ (with pkgs;(with python311Packages;[
+    ipykernel
+    pandas
+    numpy
+    matplotlib
+    ])));
 services = {
     jupyterhub = {
     enable = true;

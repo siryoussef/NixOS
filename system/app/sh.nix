@@ -34,9 +34,6 @@
       enableFishIntegration = true;
       };
 
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-      };
+    direnv = { enable = true; loadInNixShell = true; nix-direnv.enable = true;};
   };
 }

@@ -7,14 +7,15 @@
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
-  boot.initrd.availableKernelModules = [ "xhci_pci" "usbhid" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "btrfs"];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
-  boot.kernelParams = ["DP-2=1280x1024"];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
-  boot.supportedFilesystems = ["btrfs" "ntfs"];
-  boot.loader.grub.useOSProber = true;
-
+  boot = {
+    initrd = { availableKernelModules = [ "xhci_pci" "usbhid" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "btrfs"]; kernelModules = [ "dm-snapshot" ]; };
+    kernelParams = ["DP-2=1280x1024"];
+    kernelModules = [ "kvm-intel" ];
+    extraModulePackages = [ ];
+    supportedFilesystems = ["btrfs" "ntfs"];
+    loader = { grub.useOSProber = true; efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi
+      };
+  };
   fileSystems = {
     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; };
@@ -35,7 +36,7 @@
    "Note"= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
   };
 
-boot.loader.efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi
+
 swapDevices = [ { device = "/dev/disk/by-label/NixSwap"; } ];
 #   btrfs = { autoScrub = { enable = true; interval = "monthly"; fileSystems = [ "/Volume" ]; }; };
 

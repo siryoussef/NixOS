@@ -5,6 +5,7 @@ pkglists={
   UnStable = with pkgs; [
       vim
       wget
+      nodePackages.bash-language-server
       zsh
       git
       cryptsetup
@@ -100,6 +101,8 @@ pkglists={
     efibootmgr
     efitools
     efivar
+    exfatprogs
+    tmsu
     ];
     };
 
@@ -108,7 +111,7 @@ in {
 #         systemPackages = (systemSettings.profile).system.packages;
 #         homePackages = (systemSettings.profile).home.packages;
 #         };
-
+users.packages = ((with pkgs; []) ++ (with pkgs-stable;[]); # User packages (same as home manager packages ) but configured by the system owner (root)
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";

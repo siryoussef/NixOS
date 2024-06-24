@@ -7,17 +7,16 @@ environment.systemPackages= ((with pkgs;[
     pkgs.rPackages.Anaconda
     # grafana
          # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
-    # pkgs-r2211.spyder
-    # python311Packages.spyder
-    # python311Packages.spyder-kernels
-    # python311Packages.pyls-spyder
-    # python311Packages.qdarkstyle
-      #python310Packages.spyder
+    devenv
     ]) ++ (with pkgs;(with python311Packages;[
     ipykernel
     pandas
     numpy
     matplotlib
+    spyder
+    spyder-kernels
+    pyls-spyder
+#     qdarkstyle
     ])));
 services = {
     jupyterhub = {
@@ -67,7 +66,37 @@ services = {
 
   jupyter.package = pkgs-stable.python311Packages.notebook;
 
+  /*
+    mysql = {
+        enable = true ;
+        package = pkgs.mysql80;     #pkgs.mariadb;
+        replication = {
+            role = "master";
+            serverId = 1 ;
+            masterUser = "youssef";
+            masterHost = "Snowyfrank";
+            masterPassword = "123456";
+            slaveHost = "wanky";
+            };
+    };
+*/
 };
+
+/*
+  ## MySQL server
+
+  services.longview.mysqlUser = "youssef";
+  services.longview.mysqlPassword = "123456";
+*/
+
+  /*
+  users.mysql.enable = true ;
+  users.mysql.user = "youssef";
+  users.mysql.passwordFile = "/etc/mysql.password";
+  #users.mysql.nss = import ./mysql-nss.cfg;
+*/
+
+
   /*[
   (self: super: {
     spyder = super.spyder.override {

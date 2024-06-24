@@ -4,13 +4,28 @@
     zsh
     alacritty
     qutebrowser
+    microsoft-edge
     dmenu
     rofi
     git
     syncthing
 
+    zoom-us
+    kotatogram-desktop
+    kdePackages.neochat
+    kdePackages.plasmatube
+    whatsapp-for-linux
+    beeper
+    vscode-fhs
+    betterbird-unwrapped
+    #vscodium-fhs
+    github-desktop
+    obsidian
+    logseq
+
     # Office
     libreoffice-fresh
+    onlyoffice-bin_latest
     mate.atril
     openboard
     xournalpp

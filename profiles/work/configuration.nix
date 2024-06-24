@@ -16,6 +16,7 @@
       ../../system/hardware/bluetooth.nix
       (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
       ../../system/app/appsupport.nix
+      ../../system/app/distrobox.nix
       ../../system/app/virtualization.nix
       ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit userSettings lib;} )
       ../../system/app/syncthing.nix
@@ -110,21 +111,7 @@ users = {
     isNormalUser = true;
     description = userSettings.name;
     extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
-    packages = with pkgs; [
-    zoom-us
-    kotatogram-desktop
-    kdePackages.neochat
-    kdePackages.plasmatube
-    whatsapp-for-linux
-    beeper
-    vscode-fhs
-    betterbird-unwrapped
-    #vscodium-fhs
-    github-desktop
-    obsidian
-    logseq
-
-    ];
+    packages = with pkgs; [];
     uid = 1000;
   };
   extraGroups.vboxusers.members = [ userSettings.username ];
@@ -150,12 +137,16 @@ environment = {
 
   ## ZFS
 /*
- # boot.zfs.enabled = lib.mkOverride 1000 true;
-  boot.zfs.removeLinuxDRM = true;
-  boot.zfs.forceImportRoot = false;
-  boot.zfs.forceImportAll = false;
-  boot.zfs.enableUnstable = true;
-  boot.zfs.allowHibernation = true;
+boot = {
+  zfs = {
+    enabled = lib.mkOverride 1000 true;
+    removeLinuxDRM = true;
+    forceImportRoot = false;
+    forceImportAll = false;
+    enableUnstable = true;
+    allowHibernation = true;
+    };
+  };
 */
 
  # boot.kernelParams = [ "mem_sleep_default=deep" "zfs.zfs_arc_max=12884901888" "boot.shell_on_fail" /* "resume=/dev/disk/by-uuid/50ee6795-a53f-f245-a3d0-cfabbfb81097" "resume_offset=933263" */ ];
@@ -224,9 +215,6 @@ services = {
   aria2 = { enable = true; downloadDir = "/Volume/@Storage/Downloads";
             rpcSecretFile = "/Volume/@Storage/Downloads/aria2-rpc-token.txt"; };
   gpm.enable = true;
-  udisks2.enable = true;
-  gvfs.enable = true;
-  devmon.enable = true;
 
   thermald.enable = true;
   auto-cpufreq.enable = true;
@@ -237,14 +225,6 @@ services = {
   xserver = {
   enable = true;
   xkb.layout = "us";
-  displayManager = {
-  # Enable the GNOME Desktop Environment.
-    gdm = { enable = false; wayland = true; autoSuspend = true; };
-    };
-  desktopManager = {
-    gnome.enable = false;
-  };
-  };
   displayManager.autoLogin = { enable = true; user = userSettings.username; };
   spice-vdagentd.enable = true ;
   pipewire = {
@@ -265,9 +245,12 @@ services = {
     };
   };
 };
-console.useXkbConfig = true;
+  console.useXkbConfig = true;
 
-# Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+  logrotate.checkConfig = false;
+  #logrotate is disabled due to an error during build
+
+};
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -289,29 +272,7 @@ security = {
   polkit.enable = true;
   };
 
-/*
-  ## MySQL server
-  services.mysql.enable = true ;
-  services.mysql.package = pkgs.mysql80;     #pkgs.mariadb;
-  services.longview.mysqlUser = "youssef";
-  services.longview.mysqlPassword = "123456";
-*/
 
-  /*
-  users.mysql.enable = true ;
-  users.mysql.user = "youssef";
-  users.mysql.passwordFile = "/etc/mysql.password";
-  #users.mysql.nss = import ./mysql-nss.cfg;
-*/
-
-/*
-  services.mysql.replication.role = "master";
-  services.mysql.replication.serverId = 1 ;
-  services.mysql.replication.masterUser = "youssef";
-  services.mysql.replication.masterHost = "Snowyfrank";
-  services.mysql.replication.masterPassword = "123456";
-  services.mysql.replication.slaveHost = "wanky";
-*/
 
 systemd = {
   /*
@@ -375,18 +336,11 @@ systemd = {
  # Allow unfree packages
   nixpkgs = { config = { allowUnfree = true; allowBroken = true; }; };
 
-  services.logrotate.checkConfig = false; #logrotate is disabled due to an error during buildnixpkgs.config.allowUnfree = true;
-
-
-
-  /*
-   nixpkgs.config.permittedInsecurePackages = [
-   "xen-4.15.1"
-   "openssl-1.1.1w"
-   "openssl-1.1.1u"
+  nixpkgs.config.permittedInsecurePackages = [
+#     "xen-4.15.1"
+#     "openssl-1.1.1w"
+#     "openssl-1.1.1u"
   ];
-  */
-
 
   # Enable flatpak support
   services.flatpak.enable = true;
@@ -445,8 +399,6 @@ programs = {
   command-not-found.enable = false;
   miriway.enable = false;
 
-  direnv = { enable = true; loadInNixShell = true; nix-direnv.enable = true; };
-
   firefox = {
     enable = true;
     package = pkgs-stable.floorp;
@@ -457,15 +409,7 @@ programs = {
     };
   };
   kdeconnect = { enable = true; /* package = pkgs.plasma5Packages.kdeconnect-kde; */ };
-  /*
-  fish = { enable = true;
-           vendor = { completions.enable = true;
-                    functions.enable = true;
-                    config.enable = true;
-                    };
-           useBabelfish = true;
-        };
-  */
+#   singularity = {enable=true; package=pkgs.apptainer; enableFakeroot=true; enableSuid=true; };
   gnome-disks.enable = true;
   };
 
@@ -504,16 +448,6 @@ programs = {
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

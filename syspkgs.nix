@@ -1,5 +1,5 @@
 
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, ... }:
+{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, userSettings, ... }:
 let
 pkglists={
   UnStable = with pkgs; [
@@ -10,6 +10,8 @@ pkglists={
       git
       cryptsetup
       home-manager
+      devbox
+      fh
   #   thorium-avx
   #     fish
   #     babelfish
@@ -17,7 +19,6 @@ pkglists={
       appstream
       appstream-glib
       haskellPackages.nix-tree
-      firejail
       /*
       nix-top
       nix-doc
@@ -37,8 +38,6 @@ pkglists={
       appimage-run
       appimagekit
       libappimage
-
-      distrobox
       gnome.gnome-disk-utility
       gparted
       duperemove
@@ -111,7 +110,7 @@ in {
 #         systemPackages = (systemSettings.profile).system.packages;
 #         homePackages = (systemSettings.profile).home.packages;
 #         };
-users.packages = ((with pkgs; []) ++ (with pkgs-stable;[]); # User packages (same as home manager packages ) but configured by the system owner (root)
+# users.${userSettings.username}.packages = ((with pkgs; []) ++ (with pkgs-stable;[])); # User packages (same as home manager packages ) but configured by the system owner (root)
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";

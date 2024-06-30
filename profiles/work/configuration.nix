@@ -225,6 +225,7 @@ services = {
   xserver = {
   enable = true;
   xkb.layout = "us";
+  };
   displayManager.autoLogin = { enable = true; user = userSettings.username; };
   spice-vdagentd.enable = true ;
   pipewire = {
@@ -244,14 +245,11 @@ services = {
       Labvol = { path = "/Volume"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky Main Volume"; };
     };
   };
-};
-  console.useXkbConfig = true;
 
   logrotate.checkConfig = false;
   #logrotate is disabled due to an error during build
-
 };
-
+  console.useXkbConfig = true;
   # Enable CUPS to print documents.
   services.printing.enable = true;
   # Enable sound with pipewire.

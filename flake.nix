@@ -1,14 +1,7 @@
 {
   description = "Flake of Snowyfrank";
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, nixpkgs-r2211, nixpkgs-python, nix-data, emacs-pin-nixpkgs, kdenlive-pin-nixpkgs,
-  fh,
-  fleek, blincus, disko, vscode, ytdlp-gui,
-  nix-gui, nixos-hardware, plasma-manager,
-                     home-manager, nix-doom-emacs, nix-straight, stylix, blocklist-hosts,
-                     hyprland-plugins, rust-overlay, org-nursery, org-yaap, org-side-tree,
-                     org-timeblock, phscroll,
-snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowflakeos-module-manager, nixos-conf-editor, nix-software-center, ...}:
+  outputs = inputs@{ self,...}:
 
     let
 
@@ -57,9 +50,9 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
 
       # create patched nixpkgs
       nixpkgs-patched =
-        (import nixpkgs { system = systemSettings.system; }).applyPatches {
+        (import inputs.nixpkgs { system = systemSettings.system; }).applyPatches {
           name = "nixpkgs-patched";
-          src = nixpkgs;
+          src = inputs.nixpkgs;
           patches = [ ./patches/emacs-no-version-check.patch ];
         };
 
@@ -71,12 +64,12 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
           allowUnfreePredicate = (_: true);
         };
         overlays = [
-          rust-overlay.overlays.default
-          ytdlp-gui.overlay
+          inputs.rust-overlay.overlays.default
+          inputs.ytdlp-gui.overlay
           ];
       };
 
-      pkgs-stable = import nixpkgs-stable {
+      pkgs-stable = import inputs.nixpkgs-stable {
         system = systemSettings.system;
         config = {
           allowUnfree = true;
@@ -84,24 +77,33 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
         };
       };
 
-      pkgs-r2211 = import nixpkgs-r2211 {
+      pkgs-r2311 = import inputs.nixpkgs-r2311 {
         system = systemSettings.system;
           config.allowUnfree = true;
       };
 
-      pkgs-emacs = import emacs-pin-nixpkgs {
+      pkgs-r2211 = import inputs.nixpkgs-r2211 {
+        system = systemSettings.system;
+          config.allowUnfree = true;
+      };
+
+      pkgs-emacs = import inputs.emacs-pin-nixpkgs {
         system = systemSettings.system;
       };
 
-      pkgs-kdenlive = import kdenlive-pin-nixpkgs {
+      pkgs-kdenlive = import inputs.kdenlive-pin-nixpkgs {
         system = systemSettings.system;
       };
 
 
 
       # configure lib
-      lib = nixpkgs.lib;
-
+      lib = inputs.nixpkgs.lib;
+      home-manager = (if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+             then
+               inputs.home-manager-stable
+             else
+               inputs.home-manager-unstable);
       # Systems that can run tests:
       supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
 
@@ -114,7 +116,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
 
       modules = [
          {system = systemSettings.system ; }
-         { environment.systemPackages = [ fh.packages.x86_64-linux.default ]; }
+         { environment.systemPackages = [ inputs.fh.packages.x86_64-linux.default ]; }
 
          # ... the rest of your modules here ...
          #./configuration.nix
@@ -131,11 +133,11 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
               snowfall-thaw.overlay
               snowfall-dotbox.overlay
           ]; }
-];
+      ];
     in {
       outputs.pkgSettings = import ./pkgs.nix ;
       homeConfigurations = {
-        user = home-manager.lib.homeManagerConfiguration {
+        user = inputs.home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)
@@ -149,15 +151,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
             inherit pkgs-kdenlive;
             inherit systemSettings;
             inherit userSettings;
-            inherit (inputs) nix-doom-emacs;
-            inherit (inputs) org-nursery;
-            inherit (inputs) org-yaap;
-            inherit (inputs) org-side-tree;
-            inherit (inputs) org-timeblock;
-            inherit (inputs) phscroll;
-            #inherit (inputs) nix-flatpak;
-            inherit (inputs) stylix;
-            inherit (inputs) hyprland-plugins;
+            inherit inputs;
           };
         };
       };
@@ -175,8 +169,7 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
             inherit pkgs-stable;
             inherit systemSettings;
             inherit userSettings;
-            inherit (inputs) stylix;
-            inherit (inputs) blocklist-hosts;
+            inherit inputs;
           };
 
         };
@@ -204,9 +197,10 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
     };
 
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
-    nixpkgs-stable.url = "nixpkgs/nixos-23.11";
+    nixpkgs.url = "nixpkgs/nixos-unstable"; #"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
+    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+    nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
     nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
 
@@ -248,14 +242,19 @@ snowfall-lib, snowfall-dotbox, snowfall-flake, snowfall-thaw, snowflakeos, snowf
     #plasma-manager.url = "github:pjones/plasma-manager";
     plasma-manager.url = "github:mcdonc/plasma-manager/enable-look-and-feel-settings";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-manager.inputs.home-manager.follows = "home-manager";
+    plasma-manager.inputs.home-manager.follows = "home-manager-unstable";
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
     emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
     kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
 
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager-unstable.url = "github:nix-community/home-manager/master";
+    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager-stable.url = "github:nix-community/home-manager/release-23.11";
+    home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
+
+
 
     nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
     nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";

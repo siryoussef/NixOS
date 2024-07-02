@@ -13,7 +13,7 @@
     };
 
     bash = {
-      enableCompletion = true;
+      completion.enable = true;
       enableLsColors = true;
       blesh.enable = true;
       undistractMe = {enable = true; playSound = true; timeout= 21; };

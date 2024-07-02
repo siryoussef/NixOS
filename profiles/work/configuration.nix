@@ -11,7 +11,6 @@
       ../../system/hardware/kernel.nix # Kernel config
       ../../system/hardware/power.nix # Power management
       ../../system/hardware/time.nix # Network time sync
-      ../../system/hardware/opengl.nix
       ../../system/hardware/printing.nix
       ../../system/hardware/bluetooth.nix
       (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
@@ -212,7 +211,7 @@ services = {
 };
   autosuspend.enable = true;
   blueman.enable = true;
-  aria2 = { enable = true; downloadDir = "/Volume/@Storage/Downloads";
+  aria2 = { enable = true; settings.dir = "/Volume/@Storage/Downloads";
             rpcSecretFile = "/Volume/@Storage/Downloads/aria2-rpc-token.txt"; };
   gpm.enable = true;
 

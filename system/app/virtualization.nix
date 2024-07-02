@@ -30,15 +30,15 @@
       };
     virtualbox = {
       host = {
-        enable = true;
-        enableKvm = true;
+        enable = false;
+        enableKvm = false;
         enableExtensionPack = true; #unfree
         addNetworkInterface = false;
         enableWebService = true;
         enableHardening = false;
         };
   #VirtualBox guest
-      guest = { enable = false; seamless = true; draganddrop = true; clipboard = true ; };
+      guest = { enable = false; seamless = true; dragAndDrop = true; clipboard = true ; };
     };
     kvmgt.enable = true;
 

@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-kdenlive, nix-doom-emacs, /*stylix,*/ userSettings, ... }:
+{ config, pkgs, pkgs-kdenlive,/* nix-doom-emacs, stylix,*/ userSettings,inputs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -9,7 +9,7 @@
   programs.home-manager.enable = true;
 
   imports = [
-              (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then nix-doom-emacs.hmModule else null)
+              (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               stylix.homeManagerModules.stylix
              # (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config

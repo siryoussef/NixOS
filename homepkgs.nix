@@ -2,8 +2,8 @@
 {home.packages = (with pkgs; [
     # Core
     zsh
-    alacritty
-    qutebrowser
+#     alacritty
+#     qutebrowser
     microsoft-edge
     dmenu
     rofi
@@ -71,14 +71,14 @@
   */
     # Media
     gimp
-    pinta
+#     pinta
     krita
     inkscape
-    musikcube
+#     musikcube
     vlc
-    mpv
+#     mpv
     yt-dlp
-    blender
+#     blender
     /*
     cura
     curaengine_stable
@@ -117,8 +117,8 @@
     mediainfo-gui
     audio-recorder
     gnome.cheese
-    ardour
-    tenacity
+#     ardour
+#     tenacity
 
     # Various dev packages
     texinfo

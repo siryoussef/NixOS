@@ -44,6 +44,8 @@ imports = [
         };
   spice-vdagentd.enable = true ;
   gnome.gnome-keyring.enable = true;
+  gnome.gnome-online-accounts.enable = true;
+  gvfs.enable = true;
   };
 
   # Security
@@ -61,16 +63,24 @@ environment = {
   plasma5.excludePackages = [ /* pkgs.elisa */ ];
   plasma6.excludePackages = [ /* pkgs.elisa */ ];
   systemPackages = ((with pkgs; [
+    gnome.gnome-control-center
     plasma-hud
     kate
    # plasma-browser-integration
-
     libreoffice-qt
     krusader
     kcalc
+    gsignondPlugins.oauth
+    pcmanfm-qt
+
 
   ]) ++ (with pkgs;(with kdePackages;[
     kio-gdrive
+    kio-fuse
+    kio-admin
+    kio-extras
+    kio-zeroconf
+    audiocd-kio
     plasma5support
     kcmutils
     sddm-kcm
@@ -82,6 +92,11 @@ environment = {
     kdenlive
     neochat
     appstream-qt
+    kmailtransport
+    kaccounts-providers
+    kaccounts-integration
+    signond
+    signon-kwallet-extension
 #    kdevelop
 #    kdev-python
   ])) ++ (with pkgs;(with libsForQt5;[

@@ -32,6 +32,7 @@ pkglists={
       ntfs3g
       pacman
       apt
+      junest
       aptly
       pmutils
       ## Appimage support (currently broken due to " error : execve : No such file or directory ")

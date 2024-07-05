@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, userSettings, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -14,12 +14,45 @@
     virter
     lxqt.qtermwidget
     ];
-
+  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers/storage.conf"; device = "/etc/containers/storage.conf"; options = ["bind"]; fsType="auto";};
   virtualisation = {
+    containers = {
+      enable = true;
+      ociSeccompBpfHook.enable = true;
+      storage.settings = {
+        storage = {
+          driver = "overlay";
+          graphroot = "/Volume/@Pot/Containers/OCI/Storage"; #"/var/lib/containers/storage";
+          runroot = "/Volume/@tmp/Containers/OCI/Runtime";   #"/run/containers/storage";
+        };
+      };
+      registries = {
+        block = [];
+        insecure = [];
+        search = ["docker.io" "quay.io" "ghcr.io" "public.ecr.aws"];
+      };
+      containersConf = {
+        cniPlugins = [pkgs.cni-plugins];
+        settings = {
+#           "network_backend" = "netavark";
+        };
+      };
+    };
+    cri-o = {
+      enable=true;
+      storageDriver = "overlay";
+
+      };
+    oci-containers = {
+      backend = "podman";
+      containers = {};
+      };
+    containerd = {enable =true; };
+
     waydroid.enable = true;
     lxd.enable = true;
-    podman.enable = true;
-    oci-containers.backend = "podman";
+    podman = {enable = true; dockerCompat = true; dockerSocket.enable = true;};
+
     vmware.host = { enable = false; package = pkgs.vmware-workstation; };
     lxc.lxcfs.enable = true;
     xen = {
@@ -68,7 +101,6 @@
  /*
  #  hypervGuest.enable = true;
     oci-containers.containers = { };
-    oci-containers.backend = "podman";
     containerd.enable = true;
     kvmgt.enable = false;
   # LXD is a daemon that uses LXC (however uses only it's container creation but manages containers differently)
@@ -94,9 +126,6 @@
 
     xen.enable = false;
 
-    podman.enable = true;
-    podman.dockerCompat = true;
-
     programs.virt-manager.enable = true;
     libvirtd.enable = true;
 
@@ -113,7 +142,6 @@
     "virbr0"
     ];
     libvirtd.onBoot = "start";
-
 */
   };
   boot.extraModulePackages = with config.boot.kernelPackages; [ /* virtualbox */ ]; # virtuabox not building error

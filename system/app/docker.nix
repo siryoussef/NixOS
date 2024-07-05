@@ -12,7 +12,7 @@ assert lib.asserts.assertOneOf "storageDriver" storageDriver [
 
 {
   virtualisation.docker = {
-    enable = true;
+    enable = false;
     enableOnBoot = true;
     storageDriver = storageDriver;
     autoPrune.enable = true;

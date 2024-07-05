@@ -272,42 +272,25 @@ security = {
 
 
 systemd = {
-  /*
-  services."getty@tty1".enable = false;
-  services."autovt@tty1".enable = false;
-  services.create-swapfile.enable = false;
-  services.create-swapfile.script = ''
-        ${pkgs.coreutils}/bin/truncate -s 0 /swap/swapfile
-        ${pkgs.e2fsprogs}/bin/chattr +C /swap/swapfile
-        ${pkgs.btrfs-progs}/bin/btrfs property set /swap/swapfile compression none
-      '';
-  services.create-swapfile.serviceConfig.Type = "oneshot";
-  services.create-swapfile.wantedBy = [ "swap-swapfile.swap" ];
-*/
-
 /*
   services = {
 #     "getty@tty1".enable = false;
 #     "autovt@tty1".enable = false;
 
-    create-swapfile = {
-      enable = false;
+    create-swapfile = { enable = false;
       serviceConfig.Type = "oneshot";
       wantedBy = [ "swap-swapfile.swap" ];
       script = ''
-      ${pkgs.coreutils}/bin/truncate -s 0 /swap/swapfile
-      ${pkgs.e2fsprogs}/bin/chattr +C /swap/swapfile
-      ${pkgs.btrfs-progs}/bin/btrfs property set /swap/swapfile compression none
-    '';
+        ${pkgs.coreutils}/bin/truncate -s 0 /swap/swapfile
+        ${pkgs.e2fsprogs}/bin/chattr +C /swap/swapfile
+        ${pkgs.btrfs-progs}/bin/btrfs property set /swap/swapfile compression none
+      '';
     };
   };
   */
 
-  oomd = { enable = true;
-           enableRootSlice = false;
-  #        enableUserSlices = false;
+  oomd = { enable = true; enableRootSlice = false; enableUserSlices = false;
            enableSystemSlice = false; };
-
 
   network.wait-online.enable = false;
   enableUnifiedCgroupHierarchy = pkgs.lib.mkForce  true;
@@ -317,8 +300,6 @@ systemd = {
 
   #nixpkgs.overlays = [ (import ./overlays.nix) ];
 
-
-
 /*
   nixpkgs.config.packageOverrides = pkgs: {
     nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
@@ -327,7 +308,6 @@ systemd = {
   };
 
 */
-
 
  #Controversial
  # Allow unfree packages

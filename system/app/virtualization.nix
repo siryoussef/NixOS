@@ -1,8 +1,8 @@
-{ config, pkgs, userSettings, ... }:
-
-{
+{ pkgs, userSettings, ... }:
+  let
+  OCIDirectory = "/Shared/@Containers/OCI";
+  in {
   environment.systemPackages = with pkgs; [
-    virt-manager
 #     virtualbox
     distrobox
     virt-viewer
@@ -13,8 +13,37 @@
     #virt-manager-qt (causes an error)
     virter
     lxqt.qtermwidget
+
+    pods
+    podman-tui
+    podman-desktop
+    podman-compose
+    dive
     ];
-  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers/storage.conf"; device = "/etc/containers/storage.conf"; options = ["bind"]; fsType="auto";};
+
+  programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
+
+
+
+
+  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers/storage.conf"; device = "/etc/containers/storage.conf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
+  systemd = {
+    services.OCIperm = {
+      script = "chown -R "+userSettings.username+":users /Shared/@Containers/OCI";
+      wantedBy = [ "multi-user.target" ]; # starts after login
+      after = [/*"podman.service" "containerd.service" "Shared-\x40Containers-OCI-Storage-overlay.mount" "local-fs.target" "multi-user.target" "graphical.target"*/];
+    #     description = "...";
+    };
+    timers.OCIperm = {
+            wantedBy = ["timers.target"];
+            timerConfig = {
+#             OnCalendar = "daily";
+            OnBootSec = "1m";
+            Unit = "OCIperm.service";
+            };
+    };
+  };
+
   virtualisation = {
     containers = {
       enable = true;
@@ -22,8 +51,8 @@
       storage.settings = {
         storage = {
           driver = "overlay";
-          graphroot = "/Volume/@Pot/Containers/OCI/Storage"; #"/var/lib/containers/storage";
-          runroot = "/Volume/@tmp/Containers/OCI/Runtime";   #"/run/containers/storage";
+          graphroot = OCIDirectory + "/Storage"; #"/var/lib/containers/storage";
+          runroot = OCIDirectory + "/Runtime";   #"/run/containers/storage";
         };
       };
       registries = {
@@ -49,12 +78,29 @@
       };
     containerd = {enable =true; };
 
+# LXD is a daemon that uses LXC (however uses only it's container creation but manages containers differently)
+    lxc = { enable = true; lxcfs.enable = true;};
+    lxd = { enable = true; # conflicts with distrobox as it disables cgroubsv2
+      agent.enable = true;
+      ui.enable = true;
+      recommendedSysctlSettings = true;
+      zfsSupport = true;
+      };
+
+    hypervGuest.enable = false;
+
+    spiceUSBRedirection.enable = true;
+
     waydroid.enable = true;
-    lxd.enable = true;
-    podman = {enable = true; dockerCompat = true; dockerSocket.enable = true;};
+    anbox = {enable = false; image = pkgs.anbox.image;};
+
+    podman = {enable = true;
+      dockerCompat = true;
+      dockerSocket.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+      };
 
     vmware.host = { enable = false; package = pkgs.vmware-workstation; };
-    lxc.lxcfs.enable = true;
     xen = {
       enable = false;
       package = pkgs.xen;
@@ -81,11 +127,16 @@
       onBoot = "start";
       parallelShutdown = 3;
       onShutdown = "suspend";
-      qemu.runAsRoot = false;
-    };
+      qemu = {
+        runAsRoot = false;
+        swtpm.enable = true;
+        ovmf.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+        };
+        };
+
     multipass.enable = false;
-    appvm.enable = false;
-    appvm.user = "youssef";
+    appvm = { enable = false; user = userSettings.username;};
     vswitch.enable = false;
 
 /*
@@ -99,50 +150,11 @@
 */
 
  /*
- #  hypervGuest.enable = true;
-    oci-containers.containers = { };
-    containerd.enable = true;
-    kvmgt.enable = false;
-  # LXD is a daemon that uses LXC (however uses only it's container creation but manages containers differently)
-    lxc.enable = true;
-    lxc.lxcfs.enable = true;
-    lxd.enable = false; # conflicts with distrobox as it disables cgroubsv2
-    lxd.agent.enable = true;
-    lxd.ui.enable = true;
-    lxd.recommendedSysctlSettings = true;
-    lxd.zfsSupport = true;
+
   #learn how to make overrides
   #self: super: {lxd = super.lxd.override = { systemd.enableUnifiedCgroupHierarchy = true } };
 
-    containers.enable = true;
-    spiceUSBRedirection.enable = true;
-
-
-  #Anbox
-    anbox.enable = false;
-    anbox.image = pkgs.anbox.image;
-
-  # waydroid.image = "https://waydroid.dev/images/android-12-arm64.img.xz";
-
-    xen.enable = false;
-
-    programs.virt-manager.enable = true;
-    libvirtd.enable = true;
-
-    libvirtd.qemu = {
-    swtpm.enable = true;
-    ovmf.enable = true;
-    ovmf.packages = [ pkgs.OVMFFull.fd ];
-    };
-
-
-    libvirtd.onShutdown = "suspend";
-    libvirtd.parallelShutdown = 3;
-    libvirtd.allowedBridges = [
-    "virbr0"
-    ];
-    libvirtd.onBoot = "start";
 */
   };
-  boot.extraModulePackages = with config.boot.kernelPackages; [ /* virtualbox */ ]; # virtuabox not building error
+#   boot.extraModulePackages = with config.boot.kernelPackages; [  virtualbox  ]; # virtuabox not building error
 }

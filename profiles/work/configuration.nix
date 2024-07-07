@@ -347,7 +347,6 @@ nix = {
 programs = {
   firejail.enable = true;
   captive-browser.enable = false;
-  virt-manager = { enable = true; package = pkgs.virt-manager; };
   partition-manager.enable = true;
   git.enable = true;
   appimage = { enable = true; binfmt = true;};

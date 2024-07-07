@@ -1,6 +1,6 @@
 { pkgs, userSettings, ... }:
   let
-  OCIDirectory = "/Shared/@Containers/OCI";
+  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
   environment.systemPackages = with pkgs; [
 #     virtualbox
@@ -26,23 +26,23 @@
 
 
 
-  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers/storage.conf"; device = "/etc/containers/storage.conf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
-  systemd = {
-    services.OCIperm = {
-      script = "chown -R "+userSettings.username+":users /Shared/@Containers/OCI";
-      wantedBy = [ "multi-user.target" ]; # starts after login
-      after = [/*"podman.service" "containerd.service" "Shared-\x40Containers-OCI-Storage-overlay.mount" "local-fs.target" "multi-user.target" "graphical.target"*/];
-    #     description = "...";
-    };
-    timers.OCIperm = {
-            wantedBy = ["timers.target"];
-            timerConfig = {
-#             OnCalendar = "daily";
-            OnBootSec = "1m";
-            Unit = "OCIperm.service";
-            };
-    };
-  };
+  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
+#   systemd = {
+#     services.OCIperm = {
+#       script = "chown -R "+userSettings.username+":users /Shared/@Containers/OCI";
+#       wantedBy = [ "multi-user.target" ]; # starts after login
+#       after = [/*"podman.service" "containerd.service" "Shared-\x40Containers-OCI-Storage-overlay.mount" "local-fs.target" "multi-user.target" "graphical.target"*/];
+#     #     description = "...";
+#     };
+#     timers.OCIperm = {
+#             wantedBy = ["timers.target"];
+#             timerConfig = {
+# #             OnCalendar = "daily";
+#             OnBootSec = "1m";
+#             Unit = "OCIperm.service";
+#             };
+#     };
+#   };
 
   virtualisation = {
     containers = {

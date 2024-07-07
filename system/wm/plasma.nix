@@ -104,10 +104,10 @@ environment = {
     discover
     ]))
 
-  ++ (with pkgs-stable;(with kdePackages;[ kdevelop kdev-python ]))
+#   ++ (with pkgs-stable;(with kdePackages;[ kdevelop kdev-python ]))
 
   ++ (with pkgs;(with libsForQt5;[
-#     kdevelop kdev-python
+    kdevelop kdev-python
     qmltermwidget
     libkomparediff2
     ]))) ;

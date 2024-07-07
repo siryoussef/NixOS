@@ -36,7 +36,6 @@
   boot = {
   # Kernel modules
   #kernel.enable = true;
-    kernelModules = [ "i2c-dev" "i2c-piix4" "cpufreq_powersave" ];
     plymouth.enable = true;
     enableContainers = true;
     hardwareScan = true;
@@ -58,9 +57,7 @@
           default = 0;
 #         timeoutStyle = "menu";
           useOSProber = true;
-        devices = [
-  "/dev/disk/by-label/BEFI"
-];
+        devices = [ "/dev/disk/by-label/Boot" ];
           };
   };
 };

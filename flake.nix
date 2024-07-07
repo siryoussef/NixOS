@@ -29,10 +29,10 @@
         wmType = if (wm == "hyprland") || (wm == "plasma") then "wayland" else "x11";
         browser = "floorp"; # Default browser; must select one from ./user/app/browser/
         defaultRoamDir = "Personal.p"; # Default org roam directory relative to ~/Org
-        term = "alacritty"; # Default terminal command;
+        term = "konsole"; # Default terminal command;
         font = "Intel One Mono"; # Selected font
         fontPkg = pkgs.intel-one-mono; # Font package
-        editor = "emacsclient"; # Default editor;
+        editor =  "kate";  #"emacsclient"; # Default editor;
         # editor spawning translator
         # generates a command that can be used to spawn editor inside a gui
         # EDITOR and TERM session variables must be set in home.nix or other module
@@ -206,25 +206,27 @@
 
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
 
-    snowfall-lib.url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
-    snowfall-lib.inputs.nixpkgs.follows = "nixpkgs";
-    snowfall-flake.url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
-    snowfall-flake.inputs.nixpkgs.follows = "nixpkgs" ;
+    snowfall-lib = {
+      url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs"; };
+    snowfall-flake = {
+      url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs" ;};
     snowfall-thaw = {
-            url = "https://flakehub.com/f/snowfallorg/thaw/*.tar.gz";
-            inputs.nixpkgs.follows = "nixpkgs";
+      url = "https://flakehub.com/f/snowfallorg/thaw/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
         };
     snowfall-dotbox = {
-            url = "https://flakehub.com/f/snowfallorg/dotbox/*.tar.gz";
-            inputs.nixpkgs.follows = "nixpkgs";
+      url = "https://flakehub.com/f/snowfallorg/dotbox/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
 		};
     snowflakeos.url = "github:siryoussef/snowflakeos-modules";
     snowflakeos-module-manager = {
       url = "github:snowfallorg/snowflakeos-module-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       };
-    nix-data.url = "github:snowfallorg/nix-data";
-    nix-data.inputs.nixpkgs.follows = "nixpkgs" ;
+    nix-data={url = "github:snowfallorg/nix-data";
+      inputs.nixpkgs.follows = "nixpkgs" ;};
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";
@@ -240,70 +242,45 @@
     nix-gui.url = "github:nix-gui/nix-gui";
     compat.url = "github:balsoft/nixos-fhs-compat";
     #plasma-manager.url = "github:pjones/plasma-manager";
-    plasma-manager.url = "github:mcdonc/plasma-manager/enable-look-and-feel-settings";
-    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-manager.inputs.home-manager.follows = "home-manager-unstable";
+    plasma-manager = {
+      url = "github:mcdonc/plasma-manager/enable-look-and-feel-settings";
+      inputs={
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager-unstable";
+        };
+      };
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
     emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
     kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
 
-    home-manager-unstable.url = "github:nix-community/home-manager/master";
-    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager-unstable = {url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";};
 
-    home-manager-stable.url = "github:nix-community/home-manager/release-23.11";
-    home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
+    home-manager-stable= {
+      url = "github:nix-community/home-manager/release-23.11";
+      inputs.nixpkgs.follows = "nixpkgs-stable";};
 
+    nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs";
+      inputs={nixpkgs.follows = "nixpkgs";
+        nix-straight.follows = "nix-straight"; }; };
 
-
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-    nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";
-
-    nix-straight.url = "github:librephoenix/nix-straight.el/pgtk-patch";
-    nix-straight.flake = false;
-    nix-doom-emacs.inputs.nix-straight.follows = "nix-straight";
-
-    eaf = {
-      url = "github:emacs-eaf/emacs-application-framework";
-      flake = false;
-    };
-    eaf-browser = {
-      url = "github:emacs-eaf/eaf-browser";
-      flake = false;
-    };
-    org-nursery = {
-      url = "github:chrisbarrett/nursery";
-      flake = false;
-    };
-    org-yaap = {
-      url = "gitlab:tygrdev/org-yaap";
-      flake = false;
-    };
-    org-side-tree = {
-      url = "github:localauthor/org-side-tree";
-      flake = false;
-    };
-    org-timeblock = {
-      url = "github:ichernyshovvv/org-timeblock";
-      flake = false;
-    };
-    phscroll = {
-      url = "github:misohena/phscroll";
-      flake = false;
-    };
+    nix-straight={url = "github:librephoenix/nix-straight.el/pgtk-patch";
+      flake = false;};
+    eaf = {url = "github:emacs-eaf/emacs-application-framework";flake = false;};
+    eaf-browser = {url = "github:emacs-eaf/eaf-browser"; flake = false;};
+    org-nursery = {url = "github:chrisbarrett/nursery"; flake = false;};
+    org-yaap = {url = "gitlab:tygrdev/org-yaap"; flake = false;};
+    org-side-tree = {url = "github:localauthor/org-side-tree"; flake = false;};
+    org-timeblock = {url = "github:ichernyshovvv/org-timeblock";flake = false;};
+    phscroll = {url = "github:misohena/phscroll"; flake = false;};
 
     stylix.url = "github:danth/stylix";
 
     rust-overlay.url = "github:oxalica/rust-overlay";
 
-    blocklist-hosts = {
-      url = "github:StevenBlack/hosts";
-      flake = false;
-    };
+    blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      flake = false;
-    };
+    hyprland-plugins = {url = "github:hyprwm/hyprland-plugins"; flake = false;};
   };
   }

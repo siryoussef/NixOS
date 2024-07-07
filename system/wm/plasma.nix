@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-stable, font, plasma-manager, ... }:
+{ config, lib, pkgs, pkgs-stable, ... }:
 {
 imports = [
             ./wayland.nix
@@ -65,22 +65,25 @@ environment = {
   systemPackages = ((with pkgs; [
     gnome.gnome-control-center
     plasma-hud
-    kate
+    systemdgenie
    # plasma-browser-integration
     libreoffice-qt
     krusader
-    kcalc
     gsignondPlugins.oauth
     pcmanfm-qt
 
-
   ]) ++ (with pkgs;(with kdePackages;[
+    kate
+    kcalc
+    kio
     kio-gdrive
     kio-fuse
     kio-admin
     kio-extras
+    kio-extras-kf5
     kio-zeroconf
     audiocd-kio
+    kdesdk-kio
     plasma5support
     kcmutils
     sddm-kcm
@@ -97,13 +100,16 @@ environment = {
     kaccounts-integration
     signond
     signon-kwallet-extension
-#    kdevelop
-#    kdev-python
-  ])) ++ (with pkgs;(with libsForQt5;[
-    kdevelop
-    kdev-python
-    qmltermwidget
+#     kdevelop kdev-python
     discover
+    ]))
+
+  ++ (with pkgs-stable;(with kdePackages;[ kdevelop kdev-python ]))
+
+  ++ (with pkgs;(with libsForQt5;[
+#     kdevelop kdev-python
+    qmltermwidget
+    libkomparediff2
     ]))) ;
 };
 

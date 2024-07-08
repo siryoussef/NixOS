@@ -202,13 +202,13 @@ services = {
   onlyoffice.enable = false;
   logind.hibernateKey = "hibernate";
   autosuspend.settings = {
-  enable = true;
+  enable = false;
   interval = 21;
   idle_time = 70;
 };
-  autosuspend.enable = true;
+  autosuspend.enable = false;
   blueman.enable = true;
-  aria2 = { enable = true; settings.dir = "/Volume/@Storage/Downloads";
+  aria2 = { enable = false; settings.dir = "/Volume/@Storage/Downloads";
             rpcSecretFile = "/Volume/@Storage/Downloads/aria2-rpc-token.txt"; };
   gpm.enable = true;
 

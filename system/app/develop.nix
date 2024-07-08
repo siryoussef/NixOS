@@ -20,7 +20,7 @@ environment.systemPackages= ((with pkgs;[
     ])));
 services = {
     jupyterhub = {
-    enable = true;
+    enable = false;
     jupyterlabEnv = pkgs.python3.withPackages (p: with p; [
         jupyterhub
         jupyterlab

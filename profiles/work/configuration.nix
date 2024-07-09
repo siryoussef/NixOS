@@ -17,7 +17,7 @@
       ../../system/app/appsupport.nix
       ../../system/app/distrobox.nix
       ../../system/app/virtualization.nix
-      ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit userSettings lib;} )
+      ( import ../../system/app/OCIstorageDriver.nix {storageDriver = null; inherit pkgs userSettings lib;} )
       ../../system/app/syncthing.nix
       ../../system/security/doas.nix
       ../../system/security/gpg.nix
@@ -107,7 +107,7 @@ users = {
     isNormalUser = true;
     description = userSettings.name;
     extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
-    packages = with pkgs; [];
+#     packages = with pkgs; [];
     uid = 1000;
   };
   extraGroups.vboxusers.members = [ userSettings.username ];

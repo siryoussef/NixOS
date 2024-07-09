@@ -1,4 +1,4 @@
- { config, pkgs, pkgs-stable, pkgs-r2211, userSettings, systemSettings, ... }:
+ { pkgs, pkgs-stable, pkgs-r2211, userSettings, systemSettings, ... }:
 {
 environment.systemPackages= ((with pkgs;[
     jupyter-all

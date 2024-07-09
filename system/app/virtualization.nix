@@ -1,7 +1,8 @@
-{ pkgs, userSettings, ... }:
-  let
-  OCIDirectory = "/Shared/@Containers/OCI/Root";
+{ pkgs, userSettings, systemSettings, ... }:
+
+  let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
+  users.users.${userSettings.username}.extraGroups = [ "docker" "podman" ];
   environment.systemPackages = with pkgs; [
 #     virtualbox
     distrobox
@@ -22,9 +23,6 @@
     ];
 
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
-
-
-
 
   fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
 #   systemd = {
@@ -69,16 +67,38 @@
     };
     cri-o = {
       enable=true;
-      storageDriver = "overlay";
-
       };
     oci-containers = {
       backend = "podman";
-      containers = {};
+      containers = {
+        "genpod"={
+          image="docker.io/gentoo/stage3:latest";
+#           imageFile=""; workdir = "";
+          user=userSettings.username+":users";
+          hostname=systemSettings.hostname;
+          volumes=["Volume:/Volume"];
+#           login={
+#             username = userSettings.username;
+#             registry = "";
+#             password-file ="";
+#             };
+          };
+        };
       };
     containerd = {enable =true; };
 
-# LXD is a daemon that uses LXC (however uses only it's container creation but manages containers differently)
+    podman = {enable = true;
+      dockerCompat = true;
+      dockerSocket.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+      autoPrune.enable = true;
+      };
+    docker = {enable = false;
+      enableOnBoot = true;
+      autoPrune.enable = true;
+      };
+
+    # LXD is a daemon that uses LXC (however uses only it's container creation but manages containers differently)
     lxc = { enable = true; lxcfs.enable = true;};
     lxd = { enable = true; # conflicts with distrobox as it disables cgroubsv2
       agent.enable = true;
@@ -94,11 +114,7 @@
     waydroid.enable = true;
     anbox = {enable = false; image = pkgs.anbox.image;};
 
-    podman = {enable = true;
-      dockerCompat = true;
-      dockerSocket.enable = true;
-      defaultNetwork.settings.dns_enabled = true;
-      };
+
 
     vmware.host = { enable = false; package = pkgs.vmware-workstation; };
     xen = {
@@ -158,3 +174,4 @@
   };
 #   boot.extraModulePackages = with config.boot.kernelPackages; [  virtualbox  ]; # virtuabox not building error
 }
+

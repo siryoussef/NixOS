@@ -5,6 +5,7 @@
 #     alacritty
 #     qutebrowser
     microsoft-edge
+    tor-browser
     dmenu
     rofi
     git
@@ -76,6 +77,7 @@
     inkscape
 #     musikcube
     vlc
+    vlc-bittorrent
 #     mpv
     yt-dlp
 #     blender

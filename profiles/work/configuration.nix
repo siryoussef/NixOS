@@ -17,7 +17,7 @@
       ../../system/app/appsupport.nix
       ../../system/app/distrobox.nix
       ../../system/app/virtualization.nix
-      ( import ../../system/app/OCIstorageDriver.nix {storageDriver = null; inherit pkgs userSettings lib;} )
+      ( import ../../system/app/OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
       ../../system/app/syncthing.nix
       ../../system/security/doas.nix
       ../../system/security/gpg.nix

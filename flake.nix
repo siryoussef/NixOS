@@ -137,7 +137,7 @@
     in {
       outputs.pkgSettings = import ./pkgs.nix ;
       homeConfigurations = {
-        user = inputs.home-manager.lib.homeManagerConfiguration {
+        user = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)

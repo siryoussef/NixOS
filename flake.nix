@@ -66,6 +66,7 @@
         overlays = [
           inputs.rust-overlay.overlays.default
           inputs.ytdlp-gui.overlay
+          inputs.snowfall-flake.overlays.default
           ];
       };
 
@@ -114,28 +115,19 @@
       nixpkgsFor =
         forAllSystems (system: import inputs.nixpkgs { inherit system; });
 
-      modules = [
-         {system = systemSettings.system ; }
-         { environment.systemPackages = [ inputs.fh.packages.x86_64-linux.default ]; }
-
-         # ... the rest of your modules here ...
-         #./configuration.nix
-
-         inputs.snowflake.nixosModules.snowflake
-         inputs.nix-data.nixosModules.nix-data
-         inputs.snowfall-lib.mkFlake {
-            inherit inputs;
-            src = ./.;
-
-            overlays = with inputs; [
-            # To make this flake's packages available in your NixPkgs package set.
-              snowfall-flake.overlay
-              snowfall-thaw.overlay
-              snowfall-dotbox.overlay
-          ]; }
-      ];
+#       modules = [ ];
     in {
-      outputs.pkgSettings = import ./pkgs.nix ;
+#       outputs.pkgSettings = import ./pkgs.nix ;
+#       outputs = inputs : inputs.snowfall-lib.mkFlake {
+#             inherit inputs;
+#             src = ./.;
+#
+#             overlays =  with inputs;[
+#             # To make this flake's packages available in your NixPkgs package set.
+#               snowfall-flake.overlay
+#               snowfall-thaw.overlays
+#               snowfall-dotbox.overlays
+#           ]; };
       homeConfigurations = {
         user = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -156,13 +148,39 @@
         };
       };
       nixosConfigurations = {
-
-        Snowyfrank = lib.nixosSystem {
+        ${systemSettings.hostname} = lib.nixosSystem {
           system = systemSettings.system;
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/configuration.nix")
-            #(./snowflakeos.nix)
+            { nixpkgs.overlays = with inputs;[nur.overlay ]; }
+            ({ pkgs, config, ... }:
+              let
+                nur-no-pkgs = import inputs.nur {
+                  nurpkgs = import nixpkgs-patched { system = systemSettings.system; };
+                };
+              in {
+                imports = [ nur-no-pkgs.repos.iopq.modules.xraya  ];
+                services.xraya.enable = true;
+                environment.systemPackages = (map (pkg : pkg.packages.${systemSettings.system}.default) (with inputs; [
+                fh
+                snowfall-flake
+                nixos-conf-editor
+#                 snow
+#                 nix-software-center
+                thorium-browser
+                ]))
+                ++ [pkgs.nur.repos.ataraxiasjel.waydroid-script ]
+                /*++ (map (pkg : pkg.defaultPackage.${systemSettings.system}) (with inputs; [thorium-browser] ))*/;
+                programs.nix-data = {
+                  systemconfig =  (./. + "/profiles" + ("/" + systemSettings.profile) + "/configuration.nix");
+                  flake = "/etc/nixos/flake.nix";
+                  flakearg = systemSettings.hostname;
+                };
+                })
+          inputs.nix-data.nixosModules.nix-data
+#             (./snowflakeos.nix)
+
           ]; # load configuration.nix from selected PROFILE
           specialArgs = {
             # pass config variables from above
@@ -205,6 +223,7 @@
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
 
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
+    nur.url = "github:nix-community/NUR";
 
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
@@ -237,9 +256,11 @@
     disko.url = "https://flakehub.com/f/nix-community/disko/1.3.0.tar.gz";
     vscode.url = "https://flakehub.com/f/catppuccin/vscode/3.11.1.tar.gz";
     ytdlp-gui.url = "https://flakehub.com/f/BKSalman/ytdlp-gui/1.0.1.tar.gz";
-    NixVirt.url = "https://flakehub.com/f/AshleyYakeley/NixVirt/0.2.0.tar.gz";
-
-    nix-gui.url = "github:nix-gui/nix-gui";
+    NixVirt = {
+      url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+      };
+    nix-gui={url = "github:nix-gui/nix-gui";};
     compat.url = "github:balsoft/nixos-fhs-compat";
     #plasma-manager.url = "github:pjones/plasma-manager";
     plasma-manager = {
@@ -282,5 +303,7 @@
     blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
     hyprland-plugins = {url = "github:hyprwm/hyprland-plugins"; flake = false;};
+    thorium-browser.url = #"github:siryoussef/nix-thorium";
+    "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
   };
   }

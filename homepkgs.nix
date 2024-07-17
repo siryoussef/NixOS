@@ -18,7 +18,7 @@
     whatsapp-for-linux
     beeper
     vscode-fhs
-    betterbird-unwrapped
+#     betterbird-unwrapped
     #vscodium-fhs
     github-desktop
     obsidian

@@ -6,8 +6,16 @@
   home.username = userSettings.username;
   home.homeDirectory = "/home/"+userSettings.username;
 
-  programs.home-manager.enable = true;
+  programs = { home-manager.enable = true;
+    thunderbird={ enable = true;
+      package = pkgs.betterbird;
+      profiles = {
+        "Main"={
+          isDefault = true;
+          withExternalGnupg = true;
 
+
+  };};};};
   imports = [
 #               (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               stylix.homeManagerModules.stylix

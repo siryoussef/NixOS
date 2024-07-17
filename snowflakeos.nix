@@ -1,19 +1,25 @@
-{ config, pkgs, inputs, system, lib, ... }:
+{ pkgs, inputs, systemSettings, ... }:
 {
-  environment.systemPackages = [
-    inputs.nix-software-center.packages.${system}.nix-software-center
-    inputs.nixos-conf-editor.packages.${system}.nixos-conf-editor
-    inputs.snow.packages.${system}.snow
-    pkgs.git # For rebuiling with github flakes
+#   environment.systemPackages = with inputs; [
+# #   nix-software-center.packages.${systemSettings.system}.nix-software-center
+#     nixos-conf-editor.packages.${systemSettings.system}.default
+# #   snow.packages.${systemSettings.system}.snow
+  environment.systemPackages = (map (pkg : pkg.packages.${systemSettings.system}.default) (with inputs; [
+                fh
+                snowfall-flake
+                nixos-conf-editor
+#                 snow
+                nix-sofware-center
+                ])) ;
   ];
-  /*
+
   programs.nix-data = {
-    systemconfig = "/etc/nixos/configuration.nix";
+    systemconfig =  (./. + "/profiles" + ("/" + systemSettings.profile) + "/configuration.nix");
     flake = "/etc/nixos/flake.nix";
     flakearg = "Snowyfrank";
   };
-*/
-  snowflakeos.gnome.enable = false;
-  snowflakeos.osInfo.enable = true;
+
+#   snowflakeos.gnome.enable = false;
+#   snowflakeos.osInfo.enable = true;
 
   }

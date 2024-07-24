@@ -46,6 +46,8 @@ imports = [
   gnome.gnome-keyring.enable = true;
   gnome.gnome-online-accounts.enable = true;
   gvfs.enable = true;
+  devmon.enable = true;
+  udisks2.enable = true;
   };
 
   # Security
@@ -72,7 +74,7 @@ environment = {
     gsignondPlugins.oauth
     pcmanfm-qt
 
-  ]) ++ (with pkgs;(with kdePackages;[
+  ]) ++ (with pkgs; (with kdePackages;[
     kate
     kcalc
     kio

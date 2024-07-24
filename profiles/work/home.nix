@@ -3,14 +3,25 @@
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = userSettings.username;
-  home.homeDirectory = "/home/"+userSettings.username;
+  home = {
+    username = userSettings.username;
+    homeDirectory = "/home/"+userSettings.username;
+    stateVersion = "24.05"; # Please read the comment before changing.
+#   packages = homePackages;
+    sessionVariables = {
+      EDITOR = userSettings.editor;
+      SPAWNEDITOR = userSettings.spawnEditor;
+      TERM = userSettings.term;
+      BROWSER = userSettings.browser;
+      };
+    };
 
   programs = { home-manager.enable = true;
     thunderbird={ enable = true;
-      package = pkgs.betterbird;
+      package = pkgs.betterbird-unwrapped;
       profiles = {
         "Main"={
+
           isDefault = true;
           withExternalGnupg = true;
 
@@ -19,7 +30,7 @@
   imports = [
 #               (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               stylix.homeManagerModules.stylix
-             # (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
+             (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
               ../../user/bin/phoenix.nix # My nix command wrapper
@@ -41,9 +52,6 @@
 
             ];
 
-  home.stateVersion = "24.05"; # Please read the comment before changing.
-
-  #home.packages = homePackages;
 
   services.syncthing.enable = true;
 
@@ -73,16 +81,14 @@ xdg = {
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
 
-  home.sessionVariables = {
-    EDITOR = userSettings.editor;
-    SPAWNEDITOR = userSettings.spawnEditor;
-    TERM = userSettings.term;
-    BROWSER = userSettings.browser;
-  };
-  #   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian"];
-  nixpkgs.config.permittedInsecurePackages = [
-                "electron-27.3.11"
-              ];
+
+
+  nixpkgs = {
+    config= {
+      allowUnfree = true;
+      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian"];
+      permittedInsecurePackages = [ "electron-27.3.11"];
+      };
+    };
 
 }

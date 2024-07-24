@@ -342,6 +342,7 @@ nix = {
 };
 
 programs = {
+  udevil.enable = true;
   firejail.enable = true;
   captive-browser.enable = false;
   partition-manager.enable = true;

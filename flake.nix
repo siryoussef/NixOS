@@ -129,11 +129,12 @@
 #               snowfall-dotbox.overlays
 #           ]; };
       homeConfigurations = {
-        user = home-manager.lib.homeManagerConfiguration {
+        ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/home.nix") # load home.nix from selected PROFILE
+              inputs.plasma-manager.homeManagerModules.plasma-manager
             #  inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
           extraSpecialArgs = {
@@ -168,10 +169,10 @@
                 nixos-conf-editor
 #                 snow
 #                 nix-software-center
-                thorium-browser
+#                 thorium-browser
                 ]))
                 ++ [pkgs.nur.repos.ataraxiasjel.waydroid-script ]
-                /*++ (map (pkg : pkg.defaultPackage.${systemSettings.system}) (with inputs; [thorium-browser] ))*/;
+                ++ (map (pkg : pkg.defaultPackage.${systemSettings.system}) (with inputs; [thorium-browser] ));
                 programs.nix-data = {
                   systemconfig =  (./. + "/profiles" + ("/" + systemSettings.profile) + "/configuration.nix");
                   flake = "/etc/nixos/flake.nix";
@@ -264,7 +265,7 @@
     compat.url = "github:balsoft/nixos-fhs-compat";
     #plasma-manager.url = "github:pjones/plasma-manager";
     plasma-manager = {
-      url = "github:mcdonc/plasma-manager/enable-look-and-feel-settings";
+      url = "github:nix-community/plasma-manager";#"github:mcdonc/plasma-manager/enable-look-and-feel-settings";
       inputs={
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager-unstable";
@@ -304,6 +305,7 @@
 
     hyprland-plugins = {url = "github:hyprwm/hyprland-plugins"; flake = false;};
     thorium-browser.url = #"github:siryoussef/nix-thorium";
-    "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
+#     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
+      "git+file:///Shared/@Repo/thorium-browser-nix/";
   };
   }

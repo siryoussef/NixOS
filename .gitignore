@@ -1,0 +1,4 @@
+
+*.txt
+/secrets
+.snowflakeos.nix.kate-swp

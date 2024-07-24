@@ -154,6 +154,7 @@
           modules = [
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/configuration.nix")
+            inputs.agenix.nixosModules.default
             { nixpkgs.overlays = with inputs;[nur.overlay ]; }
             ({ pkgs, config, ... }:
               let
@@ -165,6 +166,7 @@
                 services.xraya.enable = true;
                 environment.systemPackages = (map (pkg : pkg.packages.${systemSettings.system}.default) (with inputs; [
                 fh
+                agenix
                 snowfall-flake
                 nixos-conf-editor
 #                 snow
@@ -307,5 +309,11 @@
     thorium-browser.url = #"github:siryoussef/nix-thorium";
 #     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
       "git+file:///Shared/@Repo/thorium-browser-nix/";
+    agenix={
+      url = "github:ryantm/agenix";
+      # optional, not necessary for the module
+      inputs.nixpkgs.follows = "nixpkgs";
+      };
+
   };
   }

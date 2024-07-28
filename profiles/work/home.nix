@@ -86,8 +86,13 @@ xdg = {
   nixpkgs = {
     config= {
       allowUnfree = true;
-      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian"];
+      allowBroken = false;
+      allowUnsupportedSystem = false;
+      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian" ];
       permittedInsecurePackages = [ "electron-27.3.11"];
+      enableParallelBuildingByDefault = false;
+      checkMeta = true;
+      warnUndeclaredOptions = false;
       };
     };
 

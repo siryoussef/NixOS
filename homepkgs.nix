@@ -5,6 +5,7 @@
 #     alacritty
 #     qutebrowser
     microsoft-edge
+    teams-for-linux
     tor-browser
     dmenu
     rofi

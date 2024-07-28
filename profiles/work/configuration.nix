@@ -103,10 +103,11 @@
   # User account
 users = {
   defaultUserShell = pkgs.fish;
+  mutableUsers = false;
   users.${userSettings.username} = {
     isNormalUser = true;
     description = userSettings.name;
-     hashedpasswordFile = "../../secrets/youpass.txt" ;
+    hashedPasswordFile = ("/etc/nixos/secrets/youpass.age") ;
     extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
 #     packages = with pkgs; [];
     uid = 1000;

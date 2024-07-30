@@ -17,7 +17,8 @@
       };
   };
   fileSystems = {
-    "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
+#     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
+    "/" = { device = "none"; fsType = "tmpfs"; };
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; };
     "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
     "/home" = { device = "/dev/disk/by-label/NHome"; fsType = "btrfs"; };

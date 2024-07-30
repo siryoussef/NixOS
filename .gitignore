@@ -1,4 +1,8 @@
 
 *.txt
-/secrets
+# /secrets
 .snowflakeos.nix.kate-swp
+secrets/secrets.nix
+secrets/youpass.age
+secrets/networks.nix
+secrets/hashedPassword.nix

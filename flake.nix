@@ -53,7 +53,7 @@
         (import inputs.nixpkgs { system = systemSettings.system; }).applyPatches {
           name = "nixpkgs-patched";
           src = inputs.nixpkgs;
-          patches = [ ./patches/emacs-no-version-check.patch ];
+          patches = [ /*./patches/emacs-no-version-check.patch */];
         };
 
       # configure pkgs
@@ -306,9 +306,9 @@
     blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
     hyprland-plugins = {url = "github:hyprwm/hyprland-plugins"; flake = false;};
-    thorium-browser.url = #"github:siryoussef/nix-thorium";
+    thorium-browser.url = "github:siryoussef/thorium-browser-nix";
 #     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
-      "git+file:///Shared/@Repo/thorium-browser-nix/";
+#       "git+file:///Shared/@Repo/thorium-browser-nix/";
     agenix={
       url = "github:ryantm/agenix";
       # optional, not necessary for the module

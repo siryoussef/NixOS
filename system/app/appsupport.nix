@@ -2,7 +2,19 @@
 
 {
   # Need some flatpaks
-  services.flatpak.enable = true;
+  services.flatpak={
+    enable = true; update.onActivation = true;
+    remotes = [
+      {name = "flathub-beta"; location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";}
+      {name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo";}
+      ];
+    uninstallUnmanaged = false;
+    packages = [
+      { appId = "com.brave.Browser"; origin = "flathub";  }
+  #     "com.obsproject.Studio"
+  #     "im.riot.Riot"
+    ];
+    };
   xdg.portal.enable = true;
 
   boot.binfmt.registrations.appimage = {

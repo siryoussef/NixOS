@@ -18,7 +18,8 @@
   };
   fileSystems = {
 #     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
-    "/" = { device = "none"; fsType = "tmpfs"; };
+    "/" = { device = "none"; fsType = "tmpfs"; }; # In-RAM-Root
+
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; };
     "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
     "/home" = { device = "/dev/disk/by-label/NHome"; fsType = "btrfs"; };
@@ -35,6 +36,9 @@
    "GitRepos"= { mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
    "logseq"= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq"; fsType = "none"; options = [ "bind" ]; };
    "Note"= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
+  ##Flatpak bind mounts
+   "/var/lib/flatpak" ={device = "/Shared/flatpak/system";fsType = "none"; options = [ "bind" ];};
+   "User-flatpaks"={mountPoint="/home/"+userSettings.username+"/.local/shared/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
   };
 
 

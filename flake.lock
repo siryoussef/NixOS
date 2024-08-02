@@ -1683,6 +1683,22 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1711997201,
+        "narHash": "sha256-J71xzQlVYsjagA4AsVwRazhBh2rZrPpKvxTgs6UzL7c=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "b76fa31346db7fc958a9898f3c594696ca71c4fd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "ref": "v0.4.1",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nix-gui": {
       "inputs": {
         "flake-utils": "flake-utils_4",
@@ -2547,6 +2563,7 @@
         "kdenlive-pin-nixpkgs": "kdenlive-pin-nixpkgs",
         "nix-data": "nix-data",
         "nix-doom-emacs": "nix-doom-emacs",
+        "nix-flatpak": "nix-flatpak",
         "nix-gui": "nix-gui",
         "nix-software-center": "nix-software-center",
         "nix-straight": "nix-straight",

@@ -135,7 +135,7 @@
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/home.nix") # load home.nix from selected PROFILE
               inputs.plasma-manager.homeManagerModules.plasma-manager
-            #  inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
+              inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
           extraSpecialArgs = {
             # pass config variables from above
@@ -155,6 +155,7 @@
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/configuration.nix")
             inputs.agenix.nixosModules.default
+            inputs.nix-flatpak.nixosModules.nix-flatpak
             { nixpkgs.overlays = with inputs;[nur.overlay ]; }
             ({ pkgs, config, ... }:
               let
@@ -227,6 +228,8 @@
 
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     nur.url = "github:nix-community/NUR";
+
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
 
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";

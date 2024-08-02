@@ -1,6 +1,6 @@
 
 *.txt
-# /secrets
+/secrets
 .snowflakeos.nix.kate-swp
 secrets/youpass.age
 secrets/networks.nix

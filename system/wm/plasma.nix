@@ -91,6 +91,7 @@ environment = {
     sddm-kcm
     kcmutils
     flatpak-kcm
+    kpipewire
     plymouth-kcm
     plasma-disks
     filelight

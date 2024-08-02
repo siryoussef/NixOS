@@ -28,17 +28,18 @@
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
   ## Bind Mounts
     "/etc/nixos" = { device = "/Shared/@Repo/NixOS"; fsType = "none"; options = [ "bind" ]; };
-    "Downloads" = { mountPoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume"]; };
-    "floorp"= { mountPoint = "/home/"+userSettings.username+"/.floorp"; device = "/Shared/@Home/.floorp"; fsType = "none"; options = [ "bind" ]; };
-    "vscode"= { mountPoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
-    "fish"={ mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
-    "Github"={ mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
-   "GitRepos"= { mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
-   "logseq"= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq"; fsType = "none"; options = [ "bind" ]; };
-   "Note"= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
+    Downloads = { mountPoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume"]; };
+    floorp= { mountPoint = "/home/"+userSettings.username+"/.floorp"; device = "/Shared/@Home/.floorp"; fsType = "none"; options = [ "bind" ]; };
+    vscode= { mountPoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
+    fish={ mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
+    Github={ mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
+   GitRepos= { mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
+   logseq= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq"; fsType = "none"; options = [ "bind" ]; };
+   Note= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
   ##Flatpak bind mounts
    "/var/lib/flatpak" ={device = "/Shared/flatpak/system";fsType = "none"; options = [ "bind" ];};
-   "User-flatpaks"={mountPoint="/home/"+userSettings.username+"/.local/shared/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
+   User-flatpaks ={mountPoint="/home/"+userSettings.username+"/.local/shared/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
+   FlatpakAppData ={mountPoint="/home/"+userSettings.username+"/.var/app";device = "/Shared/flatpak/appdata";fsType = "none"; options = [ "bind" ];};
   };
 
 

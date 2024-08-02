@@ -15,7 +15,6 @@
       ../../system/hardware/bluetooth.nix
       (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
       ../../system/app/appsupport.nix
-      ../../system/app/distrobox.nix
       ../../system/app/virtualization.nix
       ( import ../../system/app/OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
       ../../system/app/syncthing.nix

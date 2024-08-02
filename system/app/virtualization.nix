@@ -6,6 +6,7 @@
   environment.systemPackages = with pkgs; [
 #     virtualbox
     distrobox
+    boxbuddy
     virt-viewer
     spice spice-gtk
     spice-protocol

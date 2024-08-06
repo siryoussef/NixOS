@@ -7,7 +7,9 @@
     remotes = [
       {name = "flathub-beta"; location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";}
       {name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo";}
+      {name = "gnome-nightly"; location = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";}
       ];
+
     uninstallUnmanaged = false;
     packages = [
       { appId = "com.brave.Browser"; origin = "flathub";  }

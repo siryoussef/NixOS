@@ -38,7 +38,7 @@
    Note= { mountPoint = "/home/"+userSettings.username+"/Note"; device = "/Shared/@Repo/Note"; fsType = "none"; options = [ "bind" ]; };
   ##Flatpak bind mounts
    "/var/lib/flatpak" ={device = "/Shared/flatpak/system";fsType = "none"; options = [ "bind" ];};
-   User-flatpaks ={mountPoint="/home/"+userSettings.username+"/.local/shared/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
+   User-flatpaks ={mountPoint="/home/"+userSettings.username+"/.local/share/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
    FlatpakAppData ={mountPoint="/home/"+userSettings.username+"/.var/app";device = "/Shared/flatpak/appdata";fsType = "none"; options = [ "bind" ];};
   };
 

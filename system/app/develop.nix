@@ -66,35 +66,37 @@ services = {
 
   jupyter.package = pkgs-stable.python311Packages.notebook;
 
-  /*
+
     mysql = {
         enable = true ;
-        package = pkgs.mysql80;     #pkgs.mariadb;
+        package = /*pkgs.mysql80;*/  pkgs.mariadb;
+#         bindAddress = "0.0.0.0";
+        initialScript = ./mysqlscript.txt;
+       /*
         replication = {
             role = "master";
             serverId = 1 ;
-            masterUser = "youssef";
-            masterHost = "Snowyfrank";
+            masterUser = userSettings.username;
+            masterHost = systemSettings.hostname;
             masterPassword = "123456";
             slaveHost = "wanky";
             };
+            */
     };
-*/
+
 };
 
 /*
   ## MySQL server
 
-  services.longview.mysqlUser = "youssef";
+  services.longview.mysqlUser = userSettings.username;
   services.longview.mysqlPassword = "123456";
 */
 
-  /*
-  users.mysql.enable = true ;
-  users.mysql.user = "youssef";
-  users.mysql.passwordFile = "/etc/mysql.password";
-  #users.mysql.nss = import ./mysql-nss.cfg;
-*/
+
+#   users.mysql={enable = true ; user = userSettings.username; passwordFile = "${toString ../../secrets/mysql.age}";};
+#   users.mysql.nss = import ./mysql-nss.cfg;
+
 
 
   /*[

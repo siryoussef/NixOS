@@ -3,6 +3,10 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, pkgs-stable, lib, systemSettings, userSettings, ... }:
+let
+pkglists = import ../../pkglists.nix;
+syspkgs = pkglists.system;
+in
 {
   imports =
     [ #../../configuration.nix
@@ -97,7 +101,7 @@ environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
   # List packages installed in system profile.
-  #systemPackages = with pkgslists;(UnStable++Stable);
+#   systemPackages = syspkgs; #(with (pkglists.system);(UnStable++Stable));
   };
   fonts.fontDir.enable = true;
   xdg.portal = {
@@ -363,7 +367,8 @@ programs = {
     };
   };
   kdeconnect = { enable = true; /* package = pkgs.plasma5Packages.kdeconnect-kde; */ };
-#   singularity = {enable=true; package=pkgs.apptainer; enableFakeroot=true; enableSuid=true; };
+  droidcam.enable=true;
+  singularity = {enable=false; package=pkgs.apptainer; enableFakeroot=true; enableSuid=true; };
   gnome-disks.enable = true;
   };
 

@@ -65,6 +65,23 @@
                inputs.home-manager-stable
              else
                inputs.home-manager-unstable);
+      unifiedHome = {
+        extraSpecialArgs = {
+          inherit pkgs-stable;
+          inherit pkgs-emacs;
+          inherit pkgs-kdenlive;
+          inherit systemSettings;
+          inherit userSettings;
+          inherit inputs;
+          };
+        modules = [
+            (./. + "/profiles" + ("/" + systemSettings.profile)
+              + "/home.nix") # load home.nix from selected PROFILE
+              (_:map (pkg: (_: inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "nix-data" "plasma-manager"])
+#               inputs.plasma-manager.homeManagerModules.plasma-manager
+#               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
+          ];
+        };
       # Systems that can run tests:
       supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
 
@@ -91,31 +108,39 @@
       homeConfigurations = {
         ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = [
-            (./. + "/profiles" + ("/" + systemSettings.profile)
-              + "/home.nix") # load home.nix from selected PROFILE
-              inputs.plasma-manager.homeManagerModules.plasma-manager
-              inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
-          ];
-          extraSpecialArgs = {
-            # pass config variables from above
-            inherit pkgs-stable;
-            inherit pkgs-emacs;
-            inherit pkgs-kdenlive;
-            inherit systemSettings;
-            inherit userSettings;
-            inherit inputs;
-          };
-        };
-      };
+          modules = _:unifiedHome.modules;
+          extraSpecialArgs = unifiedHome.extraSpecialArgs;
+      }; };
+
       nixosConfigurations = {
         ${systemSettings.hostname} = lib.nixosSystem {
           system = systemSettings.system;
-          modules = [
+          modules =
+            [home-manager.nixosModules.home-manager
+             {home-manager={
+#                 users.${userSettings.username} = unifiedHome.modules; #import ./users/default/home.nix;
+                extraSpecialArgs = unifiedHome.extraSpecialArgs;
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+              };
+            }
+            ]++
+            (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["nix-flatpak" "nix-data" /*"home-manager"*/])
+          ++
+             (map(x: with x; (nixosModules.default)) (with inputs; [agenix /*home-manager*/]))
+#           ++
+#             (with inputs; [
+#             agenix.nixosModules.default
+#             nix-flatpak.nixosModules.nix-flatpak
+#             nix-data.nixosModules.nix-data
+#             (./snowflakeos.nix)
+#             ])
+            ++
+            [
             (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/configuration.nix")
-            inputs.agenix.nixosModules.default
-            inputs.nix-flatpak.nixosModules.nix-flatpak
+
             { nixpkgs.overlays = with inputs;[nur.overlay ]; }
             ({ pkgs, config, ... }:
               let
@@ -125,7 +150,7 @@
               in {
                 imports = [ nur-no-pkgs.repos.iopq.modules.xraya  ];
                 services.xraya.enable = true;
-                environment.systemPackages = (map (pkg : pkg.packages.${systemSettings.system}.default) (with inputs; [
+                environment.systemPackages = (map (pkg: (with pkg;(packages.${systemSettings.system}.default)))  (with inputs;[
                 fh
                 agenix
                 snowfall-flake
@@ -142,8 +167,7 @@
                   flakearg = systemSettings.hostname;
                 };
                 })
-          inputs.nix-data.nixosModules.nix-data
-#             (./snowflakeos.nix)
+
 
           ]; # load configuration.nix from selected PROFILE
           specialArgs = {

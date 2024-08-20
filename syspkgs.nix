@@ -18,6 +18,7 @@ pkglists={
   #     bashInteractiveFHS
       appstream
       appstream-glib
+      droidcam
       haskellPackages.nix-tree
       /*
       nix-top

@@ -1,5 +1,117 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, ... }:
-{home.packages = (with pkgs; [
+#  {pkgs, pkgs-stable,...}:
+let
+pkgs = pkgs;
+pkgs-stable = pkgs-stable;
+in rec {
+#     pkgs=pkgs;
+#     pkgs-stable = pkgs-stable;
+
+    system= (with pkgs; [
+            vim
+            wget
+            nodePackages.bash-language-server
+            zsh
+            git
+            cryptsetup
+            home-manager
+            devbox
+            fh
+        #   thorium-avx
+        #     fish
+        #     babelfish
+        #     bashInteractiveFHS
+            appstream
+            appstream-glib
+            droidcam
+            haskellPackages.nix-tree
+            /*
+            nix-top
+            nix-doc
+            nix-init
+            nix-diff
+            nix-melt
+            nix-index
+            nix-ld
+            */
+            nixpkgs-lint-community
+            ntfs3g
+            pacman
+            apt
+            junest
+            aptly
+            pmutils
+            ## Appimage support (currently broken due to " error : execve : No such file or directory ")
+            appimage-run
+            appimagekit
+            libappimage
+            gnome.gnome-disk-utility
+            gparted
+            duperemove
+            btrfs-assistant
+            snapper-gui
+            #librewolf
+            #chromium
+            protonvpn-gui
+            pitch-black
+            vlc
+            smplayer
+            obs-studio
+            handbrake
+
+            rclone
+            rclone-browser
+            syncthing
+            syncthing-tray
+            grsync
+            unrar
+
+            wsysmon
+            tldr
+            kcalc
+            unetbootin
+            ventoy-full
+            woeusb-ng
+            wimboot
+            gnome.adwaita-icon-theme
+
+            wget
+            gcc
+
+            refind
+            gnu-efi
+            beefi
+            ectool
+
+        #     # support both 32- and 64-bit applications
+        #     wineWowPackages.stable
+        #     # support 32-bit only
+        #     wine
+        #     # support 64-bit only
+        #     (wine.override { wineBuild = "wine64"; })
+        #     # support 64-bit only
+        #     wine64
+        #     # wine-staging (version with experimental features)
+        #     wineWowPackages.staging
+        #     # winetricks (all versions)
+        #     winetricks
+
+            # native wayland support (unstable)
+            wineWowPackages.waylandFull
+            # xen
+            # grub2_xen
+
+            ])
+    ++ ( with pkgs; [
+#     floorp
+    efibootmgr
+    efitools
+    efivar
+    exfatprogs
+    tmsu
+    ]);
+
+
+         home = (with pkgs-stable; [
     # Core
     zsh
 #     alacritty
@@ -130,7 +242,9 @@
     libffi zlib
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
-  ++ (with pkgs-stable;[
-#   floorp
-  ]));
+  /*++ (with pkgs-stable;[
+   floorp
+  ])*/);
+
   }
+

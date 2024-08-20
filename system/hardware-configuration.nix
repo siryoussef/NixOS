@@ -28,10 +28,16 @@
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
   ## Bind Mounts
     "/etc/nixos" = { device = "/Shared/@Repo/NixOS"; fsType = "none"; options = [ "bind" ]; };
+    "/etc/nixos/secrets" = { device = "/Shared/@Repo/NixOS-private"; fsType = "none"; options = [ "bind" ]; };
     Downloads = { mountPoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume"]; };
     floorp= { mountPoint = "/home/"+userSettings.username+"/.floorp"; device = "/Shared/@Home/.floorp"; fsType = "none"; options = [ "bind" ]; };
     vscode= { mountPoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
     fish={ mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
+    kate={ mountPoint = "/home/"+userSettings.username+"/.local/share/kate"; device = "/Shared/@Home/kate"; fsType = "none"; options = [ "bind" ]; };
+    onlyoffice={ mountPoint = "/home/"+userSettings.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice"; fsType = "none"; options = [ "bind" ]; };
+    whatsapp-for-linux={ mountPoint = "/home/"+userSettings.username+"/.local/share/whatsapp-for-linux"; device = "/Shared/@Home/whatsapp-for-linux"; fsType = "none"; options = [ "bind" ]; };
+    KotatogramDesktop={ mountPoint = "/home/"+userSettings.username+"/.local/share/KotatogramDesktop"; device = "/Shared/@Home/KotatogramDesktop"; fsType = "none"; options = [ "bind" ]; };
+
     Github={ mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop"; fsType = "none"; options = [ "bind" ]; };
    GitRepos= { mountPoint = "/home/"+userSettings.username+"/Documents/GitHub"; device = "/Shared/@Repo"; fsType = "none"; options = [ "bind" ]; };
    logseq= { mountPoint = "/home/"+userSettings.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq"; fsType = "none"; options = [ "bind" ]; };

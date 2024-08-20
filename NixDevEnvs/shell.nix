@@ -10,6 +10,11 @@ with pkgs;
 mkShell {
   name = "pip-env";
   buildInputs = with pythonPackages; [
+#     jupyterlab-git
+    jupyterlab-lsp
+    jupyterlab-widgets
+    jupyter-collaboration
+
     azure-cli
     kubectl
 
@@ -37,6 +42,12 @@ mkShell {
 #     ipython-sql
 #     sqlalchemy_1_4
 #     pymysql
+
+    imbalanced-learn
+    statsmodels
+
+    openpyxl
+    nltk
   ];
   venvDir = "venv3";
   src = null;

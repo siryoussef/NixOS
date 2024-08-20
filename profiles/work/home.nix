@@ -1,5 +1,8 @@
-{ config, pkgs, pkgs-kdenlive,/* nix-doom-emacs, stylix,inputs,*/ userSettings, lib, ... }:
-
+{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings,/* nix-doom-emacs, stylix,inputs,*/ userSettings, lib, ... }:
+let
+pkglists = import ../../pkglists.nix;
+homepkgs = pkglists.home;
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -7,7 +10,7 @@
     username = userSettings.username;
     homeDirectory = "/home/"+userSettings.username;
     stateVersion = "24.05"; # Please read the comment before changing.
-#   packages = homePackages;
+    packages = homepkgs;
     sessionVariables = {
       EDITOR = userSettings.editor;
       SPAWNEDITOR = userSettings.spawnEditor;
@@ -48,7 +51,7 @@
               ../../user/lang/godot/godot.nix # Game development
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure
               ../../user/hardware/bluetooth.nix # Bluetooth
-              ../../homepkgs.nix
+#               ../../homepkgs.nix
 
             ];
 

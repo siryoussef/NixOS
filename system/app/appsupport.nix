@@ -1,6 +1,26 @@
 { pkgs,... }:
 
-{
+let
+flatpakslist= (map(pkg:{appId = pkg; origin = "flathub";})[
+      "io.github._0xzer0x.qurancompanion"
+      "io.github.flattool.Warehouse"
+      "org.spyder_ide.spyder"
+      "org.garudalinux.firedragon"
+      "org.jupyter.JupyterLab"
+      "page.codeberg.JakobDev.jdFlatpakSnapshot"
+      "org.sqlitebrowser.sqlitebrowser"
+      "com.github.tchx84.Flatseal"
+
+      ]) ++ (map(pkg:{appId = pkg; origin = "flathub-beta";})[
+      "org.signal.Signal"
+
+      ]) ++[
+      { appId = "com.brave.Browser"; origin = "flathub";  }
+#       { appId = "org.signal.Signal"; origin = "flathub-beta";}
+  #     "com.obsproject.Studio"
+  #     "im.riot.Riot"
+    ];
+    in {
   # Need some flatpaks
   services.flatpak={
     enable = true; update.onActivation = true;
@@ -10,12 +30,8 @@
       {name = "gnome-nightly"; location = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";}
       ];
 
-    uninstallUnmanaged = false;
-    packages = [
-      { appId = "com.brave.Browser"; origin = "flathub";  }
-  #     "com.obsproject.Studio"
-  #     "im.riot.Riot"
-    ];
+    uninstallUnmanaged = true;
+    packages = flatpakslist;
     };
   xdg.portal.enable = true;
 

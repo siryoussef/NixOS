@@ -2,3 +2,5 @@
 *.txt
 /secrets
 .snowflakeos.nix.kate-swp
+*.age
+/secrets

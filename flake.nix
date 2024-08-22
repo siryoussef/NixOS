@@ -120,6 +120,7 @@
              {home-manager={
 #                 users.${userSettings.username} = unifiedHome.modules; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
+                sharedModules = unifiedHome.modules;
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup";

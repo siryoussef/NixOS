@@ -3,10 +3,10 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, pkgs-stable, lib, systemSettings, userSettings, ... }:
-let
-pkglists = import ../../pkglists.nix;
-syspkgs = pkglists.system;
-in
+# let
+# pkglists = import ../../pkglists.nix;
+# syspkgs = pkglists.system;
+# in
 {
   imports =
     [ #../../configuration.nix
@@ -32,11 +32,11 @@ in
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
       ../../system/app/develop.nix
-      ../../syspkgs.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
-    ];
-
+      ../../syspkgs.nix
+#       ../../pkglists.nix
+];
 
   boot = {
   # Kernel modules

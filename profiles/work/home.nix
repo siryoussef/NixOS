@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings,/* nix-doom-emacs, stylix,inputs,*/ userSettings, lib, ... }:
+{ config, pkgs, /*pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, nix-doom-emacs, stylix,inputs,*/ userSettings, lib, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # homepkgs = pkglists.home;
@@ -37,10 +37,10 @@
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
               ../../user/bin/phoenix.nix # My nix command wrapper
-              ../../user/app/doom-emacs/doom.nix # My doom emacs config
+#               ../../user/app/doom-emacs/doom.nix # My doom emacs config
               ../../user/app/ranger/ranger.nix # My ranger file manager config
               ../../user/app/git/git.nix # My git config
-              ../../user/app/keepass/keepass.nix # My password manager
+#               ../../user/app/keepass/keepass.nix # My password manager
               (./. + "../../../user/app/browser"+("/"+userSettings.browser)+".nix") # My default browser selected from flake
               ../../user/app/virtualization/virtualization.nix # Virtual machines
               #../../user/app/AI/chat-gpt-retrieval-plugin.nix
@@ -48,11 +48,12 @@
               #../../user/app/flatpak/flatpak.nix # Flatpaks
               #../../user/style/stylix.nix # Styling and themes for my apps
               ../../user/lang/cc/cc.nix # C and C++ tools
-              ../../user/lang/godot/godot.nix # Game development
+#               ../../user/lang/godot/godot.nix # Game development
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure
               ../../user/hardware/bluetooth.nix # Bluetooth
-              ../../homepkgs.nix
+              ./homepkgs.nix
 #               ../../pkglists.nix
+
 
             ];
 
@@ -87,17 +88,18 @@ xdg = {
 
 
 
-  nixpkgs = {
-    config= {
-      allowUnfree = true;
-      allowBroken = false;
-      allowUnsupportedSystem = false;
-      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian" ];
-      permittedInsecurePackages = [ "electron-27.3.11"];
-      enableParallelBuildingByDefault = false;
-      checkMeta = true;
-      warnUndeclaredOptions = false;
-      };
-    };
 
+#   nixpkgs = if /*{home-manager,..}: home-manager.useGlobalPkgs == false*/ builtins.isFunction home-manager.lib.homeManagerConfiguration then {
+#     config= {
+#       allowUnfree = true;
+#       allowBroken = false;
+#       allowUnsupportedSystem = false;
+#       allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian" ];
+#       permittedInsecurePackages = [ "electron-27.3.11"];
+#       enableParallelBuildingByDefault = false;
+#       checkMeta = true;
+#       warnUndeclaredOptions = false;
+#       };
+#     } else null;
+#
 }

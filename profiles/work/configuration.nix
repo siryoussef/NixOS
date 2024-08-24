@@ -34,8 +34,9 @@
       ../../system/app/develop.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
-      ../../syspkgs.nix
+      ./syspkgs.nix
 #       ../../pkglists.nix
+      ./nixpkgs-options.nix
 ];
 
   boot = {
@@ -289,16 +290,6 @@ systemd = {
   };
 
 */
-
- #Controversial
- # Allow unfree packages
-  nixpkgs = { config = { allowUnfree = true; allowBroken = true; }; };
-
-  nixpkgs.config.permittedInsecurePackages = [
-#     "xen-4.15.1"
-#     "openssl-1.1.1w"
-#     "openssl-1.1.1u"
-  ];
 
   # Enable flatpak support
   services.flatpak.enable = true;

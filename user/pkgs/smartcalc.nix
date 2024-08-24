@@ -1,8 +1,8 @@
 { lib, pkgs, ... }:
 let
   rustPlatform = pkgs.makeRustPlatform {
-    cargo = pkgs.rust-bin.stable.latest.minimal;
-    rustc = pkgs.rust-bin.stable.latest.minimal;
+    cargo = pkgs.cargo;
+    rustc = pkgs.rustc;
   };
 in
 rustPlatform.buildRustPackage rec {

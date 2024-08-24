@@ -74,13 +74,20 @@
           inherit userSettings;
           inherit inputs;
           };
-        modules = [
-            (./. + "/profiles" + ("/" + systemSettings.profile)
-              + "/home.nix") # load home.nix from selected PROFILE
-              (_:map (pkg: (_: inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "nix-data" "plasma-manager"])
+        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager"])
+         ++ [
+#             (./. + "/profiles" + ("/" + systemSettings.profile)
+#               + "/home.nix") # load home.nix from selected PROFILE
+
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
+        nixpkgs = [(./. + "/profiles" + ("/" + systemSettings.profile)
+              + "/nixpkgs-options.nix")];
+
+        path = (./. + "/profiles" + ("/" + systemSettings.profile)
+              + "/home.nix");
+
         };
       # Systems that can run tests:
       supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
@@ -115,12 +122,12 @@
       nixosConfigurations = {
         ${systemSettings.hostname} = lib.nixosSystem {
           system = systemSettings.system;
-          modules =
+          modules = /*unifiedHome.modules ++*/
             [home-manager.nixosModules.home-manager
-             {home-manager={
-#                 users.${userSettings.username} = unifiedHome.modules; #import ./users/default/home.nix;
+             {home-manager= rec{
+                users.${userSettings.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
-                sharedModules = unifiedHome.modules;
+                sharedModules = if useGlobalPkgs == false then unifiedHome.modules++unifiedHome.nixpkgs else unifiedHome.modules;
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup";

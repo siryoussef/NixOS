@@ -46,6 +46,9 @@
    "/var/lib/flatpak" ={device = "/Shared/flatpak/system";fsType = "none"; options = [ "bind" ];};
    User-flatpaks ={mountPoint="/home/"+userSettings.username+"/.local/share/flatpak";device = "/Shared/flatpak/user";fsType = "none"; options = [ "bind" ];};
    FlatpakAppData ={mountPoint="/home/"+userSettings.username+"/.var/app";device = "/Shared/flatpak/appdata";fsType = "none"; options = [ "bind" ];};
+
+   waydroidData={ mountPoint = "/home/"+userSettings.username+"/.local/share/waydroid"; device = "/Shared/@Home/waydroid/waydroidData"; fsType = "none"; options = [ "bind" ]; };
+   waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = "/Shared/@Home/waydroid/waydroidSystem"; fsType = "none"; options = [ "bind" ]; };
   };
 
 

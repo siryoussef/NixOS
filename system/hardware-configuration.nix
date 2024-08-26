@@ -16,13 +16,13 @@
     loader = { grub.useOSProber = true; efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi
       };
   };
-  fileSystems = {
+  fileSystems = rec{
 #     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
     "/" = { device = "none"; fsType = "tmpfs"; }; # In-RAM-Root
 
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; };
     "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
-    "/home" = { device = "/dev/disk/by-label/NHome"; fsType = "btrfs"; };
+    "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
     "/Volume" = { device = "/dev/disk/by-label/Volume"; fsType = "auto"; };
     "/Shared" = { device = "/dev/disk/by-label/Shared"; fsType = "auto"; };
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
@@ -34,6 +34,7 @@
     vscode= { mountPoint = "/home/"+userSettings.username+"/.vscode"; device = "/Shared/@Home/.vscode"; fsType = "none"; options = [ "bind" ]; };
     fish={ mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish"; fsType = "none"; options = [ "bind" ]; };
     kate={ mountPoint = "/home/"+userSettings.username+"/.local/share/kate"; device = "/Shared/@Home/kate"; fsType = "none"; options = [ "bind" ]; };
+    kdevelop={ mountPoint = "/home/"+userSettings.username+"/.local/share/kdevelop"; device = "/Shared/@Home/kdevelop"; fsType = "none"; options = [ "bind" ]; };
     onlyoffice={ mountPoint = "/home/"+userSettings.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice"; fsType = "none"; options = [ "bind" ]; };
     whatsapp-for-linux={ mountPoint = "/home/"+userSettings.username+"/.local/share/whatsapp-for-linux"; device = "/Shared/@Home/whatsapp-for-linux"; fsType = "none"; options = [ "bind" ]; };
     KotatogramDesktop={ mountPoint = "/home/"+userSettings.username+"/.local/share/KotatogramDesktop"; device = "/Shared/@Home/KotatogramDesktop"; fsType = "none"; options = [ "bind" ]; };
@@ -49,6 +50,7 @@
 
    waydroidData={ mountPoint = "/home/"+userSettings.username+"/.local/share/waydroid"; device = "/Shared/@Home/waydroid/waydroidData"; fsType = "none"; options = [ "bind" ]; };
    waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = "/Shared/@Home/waydroid/waydroidSystem"; fsType = "none"; options = [ "bind" ]; };
+   waydroidDownloadsShareMain= { mountPoint = "/home/"+userSettings.username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+userSettings.username+"/Downloads"; options = ["bind"]; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
   };
 
 

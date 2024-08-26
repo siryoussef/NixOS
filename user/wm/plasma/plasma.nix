@@ -1,9 +1,49 @@
-{ pkgs,/*config, lib,  font, userSettings, systemSettings,inputs,*/ ...}:
+{ pkgs,userSettings,/*config, lib,  font,  systemSettings,inputs,*/ ...}:
 
 {
+programs={
+  kate={ enable=true;
+    editor={
+      brackets = {
+        automaticallyAddClosing=true;
+        };
+      font ={
+        family = "Hack";
+        pointSize=11;
+        };
 
-  programs.plasma = {
-    enable = true;
+      };
+#       lsp.customServers ={};
+      ui.colorScheme = "Krita dark orange";
+
+
+  };
+  konsole ={enable=true; /*customColorSchemes = {}; defaultProfile="";*/
+    profiles ={
+      ${userSettings.username}= {
+        command = "${pkgs.fish}/bin/fish";
+      };
+
+    };
+
+  };
+  plasma = { enable = true; overrideConfig=false;
+    kwin = {
+      borderlessMaxmizedWindows=true;
+      cornerBarrier=true;
+      edgeBarrier=0;
+      effects={
+        cube.enable=true; blur.enable=true;
+        dimAdminMode.enable=true;
+        dimInactive.enable=false;
+      };
+      nightlight={enable=true; mode ="times";
+        time={evening="19:30"; morning="06:00";};
+        temperature={day =6500; night=3500; };
+        transitionTime=21;
+
+      };
+    };
     workspace = {
       clickItemTo = "open"; # If you liked the click-to-open default from plasma 5
       lookAndFeel = "org.kde.breezedark.desktop";
@@ -13,6 +53,13 @@
       };
       iconTheme = "Papirus-Dark";
       wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Patak/contents/images/1080x1920.png";
+    };
+
+    input={
+      keyboard={
+        layouts=[
+          {layout="us";variant="eng";}{layout="eg";variant="ar";} ];
+      };
     };
 
     hotkeys.commands."launch-konsole" = {
@@ -42,7 +89,7 @@
     panels = [
       # Windows-like panel at the bottom
       {
-        location = "bottom";
+        location = "right";
         widgets = [
           # We can configure the widgets by adding the name and config
           # attributes. For example to add the the kickoff widget and set the
@@ -122,7 +169,7 @@
             };
           }
         ];
-        hiding = "autohide";
+        hiding = "normalpanel";
       }
       # Application name, Global menu and Song information and playback controls at the top
       {
@@ -197,7 +244,7 @@
       }
     ];
 
-     window-rules = [
+    window-rules = [
       {
         description = "Dolphin";
         match = {
@@ -480,7 +527,7 @@
         "WindowUnderCursorScreenShot" = [ ];
         "_launch" = [ ];
         };
-   };
+    };
 
     configFile = {
       "baloofilerc"."General" =
@@ -700,20 +747,10 @@
         "Data_2_7"."Name" = "Konqi Gestures";
         "Data_2_7"."SystemGroup" = 0;
         "Data_2_7"."Type" = "ACTION_DATA_GROUP";
-        "Data_2_7Conditions"."Comment" = "Konqueror window";
-        "Data_2_7Conditions"."ConditionsCount" = 1;
+        "Data_2_7Conditions"={"Comment" = "Konqueror window"; "ConditionsCount" = 1;};
         "Data_2_7Conditions0"."Type" = "ACTIVE_WINDOW";
-        "Data_2_7Conditions0Window"."Comment" = "Konqueror";
-        "Data_2_7Conditions0Window"."WindowsCount" = 1;
-        "Data_2_7Conditions0Window0"."Class" = "konqueror";
-        "Data_2_7Conditions0Window0"."ClassType" = 1;
-        "Data_2_7Conditions0Window0"."Comment" = "Konqueror";
-        "Data_2_7Conditions0Window0"."Role" = "";
-        "Data_2_7Conditions0Window0"."RoleType" = 0;
-        "Data_2_7Conditions0Window0"."Title" = "";
-        "Data_2_7Conditions0Window0"."TitleType" = 0;
-        "Data_2_7Conditions0Window0"."Type" = "SIMPLE";
-        "Data_2_7Conditions0Window0"."WindowTypes" = 33;
+        "Data_2_7Conditions0Window"={"Comment" = "Konqueror";"WindowsCount" = 1;};
+        "Data_2_7Conditions0Window0"={"Class" = "konqueror";"ClassType" = 1;"Comment" = "Konqueror";"Role" = "";"RoleType" = 0;"Title" = "";"TitleType" = 0;"Type" = "SIMPLE";"WindowTypes" = 33;};
         "Data_2_7_1"."Comment" = "";
         "Data_2_7_1"."Enabled" = false;
         "Data_2_7_1"."Name" = "Back";
@@ -737,11 +774,8 @@
         "Data_2_7_2"."Name" = "Forward";
         "Data_2_7_2"."Type" = "SIMPLE_ACTION_DATA";
         "Data_2_7_2Actions"."ActionsCount" = 1;
-        "Data_2_7_2Actions0"."DestinationWindow" = 2;
-        "Data_2_7_2Actions0"."Input" = "Alt+Right";
-        "Data_2_7_2Actions0"."Type" = "KEYBOARD_INPUT";
-        "Data_2_7_2Conditions"."Comment" = "";
-        "Data_2_7_2Conditions"."ConditionsCount" = 0;
+        "Data_2_7_2Actions0"={"DestinationWindow" = 2; "Input" = "Alt+Right"; "Type" = "KEYBOARD_INPUT";};
+        "Data_2_7_2Conditions"={"Comment" = ""; "ConditionsCount" = 0;};
         "Data_2_7_2Triggers"."Comment" = "Gesture_triggers";
         "Data_2_7_2Triggers"."TriggersCount" = 3;
         "Data_2_7_2Triggers0"."GesturePointData" = "0,0.0625,0,0,0.5,0.0625,0.0625,0,0.125,0.5,0.125,0.0625,0,0.25,0.5,0.1875,0.0625,0,0.375,0.5,0.25,0.0625,0,0.5,0.5,0.3125,0.0625,0,0.625,0.5,0.375,0.0625,0,0.75,0.5,0.4375,0.0625,0,0.875,0.5,0.5,0.0625,1,1,0.5,0.5625,0.0625,1,0.875,0.5,0.625,0.0625,1,0.75,0.5,0.6875,0.0625,1,0.625,0.5,0.75,0.0625,1,0.5,0.5,0.8125,0.0625,1,0.375,0.5,0.875,0.0625,1,0.25,0.5,0.9375,0.0625,1,0.125,0.5,1,0,0,0,0.5";
@@ -755,11 +789,8 @@
         "Data_2_7_3"."Name" = "Up";
         "Data_2_7_3"."Type" = "SIMPLE_ACTION_DATA";
         "Data_2_7_3Actions"."ActionsCount" = 1;
-        "Data_2_7_3Actions0"."DestinationWindow" = 2;
-        "Data_2_7_3Actions0"."Input" = "Alt+Up";
-        "Data_2_7_3Actions0"."Type" = "KEYBOARD_INPUT";
-        "Data_2_7_3Conditions"."Comment" = "";
-        "Data_2_7_3Conditions"."ConditionsCount" = 0;
+        "Data_2_7_3Actions0"={"DestinationWindow" = 2; "Input" = "Alt+Up"; "Type" = "KEYBOARD_INPUT";};
+        "Data_2_7_3Conditions"={"Comment" = ""; "ConditionsCount" = 0;};
         "Data_2_7_3Triggers"."Comment" = "Gesture_triggers";
         "Data_2_7_3Triggers"."TriggersCount" = 3;
         "Data_2_7_3Triggers0"."GesturePointData" = "0,0.0625,-0.5,0.5,1,0.0625,0.0625,-0.5,0.5,0.875,0.125,0.0625,-0.5,0.5,0.75,0.1875,0.0625,-0.5,0.5,0.625,0.25,0.0625,-0.5,0.5,0.5,0.3125,0.0625,-0.5,0.5,0.375,0.375,0.0625,-0.5,0.5,0.25,0.4375,0.0625,-0.5,0.5,0.125,0.5,0.0625,0.5,0.5,0,0.5625,0.0625,0.5,0.5,0.125,0.625,0.0625,0.5,0.5,0.25,0.6875,0.0625,0.5,0.5,0.375,0.75,0.0625,0.5,0.5,0.5,0.8125,0.0625,0.5,0.5,0.625,0.875,0.0625,0.5,0.5,0.75,0.9375,0.0625,0.5,0.5,0.875,1,0,0,0.5,1";
@@ -1103,6 +1134,8 @@
         "Applications/org.qbittorrent.qBittorrent"."Seen" = true;
         };
     };
+  };
+
   };
 
  # services={

@@ -40,7 +40,7 @@ pkglists={
       appimage-run
       appimagekit
       libappimage
-      gnome.gnome-disk-utility
+      gnome-disk-utility
       gparted
       duperemove
       btrfs-assistant
@@ -68,7 +68,7 @@ pkglists={
       ventoy-full
       woeusb-ng
       wimboot
-      gnome.adwaita-icon-theme
+      adwaita-icon-theme
 
       wget
       gcc

@@ -21,7 +21,7 @@
 
   programs = { home-manager.enable = true;
     thunderbird={ enable = true;
-      package = pkgs.betterbird-unwrapped;
+#       package = pkgs.betterbird;
       profiles = {
         "Main"={
 
@@ -89,17 +89,4 @@ xdg = {
 
 
 
-#   nixpkgs = if /*{home-manager,..}: home-manager.useGlobalPkgs == false*/ builtins.isFunction home-manager.lib.homeManagerConfiguration then {
-#     config= {
-#       allowUnfree = true;
-#       allowBroken = false;
-#       allowUnsupportedSystem = false;
-#       allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["microsoft-edge-stable" "zoom" "beeper" "vscode" "code" "obsidian" ];
-#       permittedInsecurePackages = [ "electron-27.3.11"];
-#       enableParallelBuildingByDefault = false;
-#       checkMeta = true;
-#       warnUndeclaredOptions = false;
-#       };
-#     } else null;
-#
 }

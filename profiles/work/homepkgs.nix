@@ -19,8 +19,8 @@
     whatsapp-for-linux
     beeper
     vscode-fhs
-#     betterbird-unwrapped
     #vscodium-fhs
+    nil
     github-desktop
     obsidian
     logseq
@@ -33,10 +33,13 @@
     xournalpp
     glib
     newsflash
-    gnome.nautilus
-    gnome.gnome-calendar
-    gnome.seahorse
+
+    nautilus
+    gnome-calendar
+    seahorse
+    cheese
     gnome.gnome-maps
+
     openvpn
     protonmail-bridge
     texliveSmall
@@ -45,7 +48,8 @@
     wine
     bottles
     qbittorrent
-    yt-dlg
+#     yt-dlg # fails to build after updating to python 3.12 as it uses wxpython which is not compatible with python 3.12!!
+
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
     # With a bottle name of "FL Studio"
     /*
@@ -121,7 +125,7 @@
     libmediainfo
     mediainfo-gui
     audio-recorder
-    gnome.cheese
+
 #     ardour
 #     tenacity
 

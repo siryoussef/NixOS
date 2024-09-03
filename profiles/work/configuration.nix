@@ -183,7 +183,7 @@ services = {
   btrfs = { autoScrub = { enable = true; interval = "monthly"; fileSystems = [
 "/Volume" ]; }; };
   physlock.lockOn.hibernate = true;
-  libreddit.enable = true;
+  redlib.enable = true;
   onlyoffice.enable = false;
   logind.hibernateKey = "hibernate";
   autosuspend.settings = {
@@ -234,7 +234,6 @@ services = {
   # Enable CUPS to print documents.
   services.printing.enable = true;
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware = {
     pulseaudio.enable = false;
     cpu = { intel = { updateMicrocode = true; sgx.provision.enable = true; };
@@ -275,7 +274,7 @@ systemd = {
            enableSystemSlice = false; };
 
   network.wait-online.enable = false;
-  enableUnifiedCgroupHierarchy = pkgs.lib.mkForce  true;
+#   enableUnifiedCgroupHierarchy = pkgs.lib.mkForce  true; # Legacy > now obsolete
   enableCgroupAccounting = true;
 };
 

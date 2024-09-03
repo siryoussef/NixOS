@@ -10,7 +10,7 @@
 
       # create patched nixpkgs
       nixpkgs-patched =
-        (import inputs.nixpkgs { system = systemSettings.system; }).applyPatches {
+        (import inputs.nixpkgs { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
           name = "nixpkgs-patched";
           src = inputs.nixpkgs;
           patches = [ ./patches/emacs-no-version-check.patch ];
@@ -76,9 +76,6 @@
           };
         modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager"])
          ++ [
-#             (./. + "/profiles" + ("/" + systemSettings.profile)
-#               + "/home.nix") # load home.nix from selected PROFILE
-
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
@@ -86,7 +83,7 @@
               + "/nixpkgs-options.nix")];
 
         path = (./. + "/profiles" + ("/" + systemSettings.profile)
-              + "/home.nix");
+              + "/home.nix"); # load home.nix from selected PROFILE
 
         };
       # Systems that can run tests:
@@ -115,7 +112,7 @@
       homeConfigurations = {
         ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = _:unifiedHome.modules;
+          modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
       }; };
 

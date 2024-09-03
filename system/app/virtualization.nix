@@ -25,7 +25,16 @@
 
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 
-  fileSystems."RootlessOCIConfig" = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
+  fileSystems={
+    RootlessOCIConfig = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
+
+
+    libvirt= {mountPoint ="/var/lib/libvirt"; device = "/Shared/libvirt/var/lib/libvirt"; options=["bind"]; fsType="auto";};
+    libvirtCache= {mountPoint ="/var/cache/libvirt"; device = "/Shared/libvirt/var/cache/libvirt"; options=["bind"]; fsType="auto";};
+    libvirtLogs= {mountPoint ="/var/log/libvirt"; device = "/Shared/libvirt/var/log/libvirt"; options=["bind"]; fsType="auto";};
+
+
+    };
 #   systemd = {
 #     services.OCIperm = {
 #       script = "chown -R "+userSettings.username+":users /Shared/@Containers/OCI";

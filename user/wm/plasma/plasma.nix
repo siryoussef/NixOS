@@ -13,7 +13,9 @@ programs={
         };
 
       };
-#       lsp.customServers ={};
+      lsp.customServers = {
+        "servers"= {"nix" = { "command"= ["nil"]; "url"= "https://github.com/oxalica/nil"; "highlightingModeRegex"= "^Nix$"; }; };
+          };
       ui.colorScheme = "Krita dark orange";
 
 
@@ -27,9 +29,9 @@ programs={
     };
 
   };
-  plasma = { enable = true; overrideConfig=false;
+  plasma = { immutableByDefault=true; enable = true; overrideConfig=true;
     kwin = {
-      borderlessMaxmizedWindows=true;
+      borderlessMaximizedWindows=false;
       cornerBarrier=true;
       edgeBarrier=0;
       effects={
@@ -37,7 +39,7 @@ programs={
         dimAdminMode.enable=true;
         dimInactive.enable=false;
       };
-      nightlight={enable=true; mode ="times";
+      nightLight={enable=true; mode ="times";
         time={evening="19:30"; morning="06:00";};
         temperature={day =6500; night=3500; };
         transitionTime=21;
@@ -67,7 +69,7 @@ programs={
       key = "Meta+Alt+K";
       command = "konsole";
     };
-    powerdevil = {
+    powerdevil.AC = {
       powerButtonAction = "lockScreen";
       autoSuspend = {
         action = "shutDown";
@@ -89,29 +91,33 @@ programs={
     panels = [
       # Windows-like panel at the bottom
       {
-        location = "right";
+        location = "bottom";
+        alignment = "right";
+        height = 40;
+        floating = true;
+        hiding = "normalpanel";
         widgets = [
           # We can configure the widgets by adding the name and config
           # attributes. For example to add the the kickoff widget and set the
           # icon to "nix-snowflake-white" use the below configuration. This will
           # add the "icon" key to the "General" group for the widget in
           # ~/.config/plasma-org.kde.plasma.desktop-appletsrc.
-          {
-            name = "org.kde.plasma.kickoff";
-            config = {
-              General = {
-                icon = "nix-snowflake-white";
-                alphaSort = true;
-              };
-            };
-          }
+#           {
+#             name = "org.kde.plasma.kickoff";
+#             config = {
+#               General = {
+#                 icon = "nix-snowflake-white";
+#                 alphaSort = true;
+#               };
+#             };
+#           }
           # Or you can configure the widgets by adding the widget-specific options for it.
           # See modules/widgets for supported widgets and options for these widgets.
           # For example:
           {
             kickoff = {
               sortAlphabetically = true;
-              icon = "nix-snowflake-white";
+              icon = "akonadi";
             };
           }
           # Adding configuration to the widgets can also for example be used to
@@ -122,21 +128,22 @@ programs={
               launchers = [
                 "applications:org.kde.dolphin.desktop"
                 "applications:org.kde.konsole.desktop"
+                "applications:org.garudalinux.firedragon.desktop"
               ];
             };
           }
           # Or you can do it manually, for example:
-          {
-            name = "org.kde.plasma.icontasks";
-            config = {
-              General = {
-                launchers = [
-                  "applications:org.kde.dolphin.desktop"
-                  "applications:org.kde.konsole.desktop"
-                ];
-              };
-            };
-          }
+#           {
+#             name = "org.kde.plasma.icontasks";
+#             config = {
+#               General = {
+#                 launchers = [
+#                   "applications:org.kde.dolphin.desktop"
+#                   "applications:org.kde.konsole.desktop"
+#                 ];
+#               };
+#             };
+#           }
           # If no configuration is needed, specifying only the name of the
           # widget will add them with the default configuration.
           "org.kde.plasma.marginsseparator"
@@ -148,100 +155,41 @@ programs={
           # of usage, one where we add a digital clock, setting 12h time and
           # first day of the week to Sunday and another adding a systray with
           # some modifications in which entries to show.
-          {
-            digitalClock = {
-              calendar.firstDayOfWeek = "sunday";
-              time.format = "12h";
-            };
-          }
+
+
           {
             systemTray.items = {
               # We explicitly show bluetooth and battery
               shown = [
                 "org.kde.plasma.battery"
                 "org.kde.plasma.bluetooth"
-              ];
-              # And explicitly hide networkmanagement and volume
-              hidden = [
                 "org.kde.plasma.networkmanagement"
                 "org.kde.plasma.volume"
               ];
+              # And explicitly hide networkmanagement and volume
+              hidden = [
+
+              ];
+
             };
+
           }
+
+          {digitalClock = {
+#               position = {
+#                 horizontal = 51;
+#                 vertical = 100;
+#                 };
+              calendar.firstDayOfWeek = "sunday";
+              time.format = "12h";
+            };}
+          "org.kde.plasma.showdesktop"
+
         ];
-        hiding = "normalpanel";
+        extraSettings = null; #Extra lines to add to the layout.js. See https://develop.kde.org/docs/plasma/scripting/ for inspiration. Type: null or string
       }
       # Application name, Global menu and Song information and playback controls at the top
-      {
-        location = "top";
-        height = 26;
-        widgets = [
-          {
-            applicationTitleBar = {
-              behavior = {
-                activeTaskSource = "activeTask";
-              };
-              layout = {
-                elements = [ "windowTitle" ];
-                horizontalAlignment = "left";
-                showDisabledElements = "deactivated";
-                verticalAlignment = "center";
-              };
-              overrideForMaximized.enable = false;
-              titleReplacements = [
-                {
-                  type = "regexp";
-                  originalTitle = "^Brave Web Browser$";
-                  newTitle = "Brave";
-                }
-                {
-                  type = "regexp";
-                  originalTitle = ''\\bDolphin\\b'';
-                  newTitle = "File manager";
-                }
-              ];
-              windowTitle = {
-                font = {
-                  bold = false;
-                  fit = "fixedSize";
-                  size = 12;
-                };
-                hideEmptyTitle = true;
-                margins = {
-                  bottom = 0;
-                  left = 10;
-                  right = 5;
-                  top = 0;
-                };
-                source = "appName";
-              };
-            };
-          }
-          "org.kde.plasma.appmenu"
-          "org.kde.plasma.panelspacer"
-#           {
-#             plasmusicToolbar = {
-#               panelIcon = {
-#                 albumCover = {
-#                   useAsIcon = false;
-#                   radius = 8;
-#                 };
-#                 icon = "view-media-track";
-#               };
-#               preferredSource = "spotify";
-#               showPlaybackControls = true;
-#               songText = {
-#                 displayInSeparateLines = true;
-#                 maximumWidth = 640;
-#                 scrolling = {
-#                   behavior = "alwaysScroll";
-#                   speed = 3;
-#                 };
-#               };
-#             };
-#           }
-        ];
-      }
+
     ];
 
     window-rules = [
@@ -541,7 +489,7 @@ programs={
           "General"."ViewPropsTimestamp" = "2024,2,26,20,37,22.221";
 
           "KFileDialog Settings"={
-            "Places Icons Auto-resize" = false;
+            "Places Icons Auto-resize" = true;
             "Places Icons Static Size" = 22;
             "detailViewIconSize" = 16;
             };
@@ -1123,7 +1071,6 @@ programs={
         "Tiling/bd1c774f-7bca-5e79-b5b2-a7f2d395ce9c"."tiles" = "{\"layoutDirection\":\"horizontal\",\"tiles\":[{\"width\":0.25},{\"width\":0.5},{\"width\":0.25}]}";
         "Xwayland"."Scale" = 1.25;
         };
-      "kxkbrc"."Layout"={"DisplayNames" = ","; "LayoutList" = "us,eg"; "Options" = "grp:alt_shift_toggle"; "ResetOldOptions" = true; "Use" = true; "VariantList" = ","; };
 
       "plasma-localerc"."Formats"."LANG" = "en_US.UTF-8";
 

@@ -1,18 +1,24 @@
-{ description = "Flake of Snowyfrank";
+{description = "Flake of Snowyfrank";
 
   outputs = inputs@{ self,...}:
 
     let
-
       Settings = import ./settings.nix;
       systemSettings = Settings.systemSettings;
       userSettings = Settings.userSettings;
 
       # create patched nixpkgs
+
+      nixpkgsOutput= inputs.nixpkgsRef.nixpkgs;
+      home-manager= (if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+             then
+               inputs.home-manager-stable
+             else
+               inputs.home-manager-unstable);
       nixpkgs-patched =
-        (import inputs.nixpkgs { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
+        (import nixpkgsOutput { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
           name = "nixpkgs-patched";
-          src = inputs.nixpkgs;
+          src = nixpkgsOutput;
           patches = [ ./patches/emacs-no-version-check.patch ];
         };
 
@@ -30,7 +36,7 @@
           ];
       };
 
-      pkgs-stable = import inputs.nixpkgs-stable {
+      pkgs-stable = import inputs.nixpkgsRef.inputs.nixpkgs-stable {
         system = systemSettings.system;
         config = {
           allowUnfree = true;
@@ -38,12 +44,12 @@
         };
       };
 
-      pkgs-r2311 = import inputs.nixpkgs-r2311 {
+      pkgs-r2311 = import inputs.nixpkgsRef.inputs.nixpkgs-r2311 {
         system = systemSettings.system;
           config.allowUnfree = true;
       };
 
-      pkgs-r2211 = import inputs.nixpkgs-r2211 {
+      pkgs-r2211 = import inputs.nixpkgsRef.inputs.nixpkgs-r2211 {
         system = systemSettings.system;
           config.allowUnfree = true;
       };
@@ -59,12 +65,8 @@
 
 
       # configure lib
-      lib = inputs.nixpkgs.lib;
-      home-manager = (if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
-             then
-               inputs.home-manager-stable
-             else
-               inputs.home-manager-unstable);
+      lib = nixpkgsOutput.lib;
+
       unifiedHome = {
         extraSpecialArgs = {
           inherit pkgs-stable;
@@ -90,11 +92,11 @@
       supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
 
       # Function to generate a set based on supported systems:
-      forAllSystems = inputs.nixpkgs.lib.genAttrs supportedSystems;
+      forAllSystems = nixpkgsOutput.lib.genAttrs supportedSystems;
 
       # Attribute set of nixpkgs for each system:
       nixpkgsFor =
-        forAllSystems (system: import inputs.nixpkgs { inherit system; });
+        forAllSystems (system: import nixpkgs-patched { inherit system; });
 
 #       modules = [ ];
     in {
@@ -119,8 +121,7 @@
       nixosConfigurations = {
         ${systemSettings.hostname} = lib.nixosSystem {
           system = systemSettings.system;
-          modules = /*unifiedHome.modules ++*/
-            [home-manager.nixosModules.home-manager
+          modules = [ home-manager.nixosModules.home-manager
              {home-manager= rec{
                 users.${userSettings.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
@@ -130,17 +131,10 @@
                 backupFileExtension = "backup";
               };
             }
-            ]++
+            ] ++
             (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["nix-flatpak" "nix-data" /*"home-manager"*/])
           ++
-             (map(x: with x; (nixosModules.default)) (with inputs; [agenix /*home-manager*/]))
-#           ++
-#             (with inputs; [
-#             agenix.nixosModules.default
-#             nix-flatpak.nixosModules.nix-flatpak
-#             nix-data.nixosModules.nix-data
-#             (./snowflakeos.nix)
-#             ])
+             (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module /*home-manager*/]))
             ++
             [
             (./. + "/profiles" + ("/" + systemSettings.profile)
@@ -171,6 +165,8 @@
                   flake = "/etc/nixos/flake.nix";
                   flakearg = systemSettings.hostname;
                 };
+                #   snowflakeos.gnome.enable = false;
+                #   snowflakeos.osInfo.enable = true;
                 })
 
 
@@ -207,14 +203,22 @@
       });
     };
 
-  inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable"; #"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
-    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
-    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-    nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
-    nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
+  inputs ={
+#         inputs={
+
+
+#       nixpkgs= builtins.getFlake Settings.nixpkgs;
+#       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
+
+#     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
+    nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
+
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
 
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+    };
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     nur.url = "github:nix-community/NUR";
 
@@ -222,25 +226,25 @@
 
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs"; };
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable"; };
     snowfall-flake = {
       url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs" ;};
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable" ;};
     snowfall-thaw = {
       url = "https://flakehub.com/f/snowfallorg/thaw/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
         };
     snowfall-dotbox = {
       url = "https://flakehub.com/f/snowfallorg/dotbox/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
 		};
     snowflakeos.url = "github:siryoussef/snowflakeos-modules";
     snowflakeos-module-manager = {
       url = "github:snowfallorg/snowflakeos-module-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
       };
     nix-data={url = "github:snowfallorg/nix-data";
-      inputs.nixpkgs.follows = "nixpkgs" ;};
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable" ;};
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";
@@ -253,7 +257,10 @@
     ytdlp-gui.url = "https://flakehub.com/f/BKSalman/ytdlp-gui/1.0.1.tar.gz";
     NixVirt = {
       url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs={
+        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+#         home-manager.follows = "home-manager-unstable";
+        };
       };
     nix-gui={url = "github:nix-gui/nix-gui";};
     compat.url = "github:balsoft/nixos-fhs-compat";
@@ -261,24 +268,27 @@
     plasma-manager = {
       url = "github:nix-community/plasma-manager";#"github:mcdonc/plasma-manager/enable-look-and-feel-settings";
       inputs={
-        nixpkgs.follows = "nixpkgs";
+        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
         home-manager.follows = "home-manager-unstable";
         };
       };
+    kwin-effects-forceblur={ url = "github:taj-ny/kwin-effects-forceblur";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";};
+
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
     emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
     kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
 
     home-manager-unstable = {url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs";};
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";};
 
     home-manager-stable= {
       url = "github:nix-community/home-manager/release-23.11";
-      inputs.nixpkgs.follows = "nixpkgs-stable";};
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-stable";};
 
     nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs";
-      inputs={nixpkgs.follows = "nixpkgs";
+      inputs={nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
         nix-straight.follows = "nix-straight"; }; };
 
     nix-straight={url = "github:librephoenix/nix-straight.el/pgtk-patch";
@@ -304,8 +314,11 @@
     agenix={
       url = "github:ryantm/agenix";
       # optional, not necessary for the module
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
       };
-
+    quickgui={
+      url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
+      inputs.nixpkgs.follows="nixpkgsRef/nixpkgs-unstable";
+      };
   };
   }

@@ -1,6 +1,6 @@
 let
 pkgs=pkgs;
-in{
+in {
   # ---- SYSTEM SETTINGS ---- #
 systemSettings = {
         system = "x86_64-linux"; # system arch
@@ -44,3 +44,5 @@ userSettings = rec {
       };
 
       }
+
+

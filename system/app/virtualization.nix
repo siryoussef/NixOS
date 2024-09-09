@@ -21,6 +21,8 @@
     podman-desktop
     podman-compose
     dive
+    quickemu
+    quickgui
     ];
 
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};

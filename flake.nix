@@ -180,7 +180,14 @@
           };
 
         };
-     };
+      };
+
+      systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
+        modules = [
+#           ./modules
+        ];
+      };
+
       packages = forAllSystems (system:
         let pkgs = nixpkgsFor.${system};
         in {
@@ -320,5 +327,12 @@
       url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
       inputs.nixpkgs.follows="nixpkgsRef/nixpkgs-unstable";
       };
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs={
+        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+        nixpkgs-stable.follows = "nixpkgsRef/nixpkgs-stable";
+        };
+    };
   };
   }

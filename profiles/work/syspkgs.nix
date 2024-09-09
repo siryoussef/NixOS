@@ -8,6 +8,7 @@ pkglists={
       nodePackages.bash-language-server
       zsh
       git
+      jre_minimal
       cryptsetup
       home-manager
       devbox

@@ -15,7 +15,7 @@ mkShell {
     jupyterlab-widgets
     jupyter-collaboration
 
-    azure-cli
+#     azure-cli
     kubectl
 
     # Python requirements (enough to get a virtualenv going).
@@ -45,7 +45,8 @@ mkShell {
 
     imbalanced-learn
     statsmodels
-
+    clickclick
+    click
     openpyxl
     nltk
   ];

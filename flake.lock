@@ -1667,16 +1667,17 @@
     },
     "impermanence": {
       "locked": {
-        "dirtyRev": "e09dd717bb2c8190f3f00f71d1f7030c97d455f4-dirty",
-        "dirtyShortRev": "e09dd71-dirty",
-        "lastModified": 1725907040,
+        "lastModified": 1725907986,
         "narHash": "sha256-4GgEx49UAOzUFhTJXUP05iel7+C3WOmeoHPeWkCIA+0=",
-        "type": "git",
-        "url": "file:///Shared/@Repo/impermanence/"
+        "owner": "siryoussef",
+        "repo": "impermanence",
+        "rev": "caa9775a43f70eda86c838641c00e2bba0af695b",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///Shared/@Repo/impermanence/"
+        "owner": "siryoussef",
+        "repo": "impermanence",
+        "type": "github"
       }
     },
     "kdenlive-pin-nixpkgs": {

@@ -11,6 +11,7 @@ systemSettings = {
         bootMode = "uefi"; # uefi or bios
         bootMountPath = "/boot/efi"; # mount path for efi boot partition; only used for uefi boot mode
         grubDevice = "/dev/disk/by-label/Boot"; # device identifier for grub; only used for legacy (bios) boot mode
+        persistentStorage ="/Shared/@Persistent";
       };
   # ----- USER SETTINGS ----- #
 userSettings = rec {

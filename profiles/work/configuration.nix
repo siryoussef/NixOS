@@ -10,6 +10,7 @@
 {
   imports =
     [ #../../configuration.nix
+      ../../Storage.nix
       ../../system/hardware-configuration.nix
       ../../system/hardware/systemd.nix # systemd config
       ../../system/hardware/kernel.nix # Kernel config

@@ -76,8 +76,8 @@
           inherit userSettings;
           inherit inputs;
           };
-        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager"])
-         ++ [
+        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" "impermanence"])
+         ++/* [inputs.impermanence.nixosModules.home-manager.impermanence] ++ */[
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
@@ -125,14 +125,14 @@
              {home-manager= rec{
                 users.${userSettings.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
-                sharedModules = if useGlobalPkgs == false then unifiedHome.modules++unifiedHome.nixpkgs else unifiedHome.modules;
+                sharedModules = (if useGlobalPkgs == false then unifiedHome.modules++unifiedHome.nixpkgs else unifiedHome.modules);
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup";
               };
             }
             ] ++
-            (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["nix-flatpak" "nix-data" /*"home-manager"*/])
+            (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["impermanence" "nix-flatpak" "nix-data" /*"home-manager"*/])
           ++
              (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module /*home-manager*/]))
             ++
@@ -327,6 +327,7 @@
       url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
       inputs.nixpkgs.follows="nixpkgsRef/nixpkgs-unstable";
       };
+    impermanence.url = /*"git+file:///Shared/@Repo/impermanence/";*/ "github:siryoussef/impermanence";
     system-manager = {
       url = "github:numtide/system-manager";
       inputs={

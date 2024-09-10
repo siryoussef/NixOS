@@ -1665,6 +1665,20 @@
         "type": "github"
       }
     },
+    "impermanence": {
+      "locked": {
+        "dirtyRev": "e09dd717bb2c8190f3f00f71d1f7030c97d455f4-dirty",
+        "dirtyShortRev": "e09dd71-dirty",
+        "lastModified": 1725907040,
+        "narHash": "sha256-4GgEx49UAOzUFhTJXUP05iel7+C3WOmeoHPeWkCIA+0=",
+        "type": "git",
+        "url": "file:///Shared/@Repo/impermanence/"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///Shared/@Repo/impermanence/"
+      }
+    },
     "kdenlive-pin-nixpkgs": {
       "locked": {
         "lastModified": 1709012981,
@@ -2876,6 +2890,7 @@
         "home-manager-stable": "home-manager-stable",
         "home-manager-unstable": "home-manager-unstable",
         "hyprland-plugins": "hyprland-plugins",
+        "impermanence": "impermanence",
         "kdenlive-pin-nixpkgs": "kdenlive-pin-nixpkgs",
         "kwin-effects-forceblur": "kwin-effects-forceblur",
         "lix-module": "lix-module",

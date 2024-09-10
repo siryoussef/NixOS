@@ -2,14 +2,21 @@
  My NixOS config files, forked from librephoenix (thanks emmet!) & my old config files, with the intention of propably adding some improvements present in ZaneyOS (nothing about this part in done yet)
 
 # A Perfect OS (my moving target):
- well, Isn't that every nixos users target? , however I have some relatively static clearly defined goals :-
+
+ **well, Isn't that every nixos users target? , however I have some relatively static clearly defined goals** :-
+ 
  1- A libreOS (as much as possiple without harming other goals) with modularity in mind.
- 2- universal architecture & device compatibilty (cross platform)
- 3- security in resonably performant manner (much more secure than windows & much more performant than qubes )
- 4- privacy : mainly by using alternative software
+ 
+ 2- universal architecture & device compatibilty (cross platform).
+ 
+ 3- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
+ 
+ 4- privacy : mainly by using alternative software.
+ 
  5- universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
  ....
  Well I lied a little about the targets clarity, however the target gets clearer as we move on
+ 
 # Features
  1- full flatpak support, with declarative flatpaks.
  

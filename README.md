@@ -1,4 +1,4 @@
-# NixOS
+# SiragOS 
  My NixOS config files, forked from librephoenix (thanks emmet!) & my old config files, with the intention of propably adding some improvements present in ZaneyOS (nothing about this part in done yet)
 
 # A Perfect OS (my moving target):

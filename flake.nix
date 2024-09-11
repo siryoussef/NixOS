@@ -99,7 +99,45 @@
         forAllSystems (system: import nixpkgs-patched { inherit system; });
 
 #       modules = [ ];
-    in {
+    in (inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        # To import a flake module
+        # 1. Add foo to inputs
+        # 2. Add foo as a parameter to the outputs function
+        # 3. Add here: foo.flakeModule
+
+      ];
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      perSystem = { config, self', inputs', pkgs, system, ... }: {
+
+
+
+        # Per-system attributes can be defined here. The self' and inputs'
+        # module parameters provide easy access to attributes of the same
+        # system.
+
+        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
+#         packages.default = pkgs.hello;
+      };
+      flake = {
+        homeConfigurations = {
+        ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
+          extraSpecialArgs = unifiedHome.extraSpecialArgs;
+        }; };
+
+
+        # The usual flake attributes can be defined here, including system-
+        # agnostic ones like nixosModule and system-enumerating ones, although
+        # those are more easily expressed in perSystem.
+      systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
+        modules = [
+#           ./modules
+        ];
+      };
+      };
+
 #       outputs.pkgSettings = import ./pkgs.nix ;
 #       outputs = inputs : inputs.snowfall-lib.mkFlake {
 #             inherit inputs;
@@ -111,16 +149,38 @@
 #               snowfall-thaw.overlays
 #               snowfall-dotbox.overlays
 #           ]; };
-      homeConfigurations = {
-        ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
-          extraSpecialArgs = unifiedHome.extraSpecialArgs;
-      }; };
 
-      nixosConfigurations = {
+
+
+
+
+
+
+    }//{
+    packages = forAllSystems (system:
+        let pkgs = nixpkgsFor.${system};
+        in {
+          default = self.packages.${system}.install;
+
+          install = pkgs.writeShellApplication {
+            name = "install";
+            runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
+            text = ''${./install.sh} "$@"'';
+          };
+        });
+
+    apps = forAllSystems (system: {
+          default = self.apps.${system}.install;
+
+          install = {
+            type = "app";
+            program = "${self.packages.${system}.install}/bin/install";
+          };
+        });
+
+    nixosConfigurations = {
         ${systemSettings.hostname} = lib.nixosSystem {
-          system = systemSettings.system;
+#           system = systemSettings.system;
           modules = [ home-manager.nixosModules.home-manager
              {home-manager= rec{
                 users.${userSettings.username} = import unifiedHome.path; #import ./users/default/home.nix;
@@ -180,40 +240,13 @@
           };
 
         };
-      };
-
-      systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
-        modules = [
-#           ./modules
-        ];
-      };
-
-      packages = forAllSystems (system:
-        let pkgs = nixpkgsFor.${system};
-        in {
-          default = self.packages.${system}.install;
-
-          install = pkgs.writeShellApplication {
-            name = "install";
-            runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
-            text = ''${./install.sh} "$@"'';
-          };
-        });
-
-      apps = forAllSystems (system: {
-        default = self.apps.${system}.install;
-
-        install = {
-          type = "app";
-          program = "${self.packages.${system}.install}/bin/install";
         };
-      });
-    };
+
+    });
 
   inputs ={
-#         inputs={
 
-
+    flake-parts.url = "github:hercules-ci/flake-parts";
 #       nixpkgs= builtins.getFlake Settings.nixpkgs;
 #       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
 
@@ -332,7 +365,7 @@
       url = "github:numtide/system-manager";
       inputs={
         nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
-        nixpkgs-stable.follows = "nixpkgsRef/nixpkgs-stable";
+#         nixpkgs-stable.follows = "nixpkgsRef/nixpkgs-stable";
         };
     };
   };

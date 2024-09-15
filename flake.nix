@@ -3,22 +3,28 @@
   outputs = inputs@{ self,...}:
 
     let
-      Settings = import ./settings.nix;
+      Settings = import ./settings.nix; /*{inherit pkgs;};*/
       systemSettings = Settings.systemSettings;
       userSettings = Settings.userSettings;
 
       # create patched nixpkgs
 
-      nixpkgsOutput= inputs.nixpkgsRef.nixpkgs;
+#       nixpkgs=inputs.nixpkgsRef.nixpkgs; #{ inherit systemSettings;};
+#       inputs= {inherit inputs;} // {nixpkgs=nixpkgs;};
+      nixpkgs=(if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+             then
+               inputs.nixpkgs-stable
+             else
+               inputs.nixpkgs-unstable);
       home-manager= (if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
              then
                inputs.home-manager-stable
              else
                inputs.home-manager-unstable);
       nixpkgs-patched =
-        (import nixpkgsOutput { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
+        (import (nixpkgs) { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
           name = "nixpkgs-patched";
-          src = nixpkgsOutput;
+          src = nixpkgs;
           patches = [ ./patches/emacs-no-version-check.patch ];
         };
 
@@ -29,14 +35,14 @@
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
         };
-        overlays = [
-          inputs.rust-overlay.overlays.default
-          inputs.ytdlp-gui.overlay
-          inputs.snowfall-flake.overlays.default
+        overlays = with inputs;[
+          rust-overlay.overlays.default
+          snowfall-flake.overlays.default
+          ytdlp-gui.overlay
           ];
       };
 
-      pkgs-stable = import inputs.nixpkgsRef.inputs.nixpkgs-stable {
+      pkgs-stable = import inputs.nixpkgs-stable {
         system = systemSettings.system;
         config = {
           allowUnfree = true;
@@ -44,12 +50,12 @@
         };
       };
 
-      pkgs-r2311 = import inputs.nixpkgsRef.inputs.nixpkgs-r2311 {
+      pkgs-r2311 = import inputs.nixpkgs-r2311 {
         system = systemSettings.system;
           config.allowUnfree = true;
       };
 
-      pkgs-r2211 = import inputs.nixpkgsRef.inputs.nixpkgs-r2211 {
+      pkgs-r2211 = import inputs.nixpkgs-r2211 {
         system = systemSettings.system;
           config.allowUnfree = true;
       };
@@ -65,7 +71,7 @@
 
 
       # configure lib
-      lib = nixpkgsOutput.lib;
+      lib = nixpkgs.lib;
 
       unifiedHome = {
         extraSpecialArgs = {
@@ -87,19 +93,19 @@
         path = (./. + "/profiles" + ("/" + systemSettings.profile)
               + "/home.nix"); # load home.nix from selected PROFILE
 
-        };
+        };/*./patches/emacs-no-version-check.patch*/
       # Systems that can run tests:
-      supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
+      supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
       # Function to generate a set based on supported systems:
-      forAllSystems = nixpkgsOutput.lib.genAttrs supportedSystems;
+      forAllSystems = lib.genAttrs supportedSystems;
 
       # Attribute set of nixpkgs for each system:
       nixpkgsFor =
         forAllSystems (system: import nixpkgs-patched { inherit system; });
 
 #       modules = [ ];
-    in (inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    in inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         # To import a flake module
         # 1. Add foo to inputs
@@ -107,10 +113,13 @@
         # 3. Add here: foo.flakeModule
 
       ];
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = supportedSystems;
       perSystem = { config, self', inputs', pkgs, system, ... }: {
-
-
+        _module.args.pkgs = import nixpkgs-patched{inherit system;
+          config = {
+            allowUnfree = true;
+            allowUnfreePredicate = (_: true);
+          };};
 
         # Per-system attributes can be defined here. The self' and inputs'
         # module parameters provide easy access to attributes of the same
@@ -118,8 +127,30 @@
 
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
 #         packages.default = pkgs.hello;
+        packages =  {
+            default = self.packages.${system}.install;
+
+            install = pkgs.writeShellApplication {
+              name = "install";
+              runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
+              text = ''${./install.sh} "$@"'';
+            };
+          };
+        apps =  {
+          default = self.apps.${system}.install;
+          install = {
+            type = "app";
+            program = "${self.packages.${system}.install}/bin/install";
+          };
+        };
       };
       flake = {
+        systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
+        modules = [
+#           ./modules
+        ];
+        };
+
         homeConfigurations = {
         ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -127,58 +158,7 @@
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         }; };
 
-
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
-      systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
-        modules = [
-#           ./modules
-        ];
-      };
-      };
-
-#       outputs.pkgSettings = import ./pkgs.nix ;
-#       outputs = inputs : inputs.snowfall-lib.mkFlake {
-#             inherit inputs;
-#             src = ./.;
-#
-#             overlays =  with inputs;[
-#             # To make this flake's packages available in your NixPkgs package set.
-#               snowfall-flake.overlay
-#               snowfall-thaw.overlays
-#               snowfall-dotbox.overlays
-#           ]; };
-
-
-
-
-
-
-
-    }//{
-    packages = forAllSystems (system:
-        let pkgs = nixpkgsFor.${system};
-        in {
-          default = self.packages.${system}.install;
-
-          install = pkgs.writeShellApplication {
-            name = "install";
-            runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
-            text = ''${./install.sh} "$@"'';
-          };
-        });
-
-    apps = forAllSystems (system: {
-          default = self.apps.${system}.install;
-
-          install = {
-            type = "app";
-            program = "${self.packages.${system}.install}/bin/install";
-          };
-        });
-
-    nixosConfigurations = {
+        nixosConfigurations = {
         ${systemSettings.hostname} = lib.nixosSystem {
 #           system = systemSettings.system;
           modules = [ home-manager.nixosModules.home-manager
@@ -242,22 +222,53 @@
         };
         };
 
-    });
+
+        # The usual flake attributes can be defined here, including system-
+        # agnostic ones like nixosModule and system-enumerating ones, although
+        # those are more easily expressed in perSystem.
+
+      };
+
+#       outputs.pkgSettings = import ./pkgs.nix ;
+#       outputs = inputs : inputs.snowfall-lib.mkFlake {
+#             inherit inputs;
+#             src = ./.;
+#
+#             overlays =  with inputs;[
+#             # To make this flake's packages available in your NixPkgs package set.
+#               snowfall-flake.overlay
+#               snowfall-thaw.overlays
+#               snowfall-dotbox.overlays
+#           ]; };
+
+
+
+
+
+
+
+    }//{
+# for any option to be defined outside the flake-parts function temporarily if the function is causing an error with it
+    };
 
   inputs ={
-
+#     settings.url = "git+file:///etc/nixos/settings";
     flake-parts.url = "github:hercules-ci/flake-parts";
 #       nixpkgs= builtins.getFlake Settings.nixpkgs;
 #       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
 
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
-    nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
+#     nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
+    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";#"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
+    nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
+    nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
 
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
 
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     nur.url = "github:nix-community/NUR";
@@ -266,25 +277,25 @@
 
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable"; };
+      inputs.nixpkgs.follows = "nixpkgs-unstable"; };
     snowfall-flake = {
       url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable" ;};
+      inputs.nixpkgs.follows = "nixpkgs-unstable" ;};
     snowfall-thaw = {
       url = "https://flakehub.com/f/snowfallorg/thaw/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
         };
     snowfall-dotbox = {
       url = "https://flakehub.com/f/snowfallorg/dotbox/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
     snowflakeos.url = "github:siryoussef/snowflakeos-modules";
     snowflakeos-module-manager = {
       url = "github:snowfallorg/snowflakeos-module-manager";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
       };
     nix-data={url = "github:snowfallorg/nix-data";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable" ;};
+      inputs.nixpkgs.follows = "nixpkgs-unstable" ;};
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";
@@ -298,7 +309,7 @@
     NixVirt = {
       url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
       inputs={
-        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs-unstable";
 #         home-manager.follows = "home-manager-unstable";
         };
       };
@@ -308,12 +319,12 @@
     plasma-manager = {
       url = "github:nix-community/plasma-manager";#"github:mcdonc/plasma-manager/enable-look-and-feel-settings";
       inputs={
-        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs-unstable";
         home-manager.follows = "home-manager-unstable";
         };
       };
     kwin-effects-forceblur={ url = "github:taj-ny/kwin-effects-forceblur";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";};
+      inputs.nixpkgs.follows = "nixpkgs-unstable";};
 
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
@@ -321,14 +332,14 @@
     kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
 
     home-manager-unstable = {url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";};
+      inputs.nixpkgs.follows = "nixpkgs-unstable";};
 
     home-manager-stable= {
       url = "github:nix-community/home-manager/release-23.11";
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-stable";};
+      inputs.nixpkgs.follows = "nixpkgs-stable";};
 
     nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs";
-      inputs={nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs={nixpkgs.follows = "nixpkgs-unstable";
         nix-straight.follows = "nix-straight"; }; };
 
     nix-straight={url = "github:librephoenix/nix-straight.el/pgtk-patch";
@@ -354,18 +365,18 @@
     agenix={
       url = "github:ryantm/agenix";
       # optional, not necessary for the module
-      inputs.nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
       };
     quickgui={
       url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
-      inputs.nixpkgs.follows="nixpkgsRef/nixpkgs-unstable";
+      inputs.nixpkgs.follows="nixpkgs-unstable";
       };
     impermanence.url = /*"git+file:///Shared/@Repo/impermanence/";*/ "github:siryoussef/impermanence";
     system-manager = {
       url = "github:numtide/system-manager";
       inputs={
-        nixpkgs.follows = "nixpkgsRef/nixpkgs-unstable";
-#         nixpkgs-stable.follows = "nixpkgsRef/nixpkgs-stable";
+        nixpkgs.follows = "nixpkgs-unstable";
+#         nixpkgs-stable.follows = "nixpkgs-stable";
         };
     };
   };

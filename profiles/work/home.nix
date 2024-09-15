@@ -85,6 +85,31 @@ xdg = {
    mime.enable = true;
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
+home.persistence={
+  ${userSettings.persistentStorage}={
+   directories = [
+#       "Downloads"
+      "Music"
+#       "Pictures"
+#       "Documents"
+#       "Videos"
+#       "VirtualBox VMs"
+#       ".gnupg"
+#       ".ssh"
+#       ".nixops"
+#       ".local/share/keyrings"
+#       ".local/share/direnv"
+#       {
+#         directory = ".local/share/Steam";
+#         method = "symlink";
+#       }
+    ];
+    files = [
+#       ".screenrc"
+    ];
+    allowOther = true;
+  };
+};
 
 
 

@@ -1,6 +1,8 @@
+# {pkgs,...}:
 let
 pkgs=pkgs;
-in {
+in
+{
   # ---- SYSTEM SETTINGS ---- #
 systemSettings = {
         system = "x86_64-linux"; # system arch
@@ -42,6 +44,7 @@ userSettings = rec {
                                "exec " + term + " -e " + editor
                          else
                            editor);
+        persistentStorage = "/Shared/@Persistent/home/"+"${username}";
       };
 
       }

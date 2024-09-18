@@ -22,9 +22,9 @@
              else
                inputs.home-manager-unstable);
       nixpkgs-patched =
-        (import (nixpkgs) { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false);}).applyPatches {
+        (import inputs.nixpkgs { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false); }).applyPatches {
           name = "nixpkgs-patched";
-          src = nixpkgs;
+          src = inputs.nixpkgs;
           patches = [ ./patches/emacs-no-version-check.patch ];
         };
 
@@ -68,6 +68,9 @@
         system = systemSettings.system;
       };
 
+      pkgs-nwg-dock-hyprland = import inputs.nwg-dock-hyprland-pin-nixpkgs {
+        system = systemSettings.system;
+      };
 
 
       # configure lib
@@ -78,6 +81,7 @@
           inherit pkgs-stable;
           inherit pkgs-emacs;
           inherit pkgs-kdenlive;
+          inherit pkgs-nwg-dock-hyprland;
           inherit systemSettings;
           inherit userSettings;
           inherit inputs;
@@ -172,9 +176,9 @@
               };
             }
             ] ++
-            (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["impermanence" "nix-flatpak" "nix-data" /*"home-manager"*/])
+            (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["impermanence" "nix-flatpak" "nix-data" ])
           ++
-             (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module /*home-manager*/]))
+             (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module ]))
             ++
             [
             (./. + "/profiles" + ("/" + systemSettings.profile)
@@ -259,12 +263,16 @@
 
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
 #     nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
+    nixpkgs.follows ="nixpkgs-unstable";
     nixpkgs-stable.url = "nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";#"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
     nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
     nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
-
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
+    kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
+    nwg-dock-hyprland-pin-nixpkgs.url = "nixpkgs/2098d845d76f8a21ae4fe12ed7c7df49098d3f15";
+    emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
+
 
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
@@ -323,13 +331,35 @@
         home-manager.follows = "home-manager-unstable";
         };
       };
+    hyprland = {
+      type = "git";
+      url = "https://code.hyprland.org/hyprwm/Hyprland.git";
+      submodules = true;
+      rev = "7a24e564f43d4c24abf2ec4e5351007df2f8926c"; #v0.42.0+
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hyprland-plugins = {
+      type = "git";
+      url = "https://code.hyprland.org/hyprwm/hyprland-plugins.git";
+      rev = "b73d7b901d8cb1172dd25c7b7159f0242c625a77"; #v0.42.0
+      inputs.hyprland.follows = "hyprland";
+    };
+    hyprlock = {
+      type = "git";
+      url = "https://code.hyprland.org/hyprwm/hyprlock.git";
+      rev = "73b0fc26c0e2f6f82f9d9f5b02e660a958902763";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hyprgrass={url = "github:horriblename/hyprgrass/0bb3b822053c813ab6f695c9194089ccb5186cc3";
+      inputs.hyprland.follows = "hyprland";};
+
+
     kwin-effects-forceblur={ url = "github:taj-ny/kwin-effects-forceblur";
       inputs.nixpkgs.follows = "nixpkgs-unstable";};
 
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
-    emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
-    kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
+
 
     home-manager-unstable = {url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs-unstable";};
@@ -350,7 +380,13 @@
     org-yaap = {url = "gitlab:tygrdev/org-yaap"; flake = false;};
     org-side-tree = {url = "github:localauthor/org-side-tree"; flake = false;};
     org-timeblock = {url = "github:ichernyshovvv/org-timeblock";flake = false;};
+    org-krita = {url = "github:librephoenix/org-krita";flake = false;};
+    org-xournalpp = {url = "gitlab:vherrmann/org-xournalpp";flake = false;};
+    org-sliced-images = {url = "github:jcfk/org-sliced-images";flake = false;};
+    magit-file-icons = {url = "github:librephoenix/magit-file-icons/abstract-icon-getters-compat";
+      flake = false;};
     phscroll = {url = "github:misohena/phscroll"; flake = false;};
+    mini-frame = {url = "github:muffinmad/emacs-mini-frame";flake = false;};
 
     stylix.url = "github:danth/stylix";
 
@@ -358,7 +394,7 @@
 
     blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
-    hyprland-plugins = {url = "github:hyprwm/hyprland-plugins"; flake = false;};
+
     thorium-browser.url = #"github:siryoussef/nix-thorium";
 #     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
       "git+file:///Shared/@Repo/thorium-browser-nix/";

@@ -1,7 +1,10 @@
-{ pkgs, userSettings, systemSettings, ... }:
+{ pkgs, pkgs-stable, userSettings, systemSettings, lib, ... }:
 
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
+  imports = [
+    ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
+  ];
   users.users.${userSettings.username}.extraGroups = [ "docker" "podman" ];
   environment.systemPackages = with pkgs; [
 #     virtualbox
@@ -21,9 +24,13 @@
     podman-desktop
     podman-compose
     dive
+
+    ]
+    ++
+    (with pkgs-stable;[
     quickemu
     quickgui
-    ];
+    ]);
 
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 

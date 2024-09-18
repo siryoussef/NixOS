@@ -38,7 +38,7 @@
     gnome-calendar
     seahorse
     cheese
-    gnome.gnome-maps
+    gnome-maps
 
     openvpn
     protonmail-bridge

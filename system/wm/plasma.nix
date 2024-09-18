@@ -19,6 +19,8 @@ imports = [
 #         };
 #       };
 
+
+
     displayManager = {
         autoLogin={enable = true; /* user="";*/};
         defaultSession = "plasma"; # plasma for plasma6 on wayland , plasmax11 for plasma6 on x11 (was plasmawayland & plasma on plasma5)
@@ -29,6 +31,7 @@ imports = [
           autoLogin={relogin = true; minimumUid = 1000;};
           autoNumlock = true;
           wayland.enable = true ;
+          theme = "chili";
 
           #autoLogin.minimumUid = 1000 ;
           #settings.Wayland.SessionDir = "${pkgs.plasma5Packages.plasma-workspace}/share/wayland-sessions";
@@ -65,7 +68,7 @@ environment = {
   plasma5.excludePackages = [ /* pkgs.elisa */ ];
   plasma6.excludePackages = [ /* pkgs.elisa */ ];
   systemPackages = ((with pkgs; [
-    gnome.gnome-control-center
+    gnome-control-center
     plasma-hud
     systemdgenie
    # plasma-browser-integration

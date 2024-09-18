@@ -14,18 +14,23 @@
 # After running this, the command `nix flake update` will require root
 
 if [ "$#" = 1 ]; then
-    dotfilesDir=$1;
+    SCRIPT_DIR=$1;
 else
-    dotfilesDir=$(pwd);
+    SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 fi
-pushd $dotfilesDir &> /dev/null;
-chown 0:0 .;
-chown 0:0 profiles/*;
-chown -R 0:0 system;
-chown -R 0:0 patches;
-chown 0:0 flake.lock;
-chown 0:0 flake.nix
-chown 0:0 profiles/*/configuration.nix;
-chown 0:0 harden.sh;
-chown 1000:users **/README.org;
+pushd $SCRIPT_DIR &> /dev/null;
+sudo chown 0:0 .;
+sudo chown 0:0 profiles/*;
+sudo chown -R 0:0 system;
+sudo chown -R 0:0 patches;
+sudo chown 0:0 flake.lock;
+sudo chown 0:0 flake.nix
+sudo chown 0:0 profiles
+sudo chown 0:0 profiles/*/configuration.nix;
+sudo chown 0:0 profiles/homelab/base.nix;
+sudo chown 0:0 harden.sh;
+sudo chown 0:0 soften.sh;
+sudo chown 0:0 install.sh;
+sudo chown 0:0 update.sh;
+sudo chown 1000:users **/README.org;
 popd &> /dev/null;

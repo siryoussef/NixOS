@@ -1,12 +1,11 @@
-{ config, lib, pkgs-emacs, pkgs-stable, userSettings, systemSettings,
-  inputs, ... }:
+{ config, lib, pkgs, pkgs-emacs, pkgs-stable, inputs, userSettings, systemSettings, ... }:
 let
   themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../../themes"+("/"+userSettings.theme)+"/polarity.txt"));
-  dashboardLogo = ./. + "/nix-" + themePolarity + ".png";
+  dashboardLogo = ./. + "/nix-" + themePolarity + ".webp";
 in
 {
   imports = [
-     inputs.nix-doom-emacs.hmModule
+    inputs.nix-doom-emacs.hmModule
     ../git/git.nix
     ../../shell/sh.nix
     ../../shell/cli-collection.nix
@@ -42,14 +41,16 @@ in
   # End block
   };
 
-#   home.file.".emacs.d/themes/doom-stylix-theme.el".source = config.lib.stylix.colors {
-#       template = builtins.readFile ./themes/doom-stylix-theme.el.mustache;
-#       extension = ".el";
-#   };
+  home.file.".emacs.d/themes/doom-stylix-theme.el".source = config.lib.stylix.colors {
+      template = builtins.readFile ./themes/doom-stylix-theme.el.mustache;
+      extension = ".el";
+  };
 
   home.packages = (with pkgs-emacs; [
+    emacs-lsp-booster
     nil
     nixfmt
+    kotlin-language-server
     file
     wmctrl
     jshon
@@ -57,6 +58,7 @@ in
     hledger
     hunspell hunspellDicts.en_US-large
     (pkgs-emacs.mu.override { emacs = emacs29-pgtk; })
+    (pkgs.callPackage ./pkgs/org-analyzer.nix {})
     emacsPackages.mu4e
     isync
     msmtp
@@ -71,6 +73,9 @@ in
   ]) ++ (with pkgs-stable; [
     nodejs
     nodePackages.mermaid-cli
+  ]) ++ (with pkgs; [
+    openssl
+    stunnel
   ]);
 
   services.mbsync = {
@@ -98,7 +103,23 @@ in
     source = "${inputs.org-nursery}";
   };
 
-  home.file.".emacs.d/dashboard-logo.png".source = dashboardLogo;
+  home.file.".emacs.d/org-krita" = {
+    source = "${inputs.org-krita}";
+  };
+
+  home.file.".emacs.d/org-xournalpp" = {
+    source = "${inputs.org-xournalpp}";
+  };
+
+  home.file.".emacs.d/org-sliced-images" = {
+    source = "${inputs.org-sliced-images}";
+  };
+
+  home.file.".emacs.d/magit-file-icons" = {
+    source = "${inputs.magit-file-icons}";
+  };
+
+  home.file.".emacs.d/dashboard-logo.webp".source = dashboardLogo;
   home.file.".emacs.d/scripts/copy-link-or-file/copy-link-or-file-to-clipboard.sh" = {
     source = ./scripts/copy-link-or-file/copy-link-or-file-to-clipboard.sh;
     executable = true;
@@ -106,6 +127,10 @@ in
 
   home.file.".emacs.d/phscroll" = {
     source = "${inputs.phscroll}";
+  };
+
+  home.file.".emacs.d/mini-frame" = {
+    source = "${inputs.mini-frame}";
   };
 
   home.file.".emacs.d/system-vars.el".text = ''

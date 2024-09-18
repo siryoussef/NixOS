@@ -1,5 +1,6 @@
-{ pkgs, ... }:
-
+{ inputs, pkgs, lib, ... }: let
+  pkgs-hyprland = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 {
   # Import wayland config
   imports = [ ./wayland.nix
@@ -9,12 +10,6 @@
 
   # Security
   security = {
-    pam.services.swaylock = {
-      text = ''
-        auth include login
-      '';
-    };
-#    pam.services.gtklock = {};
     pam.services.login.enableGnomeKeyring = true;
   };
 
@@ -23,10 +18,24 @@
   programs = {
     hyprland = {
       enable = true;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       xwayland = {
         enable = true;
       };
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      portalPackage = pkgs-hyprland.xdg-desktop-portal-hyprland;
     };
+  };
+
+  services.xserver.excludePackages = [ pkgs.xterm ];
+
+  services.xserver = {
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+      enableHidpi = true;
+      theme = "chili";
+      package = pkgs.sddm;
+    };
+
   };
 }

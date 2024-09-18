@@ -90,23 +90,28 @@ home.persistence={
    directories = [
 #       "Downloads"
       "Music"
-#       "Pictures"
-#       "Documents"
-#       "Videos"
-#       "VirtualBox VMs"
-#       ".gnupg"
-#       ".ssh"
-#       ".nixops"
+      "Pictures"
+      "Documents"
+      "Videos"
+      "VirtualBox VMs"
+      "Desktop"
+      ".gnupg"
+      ".ssh"
+      ".nixops"
 #       ".local/share/keyrings"
 #       ".local/share/direnv"
 #       {
 #         directory = ".local/share/Steam";
 #         method = "symlink";
 #       }
+      ".mysql"
     ];
     files = [
-#       ".screenrc"
-    ];
+      ".screenrc"
+      ".gtkrc-2.0"
+      ".bash_history"
+      ".gitconfig"
+  ];
     allowOther = true;
   };
 };

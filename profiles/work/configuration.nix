@@ -9,8 +9,7 @@
 # in
 {
   imports =
-    [ #../../configuration.nix
-      ../../Storage.nix
+    [ ../../Storage.nix
       ../../system/hardware-configuration.nix
       ../../system/hardware/systemd.nix # systemd config
       ../../system/hardware/kernel.nix # Kernel config
@@ -21,7 +20,6 @@
       (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
       ../../system/app/appsupport.nix
       ../../system/app/virtualization.nix
-      ( import ../../system/app/OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
       ../../system/app/syncthing.nix
       ../../system/security/doas.nix
       ../../system/security/gpg.nix
@@ -32,7 +30,7 @@
       ../../system/security/automount.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
-      ../../system/app/develop.nix
+#       ../../system/app/develop.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
       ./syspkgs.nix
@@ -89,13 +87,37 @@
 users = {
   defaultUserShell = pkgs.fish;
   mutableUsers = false;
-  users.${userSettings.username} = {
-    isNormalUser = true;
-    description = userSettings.name;
-    extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
-#     packages = with pkgs; [];
-    uid = 1000;
+  users={
+    avahi.uid= 999;
+    flatpak.uid=998;
+    nm-iodine.uid=997;
+    nscd.uid=996;
+    rtkit.uid=995;
+    systemd-oom.uid=994;
+    ${userSettings.username} = {
+      isNormalUser = true;
+      description = userSettings.name;
+      extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
+  #     packages = with pkgs; [];
+      uid = 1000;
+    };
   };
+  groups={
+    adbusers.gid=999;
+    avahi.gid=998;
+    flatpak.gid=997;
+    jupyter.gid=996;
+    lxd.gid=995;
+    msr.gid=994;
+    nscd.gid=993;
+    podman.gid=992;
+    polkituser.gid=991;
+    rtkit.gid=990;
+    sgx_prv.gid=989;
+    systemd-coredump.gid=988;
+    systemd-oom.gid=987;
+    vboxusers.gid=986;
+    };
   extraGroups.vboxusers.members = [ userSettings.username ];
 };
 
@@ -114,41 +136,12 @@ environment = {
     ];
   };
 
-  # Install the zen kernel
-#   boot.kernelPackages = pkgs.linuxPackages_zen;
-
-  ## ZFS
-/*
-boot = {
-  zfs = {
-    enabled = lib.mkOverride 1000 true;
-    removeLinuxDRM = true;
-    forceImportRoot = false;
-    forceImportAll = false;
-    enableUnstable = true;
-    allowHibernation = true;
-    };
-  };
-*/
-
- # boot.kernelParams = [ "mem_sleep_default=deep" "zfs.zfs_arc_max=12884901888" "boot.shell_on_fail" /* "resume=/dev/disk/by-uuid/50ee6795-a53f-f245-a3d0-cfabbfb81097" "resume_offset=933263" */ ];
-  /*
-  boot.initrd.kernelModules = [
- "dm-cache-default" # when using volumes set up with lvmcache
-];
-  boot.initrd.services.lvm.enable = true;
-  boot.initrd.enable = true;
-  */
 #  boot.resumeDevice = "/dev/disk/by-uuid/50ee6795-a53f-f245-a3d0-cfabbfb81097";
 #       fsType = "btrfs";
 #       options = [ "subvol=swap" ];
 #       #mountPoint = "/swap" ;
 #       neededForBoot = true;
 #       depends = [ ];
-
-
-
-
 
 
 #   # Set your time zone.
@@ -218,11 +211,11 @@ services = {
   samba-wsdd.enable = true;
   samba = {
     enable = true;
-    enableNmbd = true;
-    enableWinbindd = true;
+    nmbd.enable = true;
+    winbindd.enable = true;
     openFirewall= true;
     nsswins = true;
-    shares =
+    settings =
     { Shared = { path = "/Shared"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky shared volume"; };
       Labvol = { path = "/Volume"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky Main Volume"; };
     };
@@ -291,8 +284,6 @@ systemd = {
 
 */
 
-  # Enable flatpak support
-  services.flatpak.enable = true;
   # firejail
 nix = {
   # Fix nix path

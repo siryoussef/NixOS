@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-stable, ... }:
 let
   myRetroarch =
     (pkgs.retroarch.override {
@@ -22,7 +22,7 @@ let
     });
 in
 {
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     # Games
     pegasus-frontend
     myRetroarch
@@ -31,24 +31,10 @@ in
     qjoypad
     superTux
     superTuxKart
-
-    # I installed these in distrobox
-    # and exported using distrobox-export
-    (pkgs.makeDesktopItem {
-      name = "pokefinder";
-      desktopName = "PokeFinder";
-      exec = "/home/emmet/.local/bin/pokefinder";
-      terminal = false;
-      type = "Application";
-    })
-    (pkgs.makeDesktopItem {
-      name = "eontimer";
-      desktopName = "EonTimer";
-      exec = "/home/emmet/.local/bin/eontimer";
-      terminal = false;
-      type = "Application";
-    })
-  ];
+    gamepad-tool
+  ]) ++ (with pkgs-stable; [
+    pokefinder
+  ]);
 
   nixpkgs.config = {
     allowUnfree = true;

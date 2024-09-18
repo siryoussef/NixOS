@@ -1,6 +1,7 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;;;------ User configuration ------;;;
+(setq use-package-always-defer t)
 
 ;; Import relevant system variables from flake (see doom.nix)
 ;; includes variables like user-full-name, user-username, user-home-directory, user-email-address, doom-font,
@@ -42,23 +43,24 @@
   ))
   ;; On Linux I can enable blur, however
   (funcall (lambda ()
-    (set-frame-parameter nil 'alpha-background 75)
-    (add-to-list 'default-frame-alist '(alpha-background . 75))
+    (set-frame-parameter nil 'alpha-background 85)
+    (add-to-list 'default-frame-alist '(alpha-background . 85))
   ))
 )
+
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;; Icons in completion buffers
 (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
 (all-the-icons-completion-mode)
-
-;; This makes non-main buffers dimmer, so you can focus on main buffers
-(solaire-global-mode +1)
 
 ;; Grammar tasing should be voluntary
 (setq writegood-mode nil)
 
 ;; Beacon shows where the cursor is, even when fast scrolling
 (setq beacon-mode t)
+
+(setq company-idle-delay 0.05)
 
 ;; Quicker window management keybindings
 (bind-key* "C-j" #'evil-window-down)
@@ -87,10 +89,11 @@
 (require 'dashboard)
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
       doom-fallback-buffer-name "*dashboard*")
+(setq image-scaling-factor 1)
 
 ;; emacs-dashboard variables
 (setq dashboard-banner-logo-title "Welcome to Nix Doom Emacs")
-(setq dashboard-startup-banner 2)
+(setq dashboard-startup-banner "~/.emacs.d/dashboard-logo.webp")
 (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
@@ -107,6 +110,18 @@
                                   "I’ll tell you a DNS joke but it could take 24 hours for everyone to get it."
                                   "I'd tell you a UDP joke, but you might not get it."
                                   "I'll tell you a TCP joke. Do you want to hear it?"))
+
+;; Remove basic evil input and cursors from dashboard
+(defun disable-cursor()
+  (setq-local evil-normal-state-cursor '(bar . 0))
+  (hl-line-mode -1)
+)
+(add-hook 'dashboard-mode-hook 'disable-cursor)
+(evil-define-key 'normal dashboard-mode-map
+  "j" 'evil-normal-state
+  "k" 'evil-normal-state
+  "h" 'evil-normal-state
+  "l" 'evil-normal-state)
 (setq dashboard-navigator-buttons
   `(;; line1
     ( (,"Roam" "" "" (lambda (&rest _)) 'org-formula)
@@ -118,11 +133,13 @@
     ;; line 2
     ( (,"Git" "" "" (lambda (&rest _)) 'diredfl-exec-priv)
      (,(all-the-icons-octicon "mark-github" :height 1.0 :v-adjust 0.0)
-       "GitHub" "" (lambda (&rest _) (browse-url "ext+container:name=Tech&url=https://github.com/librephoenix")) 'diredfl-exec-priv)
+       "GitHub" "" (lambda (&rest _) (browse-url "https://github.com/librephoenix")) 'diredfl-exec-priv)
      (,(all-the-icons-faicon "gitlab" :height 1.0 :v-adjust 0.0)
-       "GitLab" "" (lambda (&rest _) (browse-url "ext+container:name=Tech&url=https://gitlab.com/librephoenix")) 'diredfl-exec-priv)
+       "GitLab" "" (lambda (&rest _) (browse-url "https://gitlab.com/librephoenix")) 'diredfl-exec-priv)
      (,(all-the-icons-faicon "coffee" :height 1.0 :v-adjust 0.0)
        "Gitea" "" (lambda (&rest _) (browse-url my-gitea-domain)) 'diredfl-exec-priv)
+     (,(all-the-icons-octicon "triangle-up" :height 1.2 :v-adjust -0.1)
+       "Codeberg" "" (lambda (&rest _) (browse-url "https://codeberg.org/librephoenix")) 'diredfl-exec-priv)
     )
     ;; line 3
     ( (,"Agenda" "" "" (lambda (&rest _)) 'dired-warning)
@@ -145,6 +162,10 @@
     :v-adjust -0.15
     :face 'font-lock-keyword-face))
 (dashboard-setup-startup-hook)
+
+(map! :leader :desc "Open dashboard" "b b" #'dashboard-refresh-buffer)
+
+(setq scroll-conservatively 101)
 
 ;; Smooth scrolling
 ;; requires good-scroll.el
@@ -190,6 +211,27 @@
 ;; For camelCase
 (global-subword-mode 1)
 
+;; ripgrep as grep
+(setq grep-command "rg -nS --no-heading "
+      grep-use-null-device nil)
+
+;; Mini-frames ;; cool but kinda suboptimal atm
+;(add-load-path! "~/.emacs.d/mini-frame")
+;(require 'mini-frame)
+;(setq mini-frame-ignore-commands '(evil-ex-search-forward helpful-variable helpful-callable))
+;(setq mini-frame-show-parameters
+;    '((left . 216)
+;     (top . 240)
+;     (width . 0.78)
+;     (height . 20)
+;     (alpha-background . 90))
+;)
+;(setq mini-frame-detach-on-hide nil)
+;(setq mini-frame-resize t)
+;(setq resize-mini-frames t)
+;(setq mini-frame-standalone nil)
+;(mini-frame-mode 1)
+
 ;;;------ Registers ------;;;
 
 (map! :leader
@@ -203,7 +245,11 @@
 ;;;------ Org mode configuration ------;;;
 
 ;; Set default org directory
-(setq org-directory "~/.Org")
+(setq org-directory "~/Org")
+(setq org-attach-directory "~/Org/.attach")
+(setq org-attach-id-dir "~/Org/.attach")
+(setq org-id-locations-file "~/Org/.orgids")
+(setq org-cycle-include-plain-lists 'integrate)
 
 (remove-hook 'after-save-hook #'+literate|recompile-maybe)
 (set-company-backend! 'org-mode nil)
@@ -218,14 +264,20 @@
 
 ;; Top-level headings should be bigger!
 (custom-set-faces!
-  '(org-level-1 :inherit outline-1 :height 1.3)
-  '(org-level-2 :inherit outline-2 :height 1.25)
-  '(org-level-3 :inherit outline-3 :height 1.2)
-  '(org-level-4 :inherit outline-4 :height 1.1)
-  '(org-level-5 :inherit outline-5 :height 1.1)
-  '(org-level-6 :inherit outline-6 :height 1.05)
-  '(org-level-7 :inherit outline-7 :height 1.05)
-  )
+  `(outline-1 :height 1.3 :foreground ,(nth 1 (nth 14 doom-themes--colors)))
+  `(outline-2 :height 1.25 :foreground ,(nth 1 (nth 15 doom-themes--colors)))
+  `(outline-3 :height 1.2 :foreground ,(nth 1 (nth 19 doom-themes--colors)))
+  `(outline-4 :height 1.1 :foreground ,(nth 1 (nth 23 doom-themes--colors)))
+  `(outline-5 :height 1.1 :foreground ,(nth 1 (nth 24 doom-themes--colors)))
+  `(outline-6 :height 1.1 :foreground ,(nth 1 (nth 16 doom-themes--colors)))
+  `(outline-7 :height 1.05 :foreground ,(nth 1 (nth 18 doom-themes--colors)))
+  `(outline-8 :height 1.05 :foreground ,(nth 1 (nth 11 doom-themes--colors)))
+  '(variable-pitch :family "Intel One Mono")
+  `(org-agenda-date :inherit 'unspecified :foreground ,(nth 1 (nth 19 doom-themes--colors)) :weight bold :height 1.1)
+  `(org-agenda-date-today :inherit 'unspecified :foreground ,(nth 1 (nth 15 doom-themes--colors)) :weight bold :height 1.1)
+  `(org-agenda-date-weekend :inherit 'unspecified :foreground ,(nth 1 (nth 24 doom-themes--colors)) :weight bold :height 1.1)
+  `(org-agenda-date-weekend-today :inherit 'unspecified :foreground ,(nth 1 (nth 15 doom-themes--colors)) :weight bold :height 1.1)
+)
 
 (after! org (org-eldoc-load))
 
@@ -255,7 +307,7 @@
   org-pretty-entities t
   org-ellipsis "…")
 
-(setq-default line-spacing 0.15)
+(setq-default line-spacing 0)
 
 ; Automatic table of contents is nice
 (if (require 'toc-org nil t)
@@ -408,10 +460,51 @@ same directory as the org-buffer and insert a link to this file."
                     '(file))
            (list (openwith-make-extension-regexp
                   '("flp"))
-                    "~/.local/bin/flstudio"
+                    "flstudio"
+                    '(file))
+           (list (openwith-make-extension-regexp
+                  '("mid"))
+                    "rosegarden"
                     '(file))
                ))
      (openwith-mode 1)))
+
+(add-load-path! "~/.emacs.d/org-krita")
+(require 'org-krita)
+(add-hook 'org-mode-hook 'org-krita-mode)
+(setq org-krita-extract-filename "preview.png")
+(setq org-krita-scale 1)
+
+(add-load-path! "~/.emacs.d/org-xournalpp")
+(require 'org-xournalpp)
+(add-hook 'org-mode-hook 'org-xournalpp-mode)
+(setq org-xournalpp-template-getter
+  '(closure
+    (t)
+    nil
+    (file-truename "~/Templates/template.xopp") ; use my own template
+  )
+)
+
+;; override width to static 250 for now
+;; so I don't have massive images in org mode (scrolling not fun)
+(defun org-xournalpp--create-image (link refresh)
+  "Extract svg/png from given LINK and return image.
+
+Regenerate the cached inline image, if REFRESH is true.
+
+If the path from LINK does not exist, nil is returned."
+  (let ((width 250)
+        (xopp-path (f-expand (org-element-property :path link))))
+    (when (f-exists? xopp-path)
+        (if width
+            (create-image (org-xournalpp--get-image xopp-path refresh)
+                          org-xournalpp-image-type
+                          nil
+                          :width width)
+          (create-image (org-xournalpp--get-image xopp-path refresh)
+                        org-xournalpp-image-type
+                        nil)))))
 
 (defun org-copy-link-to-clipboard-at-point ()
   "Copy current link at point into clipboard (useful for images and links)"
@@ -517,17 +610,13 @@ same directory as the org-buffer and insert a link to this file."
                         input-str)))))))
 
 ;; Org transclusion
-(use-package! org-transclusion
-  :after org
-  :init
-  (map!
-   :map global-map "<f12>" #'org-transclusion-add
-   :leader
-   :prefix "n"
-   :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
-(map! :leader :prefix "n" "l" #'org-transclusion-live-sync-start)
-
-(add-hook 'org-mode-hook #'org-transclusion-mode)
+(require 'org-transclusion)
+(after! org
+  (map! :map global-map "<f12>" #'org-transclusion-add :leader :prefix "n" :desc "Org Transclusion Mode" "t" #'org-transclusion-mode)
+  (map! :leader :prefix "n" "l" #'org-transclusion-live-sync-start)
+  (setq org-transclusion-exclude-elements '(property-drawer keyword))
+  (add-hook 'org-mode-hook #'org-transclusion-mode)
+)
 
 (defun org-jekyll-new-post ()
   (interactive)
@@ -566,6 +655,82 @@ same directory as the org-buffer and insert a link to this file."
       "e" #'org-jekyll-rename-post
 )
 
+(require 'crdt)
+(setq crdt-default-tls t)
+(setq crdt-use-stunnel t)
+(setq crdt-default-name "Emmet")
+(if (file-exists-p "~/.emacs.d/crdt-private.el") (load! "~/.emacs.d/crdt-private.el"))
+(defun crdt-connect-default ()
+  (interactive)
+  (crdt-connect crdt-default-server-address crdt-default-name)
+)
+(map! :leader
+      :desc "crdt"
+      :prefix ("C")
+
+      :desc "Connect to a crdt server"
+      "c" #'crdt-connect-default
+
+      :desc "Connect to default crdt server"
+      "C" #'crdt-connect-default
+
+      :desc "Disconnect from a crdt server"
+      "d" #'crdt-disconnect
+
+      :desc "Add buffer to a session"
+      "a" #'crdt-share-buffer
+
+      :desc "Stop sharing buffer when running a server"
+      "s" #'crdt-stop-share-buffer
+
+      :desc "Run M-x on the (remote) crdt session"
+      "x" #'crdt-M-x
+
+      :desc "List crdt buffers in a session"
+      "l" #'crdt-list-buffers
+
+      :desc "List crdt users in a session"
+      "u" #'crdt-list-users
+)
+
+(require 'org-analyzer)
+(setq org-analyzer-wrapper-command "org-analyzer")
+(setq org-analyzer-jar-file-name "~/.nix-profile/bin/org-analyzer.jar")
+(setq org-analyzer-java-program "~/.nix-profile/bin/org-analyzer") ;; Is not actually java, buta  wrapper shell script
+
+(defun org-analyzer-start-process (org-dir)
+  "Start the org analyzer process .
+Argument ORG-DIR is where the org-files are located."
+  (org-analyzer-cleanup-process-state)
+  (unless (file-exists-p org-dir)
+    (warn "org-analyzer was started with org-directory set to
+  \"%s\"\nbut this directory does not exist.
+Please set the variable `org-directory' to the location where you keep your org files."
+           org-directory))
+    (let* ((name (format " *org-analyzer [org-dir:%s]*" org-dir))
+           (proc-buffer (generate-new-buffer name))
+           (proc nil))
+      (setq org-analyzer-process-buffer proc-buffer)
+      (with-current-buffer proc-buffer
+        (setq default-directory (if (file-exists-p org-dir)
+                                    org-dir default-directory)
+              proc (condition-case err
+                       (let ((process-connection-type nil)
+                             (process-environment process-environment))
+                         (start-process name
+                                        (current-buffer)
+                                        org-analyzer-wrapper-command
+                                        "--port"
+                                        (format "%d" org-analyzer-http-port)
+                                        "--started-from-emacs"
+                      (if (file-exists-p org-dir) org-dir "")))
+                     (error
+                      (concat "Can't start org-analyzer (%s: %s)"
+                (car err) (cadr err)))))
+        (set-process-query-on-exit-flag proc nil)
+        (set-process-filter proc #'org-analyzer-process-filter))
+      proc-buffer))
+
 ;;;------ Org roam configuration ------;;;
 (require 'org-roam)
 (require 'org-roam-dailies)
@@ -588,6 +753,8 @@ same directory as the org-buffer and insert a link to this file."
  org-roam-db-choice)
 )
 
+(setq org-roam-list-files-commands '(rg))
+
 (setq full-org-roam-db-list nil)
 
 (setq full-org-roam-db-list (directory-files "~/Org" t "\\.[p,s]$"))
@@ -605,24 +772,24 @@ same directory as the org-buffer and insert a link to this file."
 (defun org-roam-open-dashboard ()
   "Open ${org-roam-directory}/dashboard.org (I use this naming convention to create dashboards for each of my org roam maps)"
   (interactive)
-  (if (file-exists-p (concat org-roam-directory "/dashboard.org"))
-      (org-open-file (concat org-roam-directory "/dashboard.org"))
+  (if (org-roam-node-from-title-or-alias "Overview")
+      (org-roam-node-open (org-roam-node-from-title-or-alias "Overview"))
       (dired org-roam-directory))
 )
 
 (defun org-roam-open-inbox ()
-  "Capture info in ${org-roam-directory}/inbox.org (I use this naming convention to create dashboards for each of my org roam maps)"
+  "Open ${org-roam-directory}/dashboard.org (I use this naming convention to create dashboards for each of my org roam maps)"
   (interactive)
-  (if (file-exists-p (concat org-roam-directory "/inbox.org"))
-      (org-open-file (concat org-roam-directory "/inbox.org"))
+  (if (org-roam-node-from-title-or-alias "Inbox")
+      (org-roam-node-open (org-roam-node-from-title-or-alias "Inbox"))
       (message "No inbox found, capture something with M-x org-roam-capture-inbox"))
 )
 
 (defun org-roam-capture-inbox ()
   (interactive)
-  (org-roam-capture- :node (org-roam-node-create)
+  (org-roam-capture- :node (org-roam-node-from-title-or-alias "Inbox")
                      :templates '(("i" "inbox" plain "* %?"
-                                  :if-new (file+head "inbox.org" "#+title: Inbox\n")))))
+                                  :if-new (file+head "%<%Y%m%d%H%M%S>-inbox.org" "#+title: Inbox\n")))))
 
 (defun org-roam-switch-db (&optional arg silent)
   "Switch to a different org-roam database, arg"
@@ -771,20 +938,18 @@ same directory as the org-buffer and insert a link to this file."
   )
 )
 
-(defun org-roam-append-notes-to-agenda (tag-name db)
-  (org-roam-switch-db db t)
-;  (org-roam-dailies-apply-old-todos-tags-to-all)
-  (setq org-agenda-files (append org-agenda-files (org-roam-list-notes-by-tag "todos")))
-)
-
 ;; Refreshing org roam agenda
 (defun org-roam-refresh-agenda-list ()
   (interactive)
   (setq prev-org-roam-db-choice org-roam-db-choice)
   (setq org-agenda-files '())
-  (dolist (DB full-org-roam-db-list-pretty)
-    (org-roam-append-notes-to-agenda "todos" DB)
-  )
+  (setq org-id-files '())
+  (setq org-roam-directory (file-truename "~/Org")
+        org-roam-db-location (file-truename "~/Org/org-roam.db")
+        org-directory (file-truename "~/Org/"))
+  (org-roam-db-sync)
+  (setq org-agenda-files (org-roam-list-notes-by-tag "todos"))
+  (setq org-id-files (org-roam-list-files))
   (setq org-agenda-files (-uniq org-agenda-files))
   (org-roam-switch-db prev-org-roam-db-choice 1)
 )
@@ -862,8 +1027,7 @@ same directory as the org-buffer and insert a link to this file."
 
 (add-load-path! "~/.emacs.d/org-nursery/lisp")
 (require 'org-roam-dblocks)
-(use-package org-roam-dblocks
-  :hook (org-mode . org-roam-dblocks-autoupdate-mode))
+(add-hook 'org-mode-hook 'org-roam-dblocks-autoupdate-mode)
 
 (setq org-id-extra-files 'org-agenda-text-search-extra-files)
 
@@ -917,16 +1081,18 @@ same directory as the org-buffer and insert a link to this file."
       org-agenda-skip-deadline-if-done t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-scheduled-if-deadline-is-shown t
-      org-agenda-skip-timestamp-if-deadline-is-shown t)
+      org-agenda-skip-timestamp-if-deadline-is-shown t
+      org-log-into-drawer t)
 
 ;; Custom styles for dates in agenda
 (custom-set-faces!
   '(org-agenda-date :inherit outline-1 :height 1.15)
-  '(org-agenda-date-today :inherit diary :height 1.15)
-  '(org-agenda-date-weekend :ineherit outline-2 :height  1.15)
-  '(org-agenda-date-weekend-today :inherit outline-4 :height 1.15)
+  '(org-agenda-date-today :inherit outline-2 :height 1.15)
+  '(org-agenda-date-weekend :inherit outline-1 :height 1.15)
+  '(org-agenda-date-weekend-today :inherit outline-2 :height 1.15)
   '(org-super-agenda-header :inherit custom-button :weight bold :height 1.05)
-  )
+  `(link :foreground unspecified :underline nil :background ,(nth 1 (nth 7 doom-themes--colors)))
+  '(org-link :foreground unspecified))
 
 ;; Toggle completed entries function
 (defun org-agenda-toggle-completed ()
@@ -964,6 +1130,9 @@ same directory as the org-buffer and insert a link to this file."
         ("Knowledge.p" ,(list (all-the-icons-faicon "database" :height 0.8)) nil nil :ascent center)
         ("Personal.p" ,(list (all-the-icons-material "person" :height 0.9)) nil nil :ascent center)
 ))
+
+(defalias 'org-timestamp-down 'org-timestamp-down-day)
+(defalias 'org-timestamp-up 'org-timestamp-up-day)
 
 (defun org-categorize-by-roam-db-on-save ()
   (interactive)
@@ -1111,61 +1280,44 @@ same directory as the org-buffer and insert a link to this file."
       :map org-super-agenda-header-map
       "k" 'org-agenda-previous-line)
 
-(add-load-path! "~/.emacs.d/org-timeblock")
-(require 'org-timeblock)
+(require 'calfw)
+(require 'calfw-org)
+(setq cfw:org-agenda-schedule-args '(:timestamp))
 
-(map! :leader :desc "Open org timeblock"
-      "O c" 'org-timeblock)
-
-(map! :desc "Next day"
-      :map org-timeblock-mode-map
-      :nvmeg "l" 'org-timeblock-day-later)
-(map! :desc "Previous day"
-      :map org-timeblock-mode-map
-      :nvmeg "h" 'org-timeblock-day-earlier)
-(map! :desc "Schedule event"
-      :map org-timeblock-mode-map
-      :nvmeg "m" 'org-timeblock-schedule)
-(map! :desc "Event duration"
-      :map org-timeblock-mode-map
-      :nvmeg "d" 'org-timeblock-set-duration)
+(map! :leader :desc "Open org calendar"
+      "O c" 'cfw:open-org-calendar)
 
 ;;;------ magit configuration ------;;;
 ;; Need the following two blocks to make magit work with git bare repos
-(defun ~/magit-process-environment (env)
-  "Add GIT_DIR and GIT_WORK_TREE to ENV when in a special directory.
-https://github.com/magit/magit/issues/460 (@cpitclaudel)."
-  (let ((default (file-name-as-directory (expand-file-name default-directory)))
-        (home (expand-file-name "~/")))
-    (when (string= default home)
-      (let ((gitdir (expand-file-name "~/.dotfiles.git/")))
-        (push (format "GIT_WORK_TREE=%s" home) env)
-        (push (format "GIT_DIR=%s" gitdir) env))))
-  env)
-
-(advice-add 'magit-process-environment
-            :filter-return #'~/magit-process-environment)
-
 (require 'magit-todos)
+(setq magit-todos-keywords-list '("TODO" "FIXME" "HACK" "REVIEW" "DEPRECATED" "BUG"))
 (magit-todos-mode 1)
 
-(evil-set-initial-state 'ibuffer-mode 'motion)
-(evil-define-key 'motion 'ibuffer-mode
-  "j" 'evil-next-visual-line
-  "k" 'evil-previous-visual-line
-  "d" 'ibuffer-mark-for-delete
-  "q" 'kill-buffer
-  (kbd "<return>") 'ibuffer-visit-buffer)
+(add-load-path! "~/.emacs.d/magit-file-icons")
+(require 'magit-file-icons)
+(setq magit-file-icons-icon-for-file-func 'all-the-icons-icon-for-file)
+(setq magit-file-icons-icon-for-dir-func 'all-the-icons-icon-for-dir)
+(magit-file-icons-mode 1)
+
+(require 'all-the-icons-ibuffer)
+(add-hook 'ibuffer-mode-hook #'all-the-icons-ibuffer-mode)
+(setq all-the-icons-ibuffer-color-icon t)
+(evil-set-initial-state 'ibuffer-mode 'normal)
 
 ;;;------ dired configuration ------;;;
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+(setq all-the-icons-dired-monochrome nil)
 
 (map! :desc "Increase font size"
       "C-=" 'text-scale-increase
 
       :desc "Decrease font size"
-      "C--" 'text-scale-decrease)
+      "C--" 'text-scale-decrease
+
+      :desc "Jump to dired"
+      "M-f" 'dired-jump
+)
 
 ;;;------ ranger configuration ------;;;
 
@@ -1175,9 +1327,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
       :desc "Toggle mark on current file"
       "x" 'ranger-toggle-mark
-
-      :desc "Open ranger"
-      "o d" 'ranger)
+)
 
 ;;;-- hledger-mode configuration ;;;--
 
@@ -1246,12 +1396,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   "q" 'helpful-kill-buffers)
 
 ;;;------ helpful configuration ------;;;
-(add-load-path! "~/.nix-profile/share/emacs/site-lisp/elpa/mu4e-1.10.8")
+(add-load-path! "~/.nix-profile/share/emacs/site-lisp/elpa/mu4e-1.12.2")
 (require 'mu4e)
 (require 'mu4e-contrib)
 (require 'mu4e-actions)
 
 (after! mu4e
+  (setq mu4e-modeline-support nil)
   (setq mu4e-sent-folder (lambda (msg) (concat "/" (nth 1 (split-string (mu4e-message-field msg :maildir) "/" )) "/Sent")))
   (setq mu4e-drafts-folder (lambda (msg) (concat "/" user-mail-address "/Drafts")))
   (setq mu4e-trash-folder (lambda (msg) (concat "/" (nth 1 (split-string (mu4e-message-field msg :maildir) "/" )) "/Trash")))
@@ -1259,6 +1410,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   (setq mu4e-index-lazy-check t)
   (setq mu4e-index-cleanup t)
+  (setq mu4e-update-interval 120)
+  (mu4e-alert-enable-notifications)
 
   (define-key mu4e-main-mode-map (kbd "<SPC>") #'doom/leader)
   (define-key mu4e-headers-mode-map (kbd "<SPC>") #'doom/leader)
@@ -1344,6 +1497,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (add-hook 'mu4e-compose-mode-hook #'no-auto-fill)
   (add-hook 'mu4e-compose-pre-hook #'no-org-msg-mode)
 
+  (mu4e--start) ;; start mu4e silently
+
 )
 
 ;;;-- Load emacs direnv;;;--
@@ -1366,6 +1521,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (map! :leader
       :desc "Projectile grep"
       "/" #'projectile-grep)
+(after! projectile (put 'projectile-grep 'disabled nil))
 
 ;;;-- projectile wrapper commands ;;;--
 (require 'sudo-edit)
@@ -1379,19 +1535,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       "f u" #'sudo-edit-find-file)
 
 ;;;-- LSP stuff ;;;--
-(use-package lsp-mode
-  :ensure t)
+(require 'lsp-mode)
+(require 'nix-mode)
+(require 'gdscript-mode)
 
-(use-package nix-mode
-  :hook (nix-mode . lsp-deferred)
-  :ensure t)
+(add-hook 'nix-mode-hook 'lsp-deferred)
+(add-hook 'gdscript-mode-hook 'lsp-deferred)
+
+(setq gdscript-godot-executable "godot4")
 
 (setq lsp-java-workspace-dir (concat user-home-directory "/.local/share/doom/java-workspace"))
-
-(require 'gdscript-mode)
-(use-package gdscript-mode
-  :hook (gdscript-mode . lsp-deferred)
-  :ensure t)
 
 (setq lsp-treemacs-deps-position-params
   '((side . right)
@@ -1408,7 +1561,48 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
 (setq +format-on-save-enabled-modes '(not emacs-lisp-mode sql-mode tex-mode latex-mode org-msg-edit-mode nix-mode))
 
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
 
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+(map! :leader :desc "Find definition using lsp" "L d" #'lsp-find-definition)
+
+;; devdocs are cool
+(require 'devdocs)
+
+(map! :leader :desc "Peruse devdocs" "L p" #'devdocs-peruse)
+
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(after! vterm
+  (add-to-list 'vterm-tramp-shells '("ssh" "zsh")) ;; I use zsh on all my servers
+)
 
 ;; I source my rss from my freshrss instance
 ;; I login with a private elisp file: ~/.emacs.d/freshrss-elfeed.el
@@ -1436,19 +1630,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (map! :leader :desc "Open elfeed" "O n" #'elfeed)
 (map! :map 'elfeed-search-mode-map :desc "Open url" :n "g o" #'elfeed-search-browse-url)
 
-(defun freshrss-network-connection-p ()
-  (not (condition-case nil
-        (delete-process
-         (make-network-process
-          :name freshrss-hostname
-          :host "elpa.gnu.org"
-          :service 443))
-      (error t))))
-
 (defun elfeed-full-update ()
   (interactive)
-  (if (freshrss-network-connection-p) (delete-directory "~/.cache/doom/elfeed" t))
-  (setq elfeed-db nil)
-  (elfeed-protocol-fever-update main-elfeed-feed)
+  (elfeed-search-update--force)
+  (cl-loop for entry in elfeed-search-entries
+     do (elfeed-untag-1 entry 'unread))
+  (elfeed-protocol-fever-reinit freshrss-hostname)
   (elfeed-update))
-(map! :map 'elfeed-search-mode-map :desc "Update elfeed" :n "g R" #'elfeed-full-update)
+
+(add-hook 'elfeed-search-mode-hook 'elfeed-full-update)
+(add-hook 'elfeed-search-update-hook (lambda () (goto-char (point-min))))

@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   # Collection of useful CLI apps
   home.packages = with pkgs; [
@@ -21,7 +20,7 @@
     hwinfo
     pciutils
     numbat
-    (pkgs.callPackage ../pkgs/smartcalc.nix { })
+#     (pkgs.callPackage ../pkgs/smartcalc.nix { })
     #(pkgs.writeShellScriptBin "sc" ''smartcalc'')
     #(pkgs.callPackage ../pkgs/pokemon-colorscripts.nix { })
     #(pkgs.python3Packages.callPackage ../pkgs/impressive.nix { })

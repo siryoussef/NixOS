@@ -45,15 +45,6 @@ let generateHomepage = name: font: config:
           font-weight: bold;
         }
 
-        /*xmp tag style for ascii art*/
-        xmp {
-            font-family:''+font+'';
-
-            font-size:22px;
-            color: #''+config.lib.stylix.colors.base01+''
-
-            text-align:center;
-        }
         /*div*/
         div {
             margin:auto;
@@ -69,23 +60,14 @@ let generateHomepage = name: font: config:
 
     <body>
       <!--start with cool qutebrowser ascii art-->
+      <br>
+      <br>
+      <br>
       <div class="icon">
-           <xmp>       ..--------..        </xmp>
-           <xmp>    .``            "'.     </xmp>
-           <xmp>  .`  _.---.. /--|    '.   </xmp>
-           <xmp>   /``      ||   |         </xmp>
-           <xmp> /`  /--|   ||   |         </xmp>
-           <xmp>/   /   |   ||   `/----\,  </xmp>
-           <xmp>|   |   | .-`.-/- __.    \ </xmp>
-           <xmp>|   \   `-.`` ..-`   \    |</xmp>
-           <xmp>\    ````   ~.^` |    |   |</xmp>
-           <xmp> \.____.-``'||   |   /   / </xmp>
-           <xmp>        |   ||   |_.-   /  </xmp>
-           <xmp>        |   ||         /   </xmp>
-           <xmp>   .    |_-` `------~``.   </xmp>
-           <xmp>    `..             ..`    </xmp>
-           <xmp>       ``--______-'`       </xmp>
+           <img width="300" src="logo.png">
       </div>
+      <br>
+      <br>
       <br>
       <!--qutebrowser title-->
       <p style="color:#''+config.lib.stylix.colors.base01+''">Welcome to Qutebrowser</p>
@@ -123,7 +105,18 @@ in
 
   programs.qutebrowser.enable = true;
   programs.qutebrowser.extraConfig = ''
-config.load_autoconfig(False)
+import sys
+import os.path
+secretsExists = False
+secretFile = os.path.expanduser("~/.config/qutebrowser/qutesecrets.py")
+
+if (os.path.isfile(secretFile)):
+    sys.path.append(os.path.dirname(secretFile))
+    import qutesecrets
+    secretsExists = True
+
+config.set('qt.args',['ignore-gpu-blacklist','enable-gpu-rasterization','enable-native-gpu-memory-buffers','num-raster-threads=4'])
+config.load_autoconfig(True)
 
 base00 = "#''+config.lib.stylix.colors.base00+''"
 base01 = "#''+config.lib.stylix.colors.base01+''"
@@ -163,7 +156,9 @@ c.tabs.last_close = 'close'
 c.tabs.position = 'left'
 c.tabs.width = '3%'
 c.window.transparent = True
-c.colors.webpage.darkmode.enabled = True
+c.colors.webpage.darkmode.enabled = ''+(if (config.stylix.polarity == "dark") then "True" else "False")+''
+
+c.colors.webpage.preferred_color_scheme = "''+config.stylix.polarity+''"
 c.colors.webpage.darkmode.policy.images = 'never'
 
 c.url.default_page = str(config.configdir)+'/qute-home.html'
@@ -184,7 +179,8 @@ c.url.searchengines = {'DEFAULT': 'https://startpage.com/do/search?query={}',
                        'gl'     : 'https://gitlab.com/search?search={}&nav_source=navbar',
                        'np'     : 'https://github.com/search?q=repo%3ANixOS%2Fnixpkgs%20{}&type=code',
                        'wk'     : 'https://en.wikipedia.org/w/index.php?fulltext=1&search={}&title=Special%3ASearch&ns0=1',
-                       'th'     : 'https://www.thingiverse.com/search?q={}&page=1'
+                       'th'     : 'https://www.thingiverse.com/search?q={}&page=1',
+                       'dh'     : 'https://hub.docker.com/search?q={}'
                       }
 
 config.set('completion.open_categories',["searchengines","quickmarks","bookmarks"])
@@ -198,13 +194,42 @@ config.set('fileselect.folder.command', ['kitty','-e','ranger','--choosedir={}']
 
 # bindings from doom emacs
 config.bind('<Alt-x>', 'cmd-set-text :')
+config.bind('<Space>.', 'cmd-set-text :')
+config.bind('<Space>b', 'bookmark-list')
+config.bind('<Space>h', 'history')
+config.bind('<Space>gh', 'open https://github.com')
+config.bind('<Space>gl', 'open https://gitlab.com')
+config.bind('<Space>gc', 'open https://codeberg.org')
+if (secretsExists):
+    config.bind('<Space>gg', 'open '+qutesecrets.mygiteadomain)
 config.bind('<Ctrl-p>', 'completion-item-focus prev', mode='command')
 config.bind('<Ctrl-n>', 'completion-item-focus next', mode='command')
+config.bind('<Ctrl-p>', 'fake-key <Up>', mode='normal')
+config.bind('<Ctrl-n>', 'fake-key <Down>', mode='normal')
+config.bind('<Ctrl-p>', 'fake-key <Up>', mode='insert')
+config.bind('<Ctrl-n>', 'fake-key <Down>', mode='insert')
+config.bind('<Ctrl-p>', 'fake-key <Up>', mode='passthrough')
+config.bind('<Ctrl-n>', 'fake-key <Down>', mode='passthrough')
 
 # bindings from vimium
 config.bind('t', 'open -t')
 config.bind('x', 'tab-close')
 config.bind('yf', 'hint links yank')
+config.bind('<Ctrl-Tab>', 'tab-next')
+config.bind('<Ctrl-Shift-Tab>', 'tab-prev')
+
+# passthrough bindings
+config.bind('<Shift-Escape>', 'mode-leave', mode='passthrough')
+config.bind('<Ctrl-T>', 'open -t', mode='passthrough')
+config.bind('<Ctrl-W>', 'tab-close', mode='passthrough')
+config.bind('<Ctrl-Tab>', 'tab-next', mode='passthrough')
+config.bind('<Ctrl-Shift-Tab>', 'tab-prev', mode='passthrough')
+config.bind('<Ctrl-B>', 'cmd-set-text -s :quickmark-load -t', mode='passthrough')
+config.bind('<Ctrl-O>', 'cmd-set-text -s :open -t', mode='passthrough')
+config.bind('<Ctrl-F>', 'cmd-set-text /', mode='passthrough')
+config.bind('<Ctrl-R>', 'reload', mode='passthrough')
+config.unbind('<Ctrl-X>')
+config.unbind('<Ctrl-A>')
 
 # spawn external programs
 config.bind(',m', 'hint links spawn mpv {hint-url}')
@@ -310,7 +335,6 @@ c.colors.tabs.selected.odd.fg = base05
 c.colors.tabs.selected.odd.bg = base02
 c.colors.tabs.selected.even.fg = base05
 c.colors.tabs.selected.even.bg = base02
-c.colors.webpage.bg = base00
 
 font = "''+userSettings.font+''"
 
@@ -333,10 +357,16 @@ Bard
   '';
 
   home.file.".config/qutebrowser/qute-home.html".text = generateHomepage "Default" userSettings.font config;
+  home.file.".config/qutebrowser/logo.png".source = ./qutebrowser-logo.png;
   home.file.".browser/Teaching/config/qute-home.html".text = generateHomepage "Teaching" userSettings.font config;
+  home.file.".browser/Teaching/config/logo.png".source = ./qutebrowser-logo.png;
   home.file.".browser/Tech/config/qute-home.html".text = generateHomepage "Tech" userSettings.font config;
+  home.file.".browser/Tech/config/logo.png".source = ./qutebrowser-logo.png;
   home.file.".browser/Gaming/config/qute-home.html".text = generateHomepage "Gaming" userSettings.font config;
+  home.file.".browser/Gaming/config/logo.png".source = ./qutebrowser-logo.png;
   home.file.".browser/Gamedev/config/qute-home.html".text = generateHomepage "Gamedev" userSettings.font config;
+  home.file.".browser/Gamedev/config/logo.png".source = ./qutebrowser-logo.png;
   home.file.".browser/Bard/config/qute-home.html".text = generateHomepage "Bard" userSettings.font config;
+  home.file.".browser/Bard/config/logo.png".source = ./qutebrowser-logo.png;
 
 }

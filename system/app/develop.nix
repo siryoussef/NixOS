@@ -7,8 +7,11 @@ environment.systemPackages= ((with pkgs;[
     pkgs.rPackages.Anaconda
     # grafana
          # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
-    devenv
-    ]) ++ (with pkgs;(with python311Packages;[
+    ]) ++
+    (with pkgs-stable;[
+      devenv
+      ]) ++
+    (with pkgs;(with python311Packages;[
     ipykernel
     pandas
     numpy

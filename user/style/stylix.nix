@@ -1,4 +1,4 @@
-{ config, lib, pkgs, userSettings, ... }:
+{ config, lib, pkgs, inputs, userSettings, ... }:
 
 let
   themePath = "../../../themes"+("/"+userSettings.theme+"/"+userSettings.theme)+".yaml";
@@ -7,6 +7,9 @@ let
   backgroundSha256 = builtins.readFile (./. + "../../../themes/"+("/"+userSettings.theme)+"/backgroundsha256.txt");
 in
 {
+
+  imports = [ inputs.stylix.homeManagerModules.stylix ];
+
   home.file.".currenttheme".text = userSettings.theme;
   stylix.autoEnable = false;
   stylix.polarity = themePolarity;
@@ -30,8 +33,8 @@ in
       package = userSettings.fontPkg;
     };
     emoji = {
-      name = "Noto Color Emoji";
-      package = pkgs.noto-fonts-emoji-blob-bin;
+      name = "Noto Emoji";
+      package = pkgs.noto-fonts-monochrome-emoji;
     };
     sizes = {
       terminal = 18;
@@ -69,6 +72,7 @@ in
       bright.white = "#"+config.lib.stylix.colors.base07;
     };
     font.size = config.stylix.fonts.sizes.terminal;
+    font.normal.family = userSettings.font;
   };
   stylix.targets.kitty.enable = true;
   stylix.targets.gtk.enable = true;
@@ -80,20 +84,6 @@ in
     feh --no-fehbg --bg-fill ''+config.stylix.image+'';
   '';
   home.file.".fehbg-stylix".executable = true;
-  home.file.".swaybg-stylix".text = ''
-    #!/bin/sh
-    swaybg -m fill -i ''+config.stylix.image+'';
-  '';
-  home.file.".swaybg-stylix".executable = true;
-  home.file.".swayidle-stylix".text = ''
-    #!/bin/sh
-    swaylock_cmd='swaylock --indicator-radius 200 --screenshots --effect-blur 10x10'
-    swayidle -w timeout 300 "$swaylock_cmd --fade-in 0.5 --grace 5" \
-                timeout 600 'hyprctl dispatch dpms off' \
-                resume 'hyprctl dispatch dpms on' \
-                before-sleep "$swaylock_cmd"
-    '';
-  home.file.".swayidle-stylix".executable = true;
   home.file = {
     ".config/qt5ct/colors/oomox-current.conf".source = config.lib.stylix.colors {
       template = builtins.readFile ./oomox-current.conf.mustache;
@@ -112,27 +102,21 @@ in
   home.file.".config/hypr/hyprpaper.conf".text = ''
     preload = ''+config.stylix.image+''
 
-    wallpaper = eDP-1,''+config.stylix.image+''
+    wallpaper = ,''+config.stylix.image+''
 
-    wallpaper = HDMI-A-1,''+config.stylix.image+''
-
-    wallpaper = DP-1,''+config.stylix.image+''
   '';
   home.packages = with pkgs; [
-     qt5ct pkgs.libsForQt5.breeze-qt5
+     libsForQt5.qt5ct pkgs.libsForQt5.breeze-qt5 libsForQt5.breeze-icons pkgs.noto-fonts-monochrome-emoji
   ];
-  home.sessionVariables = {
-    QT_QPA_PLATFORMTHEME="qt5ct";
-  };
-  programs.zsh.sessionVariables = {
-    QT_QPA_PLATFORMTHEME="qt5ct";
-  };
-  programs.bash.sessionVariables = {
-    QT_QPA_PLATFORMTHEME="qt5ct";
-  };
   qt = {
     enable = true;
-    style.package = pkgs.kdePackages.breeze-qt6;
+    style.package = pkgs.libsForQt5.breeze-qt5;
     style.name = "breeze-dark";
+    platformTheme = "kde";
+  };
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ userSettings.font ];
+    sansSerif = [ userSettings.font ];
+    serif = [ userSettings.font ];
   };
 }

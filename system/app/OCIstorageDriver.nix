@@ -1,4 +1,4 @@
-{ lib, storageDriver ? null, ... }:
+{ lib, storageDriver ? "overlay2", ... }:
 
 assert lib.asserts.assertOneOf "storageDriver" storageDriver [
 #   null

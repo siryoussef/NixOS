@@ -4,12 +4,12 @@
 { config, lib, modulesPath, systemSettings, userSettings, ... }:
 let
 DiscMounts ={
-    "/" = { device = "none"; fsType = "tmpfs"; }; # In-RAM-Root
+    "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=755"];*/}; # In-RAM-Root
 #     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; depends = ["/" "/home"];};
     "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
-    "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
-#     "/home" = { device = "none"; fsType = "tmpfs"; options = ["rw" "user"]; }; # In-RAM-Home
+#     "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
+#   "/home" = { device = "none"; fsType = "tmpfs"; options = ["rw" "user" "mode=777"]; }; # In-RAM-Home
     "/Volume" = { device = "/dev/disk/by-label/Volume"; fsType = "auto"; };
     "/Shared" = { device = "/dev/disk/by-label/Shared"; fsType = "auto"; };
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };

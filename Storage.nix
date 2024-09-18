@@ -53,11 +53,21 @@ persistent={
     user= {
       dir = [
 #         "Downloads"
-#         "Music"
-#         "Pictures"
-#         "Documents"
-#         "Videos"
-#         "VirtualBox VMs"
+        "Music"
+        "Pictures"
+        "Documents"
+        "Videos"
+        "VirtualBox VMs"
+        "Desktop"
+        ".gnupg"
+        ".ssh"
+        ".nixops"
+        ".jupyter"
+        ".android"
+        ".config/kdeconnect"
+        ".config/thorium"
+        ".config/session"
+        ".config/obsidian"
 #         { directory = ".gnupg"; mode = "0700"; }
 #         { directory = ".ssh"; mode = "0700"; }
 #         { directory = ".nixops"; mode = "0700"; }
@@ -65,7 +75,16 @@ persistent={
 #         ".local/share/direnv"
       ];
       files = [
-#         ".screenrc"
+        ".config/katerc"
+        ".config/gtkrc"
+        ".config/dolphinrc"
+        ".config/kwinrc"
+        ".screenrc"
+        ".gtkrc-2.0"
+        ".bash_history"
+        ".gitconfig"
+        ".config/kdeglobals"
+        ".config/kwinrulesrc"
       ];
     };
   };

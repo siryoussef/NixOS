@@ -3,24 +3,24 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, modulesPath, systemSettings, userSettings, ... }:
 let
-DiscMounts ={
-    "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=755"];*/}; # In-RAM-Root
-#     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
-    "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; depends = ["/" "/home"];};
-    "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
-#     "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
-#   "/home" = { device = "none"; fsType = "tmpfs"; options = ["rw" "user" "mode=777"]; }; # In-RAM-Home
-    "/Volume" = { device = "/dev/disk/by-label/Volume"; fsType = "auto"; };
-    "/Shared" = { device = "/dev/disk/by-label/Shared"; fsType = "auto"; };
-    "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
-     };
+storage = import ../Storage.nix{inherit userSettings;};
+fileSystems = storage.fileSystems;
+persistent = storage.persistent;
 
-## Overlayfs
+in{
+environment.persistence.${systemSettings.persistentStorage} = (persistent.system/* // {users.${userSettings.username}=persistent.user;}*/);
 
-#   merged = (lib.recursiveUpdate DiscMounts BindMounts);
-fileSystems = DiscMounts;
-
-in{ inherit fileSystems;
+/*{
+	enable = true;  # NB: Defaults to true, not needed
+    hideMounts = false;
+	directories = persistent.system.dir;
+	files = persistent.system.files;
+# 	users.${userSettings.username}= {
+# 		directories= persistent.user.dir;
+# 		files=persistent.user.files;
+# 		};
+    };*/
+ inherit fileSystems;
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];

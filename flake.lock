@@ -3349,7 +3349,8 @@
         "system-manager": "system-manager",
         "thorium-browser": "thorium-browser",
         "vscode": "vscode",
-        "ytdlp-gui": "ytdlp-gui"
+        "ytdlp-gui": "ytdlp-gui",
+        "zen-browser": "zen-browser"
       }
     },
     "rotate-text": {
@@ -4620,6 +4621,26 @@
       "original": {
         "type": "tarball",
         "url": "https://flakehub.com/f/BKSalman/ytdlp-gui/1.0.1.tar.gz"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1726001766,
+        "narHash": "sha256-ADvEWfo0AuHR06ah1nnzOyhsG05/b5QpUc7vFNbiEfM=",
+        "owner": "MarceColl",
+        "repo": "zen-browser-flake",
+        "rev": "06505a088396e2c0b9ad100302502783a6bcdb40",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MarceColl",
+        "repo": "zen-browser-flake",
+        "type": "github"
       }
     }
   },

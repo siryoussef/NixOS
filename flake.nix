@@ -86,8 +86,8 @@
           inherit userSettings;
           inherit inputs;
           };
-        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" "impermanence"])
-         ++/* [inputs.impermanence.nixosModules.home-manager.impermanence] ++ */[
+        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" /*"impermanence"*/])
+        /* ++ [inputs.impermanence.nixosModules.home-manager.impermanence]*/ ++ [
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
@@ -174,6 +174,7 @@
                 useUserPackages = true;
                 backupFileExtension = "backup";
               };
+            programs.fuse.userAllowOther = true;
             }
             ] ++
             (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["impermanence" "nix-flatpak" "nix-data" ])
@@ -201,6 +202,7 @@
 #                 snow
 #                 nix-software-center
 #                 thorium-browser
+                zen-browser
                 ]))
                 ++ [pkgs.nur.repos.ataraxiasjel.waydroid-script ]
                 ++ (map (pkg : pkg.defaultPackage.${systemSettings.system}) (with inputs; [thorium-browser] ));
@@ -395,6 +397,8 @@
     blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
 
+    zen-browser={url = "github:MarceColl/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";};
     thorium-browser.url = #"github:siryoussef/nix-thorium";
 #     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
       "git+file:///Shared/@Repo/thorium-browser-nix/";

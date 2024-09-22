@@ -55,6 +55,8 @@
  9-exploring system-manager for configuring nixos /etc files & maybe also arch linux (if not I will just shift my 2ry OS to debian or rhino).
  
  10- quickemu & quickgui for rapid VM deployment!
+
+ 11-flake-parts for better organization of that to-be huge flakes project.
  
 # TODO
 1- declarative wine setup.
@@ -71,4 +73,7 @@
 
 7-nixOnDroid flake config.
 
-8-flake-parts for better organization of that to-be huge flakes project.
+8- add robotnix (with planning to further develop or to find an alternative if possiple!)
+
+9- add wfvm for windows apps that don't run on wine!
+

@@ -1,6 +1,27 @@
-{  systemSettings, userSettings, ... }:
-let
-BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind"];}) rec{
+{  userSettings, ... }:
+rec{
+DiscMounts = rec{
+    "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=777"];*/}; # In-RAM-Root
+#     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
+    "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; depends = ["/" "/home"];};
+    "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
+#     "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
+#       Home={mountPoint= "/home/" + userSettings.username; device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${userSettings.username}" "gid=users" "mode=777"]; depends = ["/"]; };# In-RAM-Home
+
+    "/Volume" = { device = "/dev/disk/by-label/Volume"; fsType = "auto"; };
+    "/Shared" = { device = "/dev/disk/by-label/Shared"; fsType = "auto"; neededForBoot=true; };
+    "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
+     }
+     //(builtins.mapAttrs(x: y: y // {device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${userSettings.username}" "gid=users" "mode=777"]; depends = ["/"];})rec{
+     Home={mountPoint= "/home/" + userSettings.username;};
+     local={mountPoint=Home.mountPoint+"/.local";};
+     local-share={mountPoint=local.mountPoint+"/share";};
+     cache={mountPoint=Home.mountPoint+"/.cache";};
+     config={mountPoint=Home.mountPoint+"/.config";};
+
+     })
+     ;
+BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mode=777"];}) rec{
   "/etc/nixos" = { device = "/Shared/@Repo/NixOS";};
   "/etc/nixos/secrets" = { device = "/Shared/@Repo/NixOS-private";};
   Downloads = { mountPoint = "/home/"+userSettings.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; depends = [ "/" "/home" "/Volume"]; };
@@ -8,7 +29,7 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind"];}) 
   fish={mountPoint = "/home/"+userSettings.username+"/.local/share/fish"; device = "/Shared/@Home/fish";};
   kate={mountPoint = "/home/"+userSettings.username+"/.local/share/kate"; device = "/Shared/@Home/kate";};
   kdevelop={mountPoint = "/home/"+userSettings.username+"/.local/share/kdevelop"; device = "/Shared/@Home/kdevelop";};
-  onlyoffice={ mountPoint = "/home/"+userSettings.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice";};
+  onlyoffice={mountPoint = "/home/"+userSettings.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice";};
   whatsapp-for-linux={ mountPoint = "/home/"+userSettings.username+"/.local/share/whatsapp-for-linux"; device = "/Shared/@Home/whatsapp-for-linux";};
   KotatogramDesktop={mountPoint = "/home/"+userSettings.username+"/.local/share/KotatogramDesktop"; device = "/Shared/@Home/KotatogramDesktop";};
   Github={mountPoint = "/home/"+userSettings.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop";};
@@ -37,7 +58,7 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind"];}) 
 ## Overlayfs
 persistent={
 	system={
-		dir= [
+		directories= [
 # 		"/var/log"
 # 		"/var/lib/bluetooth"
 # 		"/var/lib/nixos"
@@ -51,9 +72,9 @@ persistent={
 		];
     };
     user= {
-      dir = [
+      directories = [
 #         "Downloads"
-        "Music"
+#         "Music"
         "Pictures"
         "Documents"
         "Videos"
@@ -68,12 +89,17 @@ persistent={
         ".config/thorium"
         ".config/session"
         ".config/obsidian"
+        ".cache/zen"
+        ".zen"
 #         { directory = ".gnupg"; mode = "0700"; }
 #         { directory = ".ssh"; mode = "0700"; }
 #         { directory = ".nixops"; mode = "0700"; }
 #         { directory = ".local/share/keyrings"; mode = "0700"; }
 #         ".local/share/direnv"
-      ];
+      ]
+      ++
+      (map(dir:{directory=dir; method="symlink";}) ["Music"])
+      ;
       files = [
         ".config/katerc"
         ".config/gtkrc"
@@ -86,21 +112,14 @@ persistent={
         ".config/kdeglobals"
         ".config/kwinrulesrc"
       ];
+      allowOther=true;
     };
   };
 
 
 #   merged = (lib.recursiveUpdate DiscMounts BindMounts);
-fileSystems = BindMounts;
-in {inherit fileSystems;
-environment.persistence.${systemSettings.persistentStorage} = {
-	enable = true;  # NB: Defaults to true, not needed
-    hideMounts = false;
-	directories = persistent.system.dir;
-	files = persistent.system.files;
-	users.${userSettings.username}= {
-		directories= persistent.user.dir;
-		files=persistent.user.files;
-		};
-    };
+fileSystems = DiscMounts//BindMounts;
 }
+# in {inherit fileSystems;
+# persistent=persistent;
+# }

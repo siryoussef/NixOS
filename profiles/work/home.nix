@@ -1,4 +1,4 @@
-{ config, pkgs, /*pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, nix-doom-emacs, stylix,inputs,*/ userSettings, lib, ... }:
+{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, inputs, userSettings, lib, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # homepkgs = pkglists.home;
@@ -53,7 +53,7 @@
               ../../user/hardware/bluetooth.nix # Bluetooth
               ./homepkgs.nix
 #               ../../pkglists.nix
-
+        inputs.impermanence.nixosModules.home-manager.impermanence
 
             ];
 
@@ -85,8 +85,8 @@ xdg = {
    mime.enable = true;
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
-home.persistence={
-  ${userSettings.persistentStorage}={
+home.persistence= let storage= import ../../Storage.nix{inherit userSettings;};  in{
+  ${userSettings.persistentStorage}=storage.persistent.user;/*{
    directories = [
 #       "Downloads"
       "Music"
@@ -114,6 +114,7 @@ home.persistence={
   ];
     allowOther = true;
   };
+  */
 };
 
 

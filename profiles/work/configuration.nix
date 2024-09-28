@@ -9,7 +9,8 @@
 # in
 {
   imports =
-    [ ../../Storage.nix
+    [
+#       ../../Storage.nix
       ../../system/hardware-configuration.nix
       ../../system/hardware/systemd.nix # systemd config
       ../../system/hardware/kernel.nix # Kernel config
@@ -48,7 +49,7 @@
     loader = {
   # Use systemd-boot if uefi, default to grub otherwise
       systemd-boot.enable = /*if (systemSettings.bootMode == "uefi") then true else*/ false;
-  #efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
+  efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
    # Bootloader.
       generationsDir.copyKernels = true;
       timeout = 3;
@@ -56,7 +57,7 @@
       grub = {enable = /*if (systemSettings.bootMode == "uefi") then false else*/ true;
           device = systemSettings.grubDevice; # does nothing if running uefi rather than bios
           efiSupport = true;
-          efiInstallAsRemovable = true;
+          efiInstallAsRemovable = false;
 #         zfsSupport = true;
           copyKernels = true;
           default = 0;
@@ -124,11 +125,12 @@ users = {
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+#   persistence.${systemSettings.persistentStorage} = let storage= import ../../Storage.nix{inherit userSettings systemSettings;}; persistent = storage.persistent; in (persistent.system // {users.${userSettings.username}=persistent.user;});
   # List packages installed in system profile.
 #   systemPackages = syspkgs; #(with (pkglists.system);(UnStable++Stable));
   };
-  fonts.fontDir.enable = true;
-  xdg.portal = {
+fonts.fontDir.enable = true;
+xdg.portal = {
     enable = true;
     extraPortals = [
       pkgs.xdg-desktop-portal
@@ -298,7 +300,7 @@ nix = {
   checkAllErrors = true;
   checkConfig = true;
   optimise = { automatic = true; dates = [ "weekly" ]; };
-  gc = { automatic = true;  dates = "weekly"; };
+  gc = { automatic = (if config.programs.nh.clean.enable==true then false else true);  dates = "weekly"; };
   #extraOptions = '' experimental-features = nix-command flakes '';
   channel.enable = true;
   settings = { auto-optimise-store = true;
@@ -308,6 +310,7 @@ nix = {
 };
 
 programs = {
+  nh={enable=true; clean={enable=true; dates="weekly"; extraArgs="--keep 5 --keep-since 3d";};};
   udevil.enable = true;
   firejail.enable = true;
   captive-browser.enable = false;

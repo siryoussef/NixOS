@@ -84,6 +84,7 @@ persistent={
         ".ssh"
         ".nixops"
         ".jupyter"
+#         ".mysql"
         ".android"
         ".config/kdeconnect"
         ".config/thorium"
@@ -96,12 +97,14 @@ persistent={
 #         { directory = ".nixops"; mode = "0700"; }
 #         { directory = ".local/share/keyrings"; mode = "0700"; }
 #         ".local/share/direnv"
+#       ".local/share/keyrings"
       ]
       ++
       (map(dir:{directory=dir; method="symlink";}) ["Music"])
       ;
       files = [
         ".config/katerc"
+        ".config/konsolerc"
         ".config/gtkrc"
         ".config/dolphinrc"
         ".config/kwinrc"
@@ -111,8 +114,14 @@ persistent={
         ".gitconfig"
         ".config/kdeglobals"
         ".config/kwinrulesrc"
+        ".config/kxkbrc"
+        ".config/kdedefaults/kscreenlockerrc"
       ];
       allowOther=true;
+    };
+    libvirt={
+      system={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
+      user= {directories=["/.config/libvirt"];};
     };
   };
 

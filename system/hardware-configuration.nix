@@ -6,7 +6,6 @@ let
 storage = import ../Storage.nix{inherit userSettings;};
 fileSystems = storage.fileSystems;
 persistent = storage.persistent;
-
 in{
 environment.persistence.${systemSettings.persistentStorage} = (persistent.system/* // {users.${userSettings.username}=persistent.user;}*/);
 

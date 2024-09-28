@@ -1,7 +1,7 @@
-# {pkgs,...}:
-let
-pkgs=pkgs;
-in
+{pkgs,...}:
+# let
+# pkgs=pkgs;
+# in
 {
   # ---- SYSTEM SETTINGS ---- #
 systemSettings = {

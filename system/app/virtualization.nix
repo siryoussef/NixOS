@@ -6,43 +6,41 @@
     ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
   ];
   users.users.${userSettings.username}.extraGroups = [ "docker" "podman" ];
-  environment.systemPackages = with pkgs; [
-#     virtualbox
-    distrobox
-    boxbuddy
-    virt-viewer
-    spice spice-gtk
-    spice-protocol
-    win-virtio
-    win-spice
-    #virt-manager-qt (causes an error)
-    virter
-    lxqt.qtermwidget
+  environment={
+    systemPackages = with pkgs; [
+  #     virtualbox
+      distrobox
+      boxbuddy
+      virt-viewer
+      spice spice-gtk
+      spice-protocol
+      win-virtio
+      win-spice
+      #virt-manager-qt (causes an error)
+      virter
+      lxqt.qtermwidget
 
-    pods
-    podman-tui
-    podman-desktop
-    podman-compose
-    dive
-
-    ]
-    ++
-    (with pkgs-stable;[
-    quickemu
-    quickgui
-    ]);
-
+      pods
+      podman-tui
+      podman-desktop
+      podman-compose
+      dive
+      ]
+      ++
+      (with pkgs-stable;[
+      quickemu
+      quickgui
+      ]);
+    persistence.${systemSettings.persistentStorage}= let storage = import ../../Storage.nix{inherit userSettings;}; in storage.persistent.libvirt.system;
+  };
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 
   fileSystems={
     RootlessOCIConfig = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
 
-
-    libvirt= {mountPoint ="/var/lib/libvirt"; device = "/Shared/libvirt/var/lib/libvirt"; options=["bind"]; fsType="auto";};
-    libvirtCache= {mountPoint ="/var/cache/libvirt"; device = "/Shared/libvirt/var/cache/libvirt"; options=["bind"]; fsType="auto";};
-    libvirtLogs= {mountPoint ="/var/log/libvirt"; device = "/Shared/libvirt/var/log/libvirt"; options=["bind"]; fsType="auto";};
-
-
+#     libvirt= {mountPoint ="/var/lib/libvirt"; device = "/Shared/libvirt/var/lib/libvirt"; options=["bind"]; fsType="auto";};
+#     libvirtCache= {mountPoint ="/var/cache/libvirt"; device = "/Shared/libvirt/var/cache/libvirt"; options=["bind"]; fsType="auto";};
+#     libvirtLogs= {mountPoint ="/var/log/libvirt"; device = "/Shared/libvirt/var/log/libvirt"; options=["bind"]; fsType="auto";};
     };
 #   systemd = {
 #     services.OCIperm = {
@@ -139,8 +137,8 @@
     xen = {
       enable = false;
       package = pkgs.xen;
-      package-qemu = pkgs.xen;
-      domain0MemorySize = 0;
+      qemu.package = pkgs.xen; #package-qemu = pkgs.xen;
+      dom0Resources.memory = 512; #domain0MemorySize = 0;
       };
     virtualbox = {
       host = {
@@ -169,6 +167,39 @@
         ovmf.packages = [ pkgs.OVMFFull.fd ];
         };
         };
+    libvirt ={ # from NixVirt flake
+      enable=true;
+      verbose=true;
+      swtpm.enable=true;
+      connections={
+        "qemu:///system"={
+          domains = [
+              {
+              definition=../virtualisation/libvirt/domains/win11.xml;
+              active=true;
+              }
+          ];
+          networks=[
+              {
+              definition=../virtualisation/libvirt/networks/default.xml;
+              active=true;
+              }
+          ];
+          pools=[
+            {definition=../virtualisation/libvirt/storage/default.xml; active=true;}
+            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+#               volumes=[
+#                 {name="";
+#                   present=true;
+#                   definition="";
+#                 }
+#               ];
+              }
+          ];
+        };
+      };
+
+    };
 
     multipass.enable = false;
     appvm = { enable = false; user = userSettings.username;};

@@ -1,6 +1,8 @@
  # shell.nix
-let
-  pkgs = import <nixpkgs> {};
+{pkgs-stable ? import <nixpkgs>{}}:
+ let
+ pkgs=pkgs-stable;
+#   pkgs = import <nixpkgs> {};
   python = pkgs.python3;
   pythonPackages = python.pkgs;
 in

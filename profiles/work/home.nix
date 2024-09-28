@@ -53,7 +53,7 @@
               ../../user/hardware/bluetooth.nix # Bluetooth
               ./homepkgs.nix
 #               ../../pkglists.nix
-        inputs.impermanence.nixosModules.home-manager.impermanence
+#         inputs.impermanence.nixosModules.home-manager.impermanence
 
             ];
 
@@ -86,35 +86,7 @@ xdg = {
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
 home.persistence= let storage= import ../../Storage.nix{inherit userSettings;};  in{
-  ${userSettings.persistentStorage}=storage.persistent.user;/*{
-   directories = [
-#       "Downloads"
-      "Music"
-      "Pictures"
-      "Documents"
-      "Videos"
-      "VirtualBox VMs"
-      "Desktop"
-      ".gnupg"
-      ".ssh"
-      ".nixops"
-#       ".local/share/keyrings"
-#       ".local/share/direnv"
-#       {
-#         directory = ".local/share/Steam";
-#         method = "symlink";
-#       }
-      ".mysql"
-    ];
-    files = [
-      ".screenrc"
-      ".gtkrc-2.0"
-      ".bash_history"
-      ".gitconfig"
-  ];
-    allowOther = true;
-  };
-  */
+  ${userSettings.persistentStorage}=storage.persistent.user;
 };
 
 

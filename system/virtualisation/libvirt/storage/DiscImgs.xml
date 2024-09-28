@@ -1,0 +1,19 @@
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh pool-edit DiscImgs
+or other application using the libvirt API.
+-->
+
+<pool type='dir'>
+  <name>DiscImgs</name>
+  <uuid>866bbf1b-dc14-4645-9806-d961accbee91</uuid>
+  <capacity unit='bytes'>0</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <available unit='bytes'>0</available>
+  <source>
+  </source>
+  <target>
+    <path>/Volume/@Storage/Software/DiskImgs</path>
+  </target>
+</pool>

@@ -116,6 +116,8 @@ persistent={
         ".config/kwinrulesrc"
         ".config/kxkbrc"
         ".config/kdedefaults/kscreenlockerrc"
+        ".config/plasmashellrc"
+        ".config/plasma-org.kde.plasma.desktop-appletsrc"
       ];
       allowOther=true;
     };

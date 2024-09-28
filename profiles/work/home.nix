@@ -51,9 +51,6 @@
 #               ../../user/lang/godot/godot.nix # Game development
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure
               ../../user/hardware/bluetooth.nix # Bluetooth
-              ./homepkgs.nix
-#               ../../pkglists.nix
-#         inputs.impermanence.nixosModules.home-manager.impermanence
 
             ];
 
@@ -85,8 +82,9 @@ xdg = {
    mime.enable = true;
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
-home.persistence= let storage= import ../../Storage.nix{inherit userSettings;};  in{
-  ${userSettings.persistentStorage}=storage.persistent.user;
+home={
+  persistence = let storage= import ../../Storage.nix{inherit userSettings;};  in{${userSettings.persistentStorage}=storage.persistent.user;};
+  packages = let list=import ./pkglists.nix{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.home;
 };
 
 

@@ -1,5 +1,5 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, ... }:
-{home.packages = (with pkgs; [
+{pkgs, pkgs-stable,pkgs-kdenlive,...}:
+{home=(with pkgs; [
     # Core
     zsh
 #     alacritty
@@ -125,16 +125,113 @@
     libmediainfo
     mediainfo-gui
     audio-recorder
-
 #     ardour
 #     tenacity
-
     # Various dev packages
     texinfo
     libffi zlib
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
-  ++ (with pkgs-stable;[
-#   floorp
-  ]));
-  }
+#   ++ (with pkgs-stable;[ floorp ])
+  );
+  system = with pkgs; [
+      vim
+      wget
+      nodePackages.bash-language-server
+      zsh
+      git
+      jre_minimal
+      cryptsetup
+      home-manager
+      devbox
+      fh
+      appstream
+      appstream-glib
+      droidcam
+      haskellPackages.nix-tree
+      /*
+      nix-top
+      nix-doc
+      nix-init
+      nix-diff
+      nix-melt
+      nix-index
+      nix-ld
+      */
+      nixpkgs-lint-community
+      ntfs3g
+      pacman
+      apt
+      junest
+      aptly
+      pmutils
+      ## Appimage support (currently broken due to " error : execve : No such file or directory ")
+      appimage-run
+      appimagekit
+      libappimage
+      gnome-disk-utility
+      gparted
+      duperemove
+      btrfs-assistant
+      snapper-gui
+      #librewolf
+      #chromium
+      protonvpn-gui
+      pitch-black
+      vlc
+      smplayer
+      obs-studio
+      handbrake
+
+      rclone
+      rclone-browser
+      syncthing
+      syncthing-tray
+      grsync
+      unrar
+
+      wsysmon
+      tldr
+      kcalc
+      unetbootin
+      ventoy-full
+      woeusb-ng
+      wimboot
+      adwaita-icon-theme
+
+      wget
+      gcc
+
+      refind
+      gnu-efi
+      beefi
+      ectool
+
+  #     # support both 32- and 64-bit applications
+  #     wineWowPackages.stable
+  #     # support 32-bit only
+  #     wine
+  #     # support 64-bit only
+  #     (wine.override { wineBuild = "wine64"; })
+  #     # support 64-bit only
+  #     wine64
+  #     # wine-staging (version with experimental features)
+  #     wineWowPackages.staging
+  #     # winetricks (all versions)
+  #     winetricks
+
+      # native wayland support (unstable)
+      wineWowPackages.waylandFull
+    # xen
+    # grub2_xen
+
+    ]
+    ++ (with pkgs-stable; [
+#     floorp
+    efibootmgr
+    efitools
+    efivar
+    exfatprogs
+    tmsu
+    ]);
+}

@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-stable, lib, systemSettings, userSettings, ... }:
+{ config, pkgs, pkgs-stable, pkgs-kdenlive, lib, systemSettings, userSettings, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # syspkgs = pkglists.system;
@@ -34,8 +34,6 @@
 #       ../../system/app/develop.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
-      ./syspkgs.nix
-#       ../../pkglists.nix
       ./nixpkgs-options.nix
 ];
 
@@ -127,7 +125,7 @@ environment = {
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
 #   persistence.${systemSettings.persistentStorage} = let storage= import ../../Storage.nix{inherit userSettings systemSettings;}; persistent = storage.persistent; in (persistent.system // {users.${userSettings.username}=persistent.user;});
   # List packages installed in system profile.
-#   systemPackages = syspkgs; #(with (pkglists.system);(UnStable++Stable));
+  systemPackages = let list = import ./pkglists.nix{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.system;
   };
 fonts.fontDir.enable = true;
 xdg.portal = {
@@ -315,7 +313,7 @@ programs = {
   firejail.enable = true;
   captive-browser.enable = false;
   partition-manager.enable = true;
-  git.enable = true;
+  git={enable = true; prompt.enable=true; /*config =[];*/};
   appimage = { enable = true; binfmt = true;};
   #cfs-zen-tweaks.enable = true;
   dconf.enable = true;

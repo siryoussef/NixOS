@@ -103,21 +103,12 @@ persistent={
       (map(dir:{directory=dir; method="symlink";}) ["Music"])
       ;
       files = [
-        ".config/katerc"
-        ".config/konsolerc"
         ".config/gtkrc"
-        ".config/dolphinrc"
-        ".config/kwinrc"
         ".screenrc"
         ".gtkrc-2.0"
         ".bash_history"
         ".gitconfig"
-        ".config/kdeglobals"
-        ".config/kwinrulesrc"
-        ".config/kxkbrc"
-        ".config/kdedefaults/kscreenlockerrc"
-        ".config/plasmashellrc"
-        ".config/plasma-org.kde.plasma.desktop-appletsrc"
+
       ];
       allowOther=true;
     };
@@ -125,6 +116,28 @@ persistent={
       system={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
       user= {directories=["/.config/libvirt"];};
     };
+    plasma={
+      system={
+        directories=[];
+        files=[];
+        };
+      user={
+        directories=[];
+        files=[
+          ".config/katerc"
+          ".config/konsolerc"
+          ".config/dolphinrc"
+          ".config/kwinrc"
+          ".config/kdeglobals"
+          ".config/kwinrulesrc"
+          ".config/kxkbrc"
+          ".config/kdedefaults/kscreenlockerrc"
+          ".config/plasmashellrc"
+          ".config/plasma-org.kde.plasma.desktop-appletsrc"
+        ];
+      };
+    };
+
   };
 
 

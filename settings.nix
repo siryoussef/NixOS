@@ -4,8 +4,9 @@
 # in
 {
   # ---- SYSTEM SETTINGS ---- #
-systemSettings = {
-        system = "x86_64-linux"; # system arch
+system = rec{
+        arch = "x86_64-linux"; # system arch
+        system=arch; #for backward combatibility (to be removed)
         hostname = "Snowyfrank"; # hostname
         profile = "work"; # select a profile defined from my profiles directory
         timezone = "Africa/Cairo"; # select timezone
@@ -16,7 +17,7 @@ systemSettings = {
         persistentStorage ="/Shared/@Persistent";
       };
   # ----- USER SETTINGS ----- #
-userSettings = rec {
+user = rec {
         username = "youssef"; # username
         name = "Youssef"; # name/identifier
         email = "youssef@disroot.org"; # email (used for certain configurations)

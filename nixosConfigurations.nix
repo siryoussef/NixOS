@@ -1,6 +1,6 @@
-{systemSettings,userSettings,unifiedHome,home-manager,nixpkgs-patched,lib,inputs,pkgs-stable,...}:{
-        ${systemSettings.hostname} = lib.nixosSystem {
-#           system = systemSettings.system;
+{settings,systemSettings,userSettings,unifiedHome,home-manager,nixpkgs-patched,lib,inputs,pkgs-stable,...}:{
+        ${settings.system.hostname} = lib.nixosSystem {
+#           system = settings.system.arch;
           modules = [ home-manager.nixosModules.home-manager
              inputs.qnr.nixosModules.local-registry
              ]
@@ -8,19 +8,19 @@
           ++ (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module ]))
             ++
             [
-            (./. + "/profiles" + ("/" + systemSettings.profile)
+            (./. + "/profiles" + ("/" + settings.system.profile)
               + "/configuration.nix")
 
             ({ pkgs, config, ... }:
               let
                 nur-no-pkgs = import inputs.nur {
-                  nurpkgs = import nixpkgs-patched { system = systemSettings.system; };
+                  nurpkgs = import nixpkgs-patched { system = settings.system.arch; };
                 };
               in {
                 nixpkgs.overlays = with inputs;[nur.overlay ];
                 imports = [ nur-no-pkgs.repos.iopq.modules.xraya  ];
                 services.xraya.enable = true;
-                environment.systemPackages = (map (pkg: (with pkg;(packages.${systemSettings.system}.default)))  (with inputs;[
+                environment.systemPackages = (map (pkg: (with pkg;(packages.${settings.system.arch}.default)))  (with inputs;[
                 fh
                 agenix
                 snowfall-flake
@@ -32,10 +32,10 @@
                 NixVirt
                 ]))
                 ++ [pkgs.nur.repos.ataraxiasjel.waydroid-script ]
-                ++ (map (pkg : pkg.defaultPackage.${systemSettings.system}) (with inputs; [thorium-browser] ))
+                ++ (map (pkg : pkg.defaultPackage.${settings.system.arch}) (with inputs; [thorium-browser] ))
                 ;
               home-manager= rec{
-                users.${userSettings.username} = import unifiedHome.path; #import ./users/default/home.nix;
+                users.${settings.user.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
                 sharedModules = (if useGlobalPkgs == false then unifiedHome.modules++unifiedHome.nixpkgs else unifiedHome.modules);
                 useGlobalPkgs = true;
@@ -45,12 +45,12 @@
                 programs={ nh={flake= ./.; /*package=perSystem.packages.nh;*/};
                   fuse.userAllowOther = true;
                   nix-data = {
-                    systemconfig =  (./. + "/profiles" + ("/" + systemSettings.profile) + "/configuration.nix");
+                    systemconfig =  (./. + "/profiles" + ("/" + settings.system.profile) + "/configuration.nix");
                     flake = "/etc/nixos/flake.nix";
-                    flakearg = systemSettings.hostname;
+                    flakearg = settings.system.hostname;
                   };
                 };
-                  snowflakeos.gnome.enable = false;
+#                   snowflakeos.gnome.enable = false;
                 #   snowflakeos.osInfo.enable = true;
                 nix.localRegistry={
                   enable = true;# Enable quick-nix-registry
@@ -63,6 +63,7 @@
           specialArgs = {
             # pass config variables from above
             inherit pkgs-stable;
+            inherit settings;
             inherit systemSettings;
             inherit userSettings;
             inherit inputs;

@@ -1,25 +1,25 @@
 {inputs,self,...}:
 let
-      Settings = import ./settings.nix {inherit pkgs;};
-      systemSettings = Settings.systemSettings;
-      userSettings = Settings.userSettings;
+      settings = import ./settings.nix {inherit pkgs;};
+      systemSettings = settings.system; # for backward
+      userSettings = settings.user;     # combatibilty (temporarily > to be removed ! )
 
       # create patched nixpkgs
 
 #       nixpkgs=inputs.nixpkgsRef.nixpkgs; #{ inherit systemSettings;};
 #       inputs= {inherit inputs;} // {nixpkgs=nixpkgs;};
-      nixpkgs=(if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+      nixpkgs=(if ((settings.system.profile == "homelab") || (settings.system.profile == "worklab"))
              then
                inputs.nixpkgs-stable
              else
                inputs.nixpkgs-unstable);
-      home-manager= (if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+      home-manager= (if ((settings.system.profile == "homelab") || (settings.system.profile == "worklab"))
              then
                inputs.home-manager-stable
              else
                inputs.home-manager-unstable);
       nixpkgs-patched =
-        (import inputs.nixpkgs { system = systemSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false); }).applyPatches {
+        (import inputs.nixpkgs { system = settings.system.arch; rocmSupport = (if settings.system.gpu == "amd" then true else false); }).applyPatches {
           name = "nixpkgs-patched";
           src = inputs.nixpkgs;
           patches = [ ./patches/emacs-no-version-check.patch ];
@@ -27,7 +27,7 @@ let
 
       # configure pkgs
       pkgs = import nixpkgs-patched {
-        system = systemSettings.system;
+        system = settings.system.arch;
         config = {
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
@@ -40,7 +40,7 @@ let
       };
 
       pkgs-stable = import inputs.nixpkgs-stable {
-        system = systemSettings.system;
+        system = settings.system.arch;
         config = {
           allowUnfree = true;
           allowUnfreePredicate = (_: true);
@@ -48,25 +48,25 @@ let
       };
 
       pkgs-r2311 = import inputs.nixpkgs-r2311 {
-        system = systemSettings.system;
+        system = settings.system.arch;
           config.allowUnfree = true;
       };
 
       pkgs-r2211 = import inputs.nixpkgs-r2211 {
-        system = systemSettings.system;
+        system = settings.system.arch;
           config.allowUnfree = true;
       };
 
       pkgs-emacs = import inputs.emacs-pin-nixpkgs {
-        system = systemSettings.system;
+        system = settings.system.arch;
       };
 
       pkgs-kdenlive = import inputs.kdenlive-pin-nixpkgs {
-        system = systemSettings.system;
+        system = settings.system.arch;
       };
 
       pkgs-nwg-dock-hyprland = import inputs.nwg-dock-hyprland-pin-nixpkgs {
-        system = systemSettings.system;
+        system = settings.system.arch;
       };
 
 
@@ -79,6 +79,7 @@ let
           inherit pkgs-emacs;
           inherit pkgs-kdenlive;
           inherit pkgs-nwg-dock-hyprland;
+          inherit settings;
           inherit systemSettings;
           inherit userSettings;
           inherit inputs;
@@ -90,10 +91,10 @@ let
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
-        nixpkgs = [(./. + "/profiles" + ("/" + systemSettings.profile)
+        nixpkgs = [(./. + "/profiles" + ("/" + settings.system.profile)
               + "/nixpkgs-options.nix")];
 
-        path = (./. + "/profiles" + ("/" + systemSettings.profile)
+        path = (./. + "/profiles" + ("/" + settings.system.profile)
               + "/home.nix"); # load home.nix from selected PROFILE
 
         };/*./patches/emacs-no-version-check.patch*/
@@ -153,7 +154,7 @@ let
 
       };
       flake = {
-        devShells.${systemSettings.system}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable;};
+        devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable;};
         systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
         modules = [
 #           ./modules
@@ -161,13 +162,13 @@ let
         };
 
         homeConfigurations = {
-        ${userSettings.username} = home-manager.lib.homeManagerConfiguration {
+        ${settings.user.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         }; };
 
-        nixosConfigurations = import ./nixosConfigurations.nix{inherit systemSettings userSettings unifiedHome home-manager nixpkgs-patched lib inputs pkgs-stable;};
+        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings systemSettings userSettings unifiedHome home-manager nixpkgs-patched lib inputs pkgs-stable;};
 
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although

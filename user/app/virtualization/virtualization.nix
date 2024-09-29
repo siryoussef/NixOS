@@ -1,23 +1,55 @@
-{ config, pkgs, ... }:
+{ pkgs, userSettings,inputs, ... }:
 
 {
   # Various packages related to virtualization, compatability and sandboxing
-  home.packages = with pkgs; [
-    # Virtual Machines and wine
-    libvirt
-    virt-manager
-    qemu
-    uefi-run
-    lxc
-    swtpm
-    bottles
+  home={
+    packages = with pkgs; [
+      # Virtual Machines and wine
+      libvirt
+      virt-manager
+      qemu
+      uefi-run
+      lxc
+      swtpm
+      bottles
 
-    # Filesystems
-    dosfstools
-  ];
-
-  home.file.".config/libvirt/qemu.conf".text = ''
-nvram = ["/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd"]
-  '';
-
+      # Filesystems
+      dosfstools
+    ];
+      file.".config/libvirt/qemu.conf".text = '' nvram = ["/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd"] '';
+    persistence.${userSettings.persistentStorage}= let storage = import ../../../Storage.nix{inherit userSettings;}; in storage.persistent.libvirt.user;
+  };
+    virtualisation.libvirt={
+      swtpm.enable=true;
+      connections={
+        "qemu:///session"={
+          domains=[
+            {definition=inputs.NixVirt.lib.domain.writeXML (inputs.NixVirt.lib.domain.templates.windows{
+              name = "Windows";
+              uuid = "def734bb-e2ca-44ee-80f5-0ea0f2593aaa";
+              memory = { count = 8; unit = "GiB"; };
+              storage_vol = { pool = "DiscImgs"; volume = "Windows.qcow2"; };
+              install_vol = /Volume/Storage/Software/DiskImgs/Win11_23H2_EnglishInternational_x64v2.iso;
+              nvram_path = /Volume/Storage/Software/DiskImgs/win.nvram;
+              virtio_net = true;
+              virtio_drive = true;
+              install_virtio = true;
+              });
+            }
+          ];
+          networks =[
+            {definition = inputs.NixVirt.lib.network.writeXML (inputs.NixVirt.lib.network.templates.bridge
+                {
+                  uuid = "70b08691-28dc-4b47-90a1-45bbeac9ab5a";
+                  subnet_byte = 71;
+                });
+              active = true;
+            }
+          ];
+          pools=[
+            {definition=../../../system/virtualisation/libvirt/storage/DiscImgs.xml; active=true;}
+          ];
+        };
+      };
+    };
 }

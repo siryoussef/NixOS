@@ -174,16 +174,10 @@
       connections={
         "qemu:///system"={
           domains = [
-              {
-              definition=../virtualisation/libvirt/domains/win11.xml;
-              active=true;
-              }
+            {definition=../virtualisation/libvirt/domains/win11.xml; active=true;}
           ];
           networks=[
-              {
-              definition=../virtualisation/libvirt/networks/default.xml;
-              active=true;
-              }
+            {definition=../virtualisation/libvirt/networks/default.xml;active=true;}
           ];
           pools=[
             {definition=../virtualisation/libvirt/storage/default.xml; active=true;}

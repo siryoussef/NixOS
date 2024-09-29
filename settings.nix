@@ -47,7 +47,8 @@ user = rec {
                            editor);
         persistentStorage = "/Shared/@Persistent/home/"+"${username}";
       };
-
+      pkglistsPath = builtins.path{path=./pkglists.nix;};
+      storagePath = builtins.path{path=./Storage.nix;};
       }
 
 

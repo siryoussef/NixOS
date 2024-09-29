@@ -1,4 +1,4 @@
-{settings,systemSettings,userSettings,unifiedHome,home-manager,nixpkgs-patched,lib,inputs,pkgs-stable,...}:{
+{settings, systemSettings, userSettings, unifiedHome, home-manager, nixpkgs-patched, lib, inputs, pkgs-stable,...}:{
         ${settings.system.hostname} = lib.nixosSystem {
 #           system = settings.system.arch;
           modules = [ home-manager.nixosModules.home-manager

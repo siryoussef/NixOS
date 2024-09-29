@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-stable, pkgs-kdenlive, lib, systemSettings, userSettings, ... }:
+{ config, pkgs, pkgs-stable, pkgs-kdenlive, lib, settings, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # syspkgs = pkglists.system;
@@ -10,7 +10,6 @@
 {
   imports =
     [
-#       ../../Storage.nix
       ../../system/hardware-configuration.nix
       ../../system/hardware/systemd.nix # systemd config
       ../../system/hardware/kernel.nix # Kernel config
@@ -18,7 +17,7 @@
       ../../system/hardware/time.nix # Network time sync
       ../../system/hardware/printing.nix
       ../../system/hardware/bluetooth.nix
-      (./. + "../../../system/wm"+("/"+userSettings.wm)+".nix") # My window manager
+      (./. + "../../../system/wm"+("/"+settings.user.wm)+".nix") # My window manager
       ../../system/app/appsupport.nix
       ../../system/app/virtualization.nix
       ../../system/app/syncthing.nix
@@ -46,14 +45,14 @@
   # Bootloader
     loader = {
   # Use systemd-boot if uefi, default to grub otherwise
-      systemd-boot.enable = /*if (systemSettings.bootMode == "uefi") then true else*/ false;
-  efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
+      systemd-boot.enable = /*if (settings.system.bootMode == "uefi") then true else*/ false;
+  efi.canTouchEfiVariables = if (settings.system.bootMode == "uefi") then true else false;
    # Bootloader.
       generationsDir.copyKernels = true;
       timeout = 3;
 
-      grub = {enable = /*if (systemSettings.bootMode == "uefi") then false else*/ true;
-          device = systemSettings.grubDevice; # does nothing if running uefi rather than bios
+      grub = {enable = /*if (settings.system.bootMode == "uefi") then false else*/ true;
+          device = settings.system.grubDevice; # does nothing if running uefi rather than bios
           efiSupport = true;
           efiInstallAsRemovable = false;
 #         zfsSupport = true;
@@ -68,18 +67,18 @@
   # Networking
 
   # Timezone and locale
-  time.timeZone = systemSettings.timezone; # time zone
-  i18n.defaultLocale = systemSettings.locale;
+  time.timeZone = settings.system.timezone; # time zone
+  i18n.defaultLocale = settings.system.locale;
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = systemSettings.locale;
-    LC_IDENTIFICATION = systemSettings.locale;
-    LC_MEASUREMENT = systemSettings.locale;
-    LC_MONETARY = systemSettings.locale;
-    LC_NAME = systemSettings.locale;
-    LC_NUMERIC = systemSettings.locale;
-    LC_PAPER = systemSettings.locale;
-    LC_TELEPHONE = systemSettings.locale;
-    LC_TIME = systemSettings.locale;
+    LC_ADDRESS = settings.system.locale;
+    LC_IDENTIFICATION = settings.system.locale;
+    LC_MEASUREMENT = settings.system.locale;
+    LC_MONETARY = settings.system.locale;
+    LC_NAME = settings.system.locale;
+    LC_NUMERIC = settings.system.locale;
+    LC_PAPER = settings.system.locale;
+    LC_TELEPHONE = settings.system.locale;
+    LC_TIME = settings.system.locale;
   };
 
   # User account
@@ -93,9 +92,9 @@ users = {
     nscd.uid=996;
     rtkit.uid=995;
     systemd-oom.uid=994;
-    ${userSettings.username} = {
+    ${settings.user.username} = {
       isNormalUser = true;
-      description = userSettings.name;
+      description = settings.user.name;
       extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
   #     packages = with pkgs; [];
       uid = 1000;
@@ -117,15 +116,15 @@ users = {
     systemd-oom.gid=987;
     vboxusers.gid=986;
     };
-  extraGroups.vboxusers.members = [ userSettings.username ];
+  extraGroups.vboxusers.members = [ settings.user.username ];
 };
 
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
-#   persistence.${systemSettings.persistentStorage} = let storage= import ../../Storage.nix{inherit userSettings systemSettings;}; persistent = storage.persistent; in (persistent.system // {users.${userSettings.username}=persistent.user;});
+#   persistence.${settings.system.persistentStorage} = let storage= import settings.storagePath{inherit settings;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
   # List packages installed in system profile.
-  systemPackages = let list = import ./pkglists.nix{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.system;
+  systemPackages = let list = import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.system;
   };
 fonts.fontDir.enable = true;
 xdg.portal = {
@@ -201,7 +200,7 @@ services = {
   enable = true;
   xkb.layout = "us";
   };
-  displayManager.autoLogin = { enable = true; user = userSettings.username; };
+  displayManager.autoLogin = { enable = true; user = settings.user.username; };
   spice-vdagentd.enable = true ;
   pipewire = {
     enable = true;

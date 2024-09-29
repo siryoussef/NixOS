@@ -1,11 +1,11 @@
-{ pkgs, pkgs-stable, userSettings, systemSettings, lib, ... }:
+{ pkgs, pkgs-stable, settings, lib, ... }:
 
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
   imports = [
-    ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs userSettings lib;} )
+    ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs settings lib;} )
   ];
-  users.users.${userSettings.username}.extraGroups = [ "docker" "podman" ];
+  users.users.${settings.user.username}.extraGroups = [ "docker" "podman" ];
   environment={
     systemPackages = with pkgs; [
   #     virtualbox
@@ -31,12 +31,12 @@
       quickemu
       quickgui
       ]);
-    persistence.${systemSettings.persistentStorage}= let storage = import ../../Storage.nix{inherit userSettings;}; in storage.persistent.libvirt.system;
+    persistence.${settings.system.persistentStorage}= let storage = import settings.storagePath{inherit settings;}; in storage.persistent.libvirt.system;
   };
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 
   fileSystems={
-    RootlessOCIConfig = {mountPoint = "/home/"+userSettings.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
+    RootlessOCIConfig = {mountPoint = "/home/"+settings.user.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
 
 #     libvirt= {mountPoint ="/var/lib/libvirt"; device = "/Shared/libvirt/var/lib/libvirt"; options=["bind"]; fsType="auto";};
 #     libvirtCache= {mountPoint ="/var/cache/libvirt"; device = "/Shared/libvirt/var/cache/libvirt"; options=["bind"]; fsType="auto";};
@@ -44,7 +44,7 @@
     };
 #   systemd = {
 #     services.OCIperm = {
-#       script = "chown -R "+userSettings.username+":users /Shared/@Containers/OCI";
+#       script = "chown -R "+settings.user.username+":users /Shared/@Containers/OCI";
 #       wantedBy = [ "multi-user.target" ]; # starts after login
 #       after = [/*"podman.service" "containerd.service" "Shared-\x40Containers-OCI-Storage-overlay.mount" "local-fs.target" "multi-user.target" "graphical.target"*/];
 #     #     description = "...";
@@ -91,11 +91,11 @@
         "genpod"={
           image="docker.io/gentoo/stage3:latest";
 #           imageFile=""; workdir = "";
-          user=userSettings.username+":users";
-          hostname=systemSettings.hostname;
+          user=settings.user.username+":users";
+          hostname=settings.system.hostname;
           volumes=["Volume:/Volume"];
 #           login={
-#             username = userSettings.username;
+#             username = settings.user.username;
 #             registry = "";
 #             password-file ="";
 #             };
@@ -196,7 +196,7 @@
     };
 
     multipass.enable = false;
-    appvm = { enable = false; user = userSettings.username;};
+    appvm = { enable = false; user = settings.user.username;};
     vswitch.enable = false;
 
 /*

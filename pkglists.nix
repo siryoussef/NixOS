@@ -1,117 +1,5 @@
-#  {pkgs, pkgs-stable,...}:
-let
-pkgs = pkgs;
-pkgs-stable = pkgs-stable;
-in rec {
-#     pkgs=pkgs;
-#     pkgs-stable = pkgs-stable;
-
-    system= (with pkgs; [
-            vim
-            wget
-            nodePackages.bash-language-server
-            zsh
-            git
-            cryptsetup
-            home-manager
-            devbox
-            fh
-        #   thorium-avx
-        #     fish
-        #     babelfish
-        #     bashInteractiveFHS
-            appstream
-            appstream-glib
-            droidcam
-            haskellPackages.nix-tree
-            /*
-            nix-top
-            nix-doc
-            nix-init
-            nix-diff
-            nix-melt
-            nix-index
-            nix-ld
-            */
-            nixpkgs-lint-community
-            ntfs3g
-            pacman
-            apt
-            junest
-            aptly
-            pmutils
-            ## Appimage support (currently broken due to " error : execve : No such file or directory ")
-            appimage-run
-            appimagekit
-            libappimage
-            gnome.gnome-disk-utility
-            gparted
-            duperemove
-            btrfs-assistant
-            snapper-gui
-            #librewolf
-            #chromium
-            protonvpn-gui
-            pitch-black
-            vlc
-            smplayer
-            obs-studio
-            handbrake
-
-            rclone
-            rclone-browser
-            syncthing
-            syncthing-tray
-            grsync
-            unrar
-
-            wsysmon
-            tldr
-            kcalc
-            unetbootin
-            ventoy-full
-            woeusb-ng
-            wimboot
-            gnome.adwaita-icon-theme
-
-            wget
-            gcc
-
-            refind
-            gnu-efi
-            beefi
-            ectool
-
-        #     # support both 32- and 64-bit applications
-        #     wineWowPackages.stable
-        #     # support 32-bit only
-        #     wine
-        #     # support 64-bit only
-        #     (wine.override { wineBuild = "wine64"; })
-        #     # support 64-bit only
-        #     wine64
-        #     # wine-staging (version with experimental features)
-        #     wineWowPackages.staging
-        #     # winetricks (all versions)
-        #     winetricks
-
-            # native wayland support (unstable)
-            wineWowPackages.waylandFull
-            # xen
-            # grub2_xen
-
-            ])
-    ++ ( with pkgs; [
-#     floorp
-    efibootmgr
-    efitools
-    efivar
-    exfatprogs
-    tmsu
-    ]);
-
-
-         home = (with pkgs-stable; [
+{pkgs, pkgs-stable,pkgs-kdenlive,...}:
+{home=(with pkgs; [
     # Core
     zsh
 #     alacritty
@@ -131,8 +19,8 @@ in rec {
     whatsapp-for-linux
     beeper
     vscode-fhs
-#     betterbird-unwrapped
     #vscodium-fhs
+    nil
     github-desktop
     obsidian
     logseq
@@ -145,10 +33,13 @@ in rec {
     xournalpp
     glib
     newsflash
-    gnome.nautilus
-    gnome.gnome-calendar
-    gnome.seahorse
-    gnome.gnome-maps
+
+    nautilus
+    gnome-calendar
+    seahorse
+    cheese
+    gnome-maps
+
     openvpn
     protonmail-bridge
     texliveSmall
@@ -157,7 +48,8 @@ in rec {
     wine
     bottles
     qbittorrent
-    yt-dlg
+#     yt-dlg # fails to build after updating to python 3.12 as it uses wxpython which is not compatible with python 3.12!!
+
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
     # With a bottle name of "FL Studio"
     /*
@@ -191,6 +83,9 @@ in rec {
 #     musikcube
     vlc
     vlc-bittorrent
+    smplayer
+    obs-studio
+    handbrake
 #     mpv
     yt-dlp
 #     blender
@@ -233,18 +128,110 @@ in rec {
     libmediainfo
     mediainfo-gui
     audio-recorder
-    gnome.cheese
 #     ardour
 #     tenacity
-
     # Various dev packages
     texinfo
     libffi zlib
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
-  /*++ (with pkgs-stable;[
-   floorp
-  ])*/);
+#   ++ (with pkgs-stable;[ floorp ])
+  );
+  system = with pkgs; [
+      vim
+      wget
+      nodePackages.bash-language-server
+      zsh
+      git
+      jre_minimal
+      cryptsetup
+      home-manager
+      devbox
+      fh
+      appstream
+      appstream-glib
+      droidcam
+      haskellPackages.nix-tree
+      /*
+      nix-top
+      nix-doc
+      nix-init
+      nix-diff
+      nix-melt
+      nix-index
+      nix-ld
+      */
+      nixpkgs-lint-community
+      ntfs3g
+      pacman
+      apt
+      junest
+      aptly
+      pmutils
+      ## Appimage support (currently broken due to " error : execve : No such file or directory ")
+      appimage-run
+      appimagekit
+      libappimage
+      gnome-disk-utility
+      gparted
+      duperemove
+      btrfs-assistant
+      snapper-gui
+      #librewolf
+      #chromium
+      protonvpn-gui
+      pitch-black
 
-  }
 
+      rclone
+      rclone-browser
+      syncthing
+      syncthing-tray
+      grsync
+      unrar
+
+      wsysmon
+      tldr
+      kcalc
+      unetbootin
+      ventoy-full
+      woeusb-ng
+      wimboot
+      adwaita-icon-theme
+
+      wget
+      gcc
+
+      refind
+      gnu-efi
+      beefi
+      ectool
+
+  #     # support both 32- and 64-bit applications
+  #     wineWowPackages.stable
+  #     # support 32-bit only
+  #     wine
+  #     # support 64-bit only
+  #     (wine.override { wineBuild = "wine64"; })
+  #     # support 64-bit only
+  #     wine64
+  #     # wine-staging (version with experimental features)
+  #     wineWowPackages.staging
+  #     # winetricks (all versions)
+  #     winetricks
+
+      # native wayland support (unstable)
+      wineWowPackages.waylandFull
+    # xen
+    # grub2_xen
+
+    ]
+    ++ (with pkgs-stable; [
+#     floorp
+    efibootmgr
+    efitools
+    efivar
+    exfatprogs
+    tmsu
+    ]);
+}

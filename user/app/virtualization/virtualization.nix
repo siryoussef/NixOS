@@ -1,4 +1,4 @@
-{ pkgs, userSettings,inputs, ... }:
+{ pkgs, settings,inputs, ... }:
 
 {
   # Various packages related to virtualization, compatability and sandboxing
@@ -17,7 +17,7 @@
       dosfstools
     ];
       file.".config/libvirt/qemu.conf".text = '' nvram = ["/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd"] '';
-    persistence.${userSettings.persistentStorage}= let storage = import ../../../Storage.nix{inherit userSettings;}; in storage.persistent.libvirt.user;
+    persistence.${settings.user.persistentStorage}= let storage = import settings.storagePath{inherit settings;}; in storage.persistent.libvirt.user;
   };
     virtualisation.libvirt={
       swtpm.enable=true;

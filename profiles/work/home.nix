@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, systemSettings, inputs, userSettings, lib, ... }:
+{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, settings, inputs, lib, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # homepkgs = pkglists.home;
@@ -7,15 +7,15 @@
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home = {
-    username = userSettings.username;
-    homeDirectory = "/home/"+userSettings.username;
+    username = settings.user.username;
+    homeDirectory = "/home/"+settings.user.username;
     stateVersion = "24.05"; # Please read the comment before changing.
 #     packages = homepkgs;
     sessionVariables = {
-      EDITOR = userSettings.editor;
-      SPAWNEDITOR = userSettings.spawnEditor;
-      TERM = userSettings.term;
-      BROWSER = userSettings.browser;
+      EDITOR = settings.user.editor;
+      SPAWNEDITOR = settings.user.spawnEditor;
+      TERM = settings.user.term;
+      BROWSER = settings.user.browser;
       };
     };
 
@@ -31,9 +31,9 @@
 
   };};};};
   imports = [
-#               (if ((userSettings.editor == "emacs") || (userSettings.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
+#               (if ((settings.user.editor == "emacs") || (settings.user.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               stylix.homeManagerModules.stylix
-             (./. + "../../../user/wm"+("/"+userSettings.wm+"/"+userSettings.wm)+".nix") # My window manager selected from flake
+             (./. + "../../../user/wm"+("/"+settings.user.wm+"/"+settings.user.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
               ../../user/bin/phoenix.nix # My nix command wrapper
@@ -41,7 +41,7 @@
               ../../user/app/ranger/ranger.nix # My ranger file manager config
               ../../user/app/git/git.nix # My git config
 #               ../../user/app/keepass/keepass.nix # My password manager
-              (./. + "../../../user/app/browser"+("/"+userSettings.browser)+".nix") # My default browser selected from flake
+              (./. + "../../../user/app/browser"+("/"+settings.user.browser)+".nix") # My default browser selected from flake
               ../../user/app/virtualization/virtualization.nix # Virtual machines
               #../../user/app/AI/chat-gpt-retrieval-plugin.nix
               #../../user/app/AI/ollama.nix
@@ -83,8 +83,8 @@ xdg = {
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
 home={
-  persistence = let storage= import ../../Storage.nix{inherit userSettings;};  in{${userSettings.persistentStorage}=storage.persistent.user;};
-  packages = let list=import ./pkglists.nix{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.home;
+  persistence = let storage= import settings.storagePath{inherit settings;};  in{${settings.user.persistentStorage}=storage.persistent.user;};
+  packages = let list=import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.home;
 };
 
 

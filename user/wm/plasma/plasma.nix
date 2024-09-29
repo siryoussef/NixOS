@@ -1,4 +1,4 @@
-{ userSettings, /*pkgs, config, lib,  font,  systemSettings,inputs,*/ ...}:
+{ settings, /*pkgs, config, lib,  font, inputs,*/ ...}:
 {imports = [
 #             ./plasma-manager.nix
           ];
@@ -15,6 +15,8 @@
 #       #job.execCmd = lib.mkForce "exec /run/current-system/sw/bin/sddm";
 #   #     };
 # };
-home.persistence=let storage=import ../../../Storage.nix{inherit userSettings;}; in{${userSettings.persistentStorage}=storage.persistent.plasma.user;};
-
+home={
+    persistence=let storage=import settings.storagePath{inherit settings;}; in{${settings.user.persistentStorage}=storage.persistent.plasma.user;};
+#     packages =
+};
 }

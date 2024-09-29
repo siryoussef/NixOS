@@ -1,4 +1,4 @@
-{ pkgs,userSettings,...}:
+{ pkgs,settings,...}:
 
 {
 programs={
@@ -22,7 +22,7 @@ programs={
   };
   konsole ={enable=true; /*customColorSchemes = {}; defaultProfile="";*/
     profiles ={
-      ${userSettings.username}= {
+      ${settings.user.username}= {
         command = "${pkgs.fish}/bin/fish";
       };
 

@@ -1,0 +1,16 @@
+[1]
+Description[$i]=Dolphin
+maximizehoriz[$i]=true
+maximizehorizrule[$i]=3
+maximizevert[$i]=true
+maximizevertrule[$i]=3
+noborder[$i]=true
+noborderrule[$i]=2
+types[$i]=1
+wmclass[$i]=dolphin
+wmclasscomplete[$i]=true
+wmclassmatch[$i]=2
+
+[General]
+count[$i]=1
+rules[$i]=1

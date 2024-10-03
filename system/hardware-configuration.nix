@@ -3,7 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, modulesPath, settings, ... }:
 let
-storage = import settings.storagePath{inherit settings;};
+storage = import settings.storagePath{inherit settings config;};
 fileSystems = storage.fileSystems;
 persistent = storage.persistent;
 in{

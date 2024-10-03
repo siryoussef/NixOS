@@ -1,4 +1,4 @@
-{ pkgs, pkgs-stable, settings, lib, ... }:
+{ pkgs, pkgs-stable, settings, config, lib, ... }:
 
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
@@ -31,7 +31,7 @@
       quickemu
       quickgui
       ]);
-    persistence.${settings.system.persistentStorage}= let storage = import settings.storagePath{inherit settings;}; in storage.persistent.libvirt.system;
+    persistence.${settings.system.persistentStorage}= let storage = import settings.storagePath{inherit settings config;}; in storage.persistent.libvirt.system;
   };
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 

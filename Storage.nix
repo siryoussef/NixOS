@@ -1,4 +1,4 @@
-{  settings, ... }:
+{  settings, config, ... }:
 rec{
 DiscMounts = rec{
     "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=777"];*/}; # In-RAM-Root
@@ -53,7 +53,7 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
   waydroidDownloadsShareMain= { mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+settings.user.username+"/Downloads"; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
 
    ## Plasma config files!!
-#    kateConfig={ mountPoint = "/home/"+settings.user.username+"/.config/kate"; device = "/Shared/@Home/.config/kate";  };
+#    kateConfig={ mountPoint = "/home/"+settings.user.username+"/kate"; device = "/Shared/@Home/.config/kate";  };
   });
 ## Overlayfs
 persistent={
@@ -86,7 +86,7 @@ persistent={
         ".jupyter"
 #         ".mysql"
         ".android"
-        ".config/kdeconnect"
+        "kdeconnect"
         ".config/thorium"
         ".config/session"
         ".config/obsidian"
@@ -116,30 +116,46 @@ persistent={
       system={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
       user= {directories=["/.config/libvirt"];};
     };
-    plasma={
+    plasma=plasmaLinks;/*{
       system={
         directories=[];
         files=[];
         };
       user={
-        directories=[];
+        directories=["plasma"];
         files=[
-          ".config/katerc"
-          ".config/konsolerc"
-          ".config/dolphinrc"
-          ".config/kwinrc"
-          ".config/kdeglobals"
-          ".config/kwinrulesrc"
-          ".config/kxkbrc"
-          ".config/kdedefaults/kscreenlockerrc"
-          ".config/plasmashellrc"
-          ".config/plasma-org.kde.plasma.desktop-appletsrc"
+
         ];
       };
-    };
+    };*/
 
   };
-
+plasmaLinks={
+      system={
+        directories=[];
+        files=[];
+        };
+      user={
+        directories=[".local/share/kwalletd"];
+        files=(map(x: ".config/"+x)[
+          "katerc"
+          "konsolerc"
+          "dolphinrc"
+          "kwinrc"
+          "kdeglobals"
+          "kwinrulesrc"
+          "kxkbrc"
+          "kdedefaults/kscreenlockerrc"
+          "plasmashellrc"
+          "plasma-org.kde.plasma.desktop-appletsrc"
+          "kglobalshortcutsrc"
+          "kwinoutputconfig.json"
+        ]);
+      };
+    };
+homeLinks={
+  plasma= builtins.listToAttrs(map(x:{name=x; value={source=config.lib.file.mkOutOfStoreSymlink (settings.flakePath)/user/wm/plasma/dotfiles/${x};};})(with plasmaLinks.user;(files++directories)));
+};
 
 #   merged = (lib.recursiveUpdate DiscMounts BindMounts);
 fileSystems = DiscMounts//BindMounts;

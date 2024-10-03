@@ -1,4 +1,4 @@
-{ settings, /*pkgs, config, lib,  font, inputs,*/ ...}:
+{ settings, config, /*pkgs, config, lib,  font, inputs,*/ ...}:
 {imports = [
 #             ./plasma-manager.nix
           ];
@@ -15,8 +15,9 @@
 #       #job.execCmd = lib.mkForce "exec /run/current-system/sw/bin/sddm";
 #   #     };
 # };
-home={
-    persistence=let storage=import settings.storagePath{inherit settings;}; in{${settings.user.persistentStorage}=storage.persistent.plasma.user;};
+home=let storage=import settings.storagePath{inherit settings config;}; dotfiles= ( (toString settings.flakePath)+"/user/wm/plasma/dotfiles"); in{
+    persistence={ ${dotfiles} = storage.persistent.plasma.user;};
 #     packages =
+# file=storage.homeLinks.plasma;
 };
 }

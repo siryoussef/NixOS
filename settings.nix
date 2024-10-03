@@ -49,6 +49,7 @@ user = rec {
       };
       pkglistsPath = builtins.path{path=./pkglists.nix;};
       storagePath = builtins.path{path=./Storage.nix;};
+      flakePath=/etc/nixos;
       }
 
 

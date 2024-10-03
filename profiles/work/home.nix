@@ -1,12 +1,8 @@
 { config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, settings, inputs, lib, ... }:
-# let
-# pkglists = import ../../pkglists.nix;
-# homepkgs = pkglists.home;
-# in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home = {
+  home = let storage= import settings.storagePath{inherit settings config;}; list=import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in {
     username = settings.user.username;
     homeDirectory = "/home/"+settings.user.username;
     stateVersion = "24.05"; # Please read the comment before changing.
@@ -17,6 +13,10 @@
       TERM = settings.user.term;
       BROWSER = settings.user.browser;
       };
+    persistence = {${settings.user.persistentStorage}=storage.persistent.user;};
+    packages = list.home;
+#     file=storage.homeLinks.plasma;
+#     file.".config/kdedefaults".source= config.lib.file.mkOutOfStoreSymlink ./user/wm/plasma/dotfiles/kdedefaults;
     };
 
   programs = { home-manager.enable = true;
@@ -82,10 +82,7 @@ xdg = {
    mime.enable = true;
           mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
           };
-home={
-  persistence = let storage= import settings.storagePath{inherit settings;};  in{${settings.user.persistentStorage}=storage.persistent.user;};
-  packages = let list=import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.home;
-};
+
 
 
 

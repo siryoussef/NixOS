@@ -122,7 +122,7 @@ users = {
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
-#   persistence.${settings.system.persistentStorage} = let storage= import settings.storagePath{inherit settings;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
+#   persistence.${settings.system.persistentStorage} = let storage= import settings.storagePath{inherit settings config;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
   # List packages installed in system profile.
   systemPackages = let list = import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.system;
   };

@@ -1,0 +1,88 @@
+[FileDialogSize]
+2 screens: Height=794
+2 screens: Width=1056
+2 screens: Window-Maximized=true
+
+[General]
+Days Meta Infos=30
+Last Session=nixos-disaster
+Save Meta Infos=true
+Session Manager Sort Column=0
+Session Manager Sort Order=0
+Show Full Path in Title=false
+Show Menu Bar=true
+Show Status Bar=true
+Show Tab Bar=true
+Show Url Nav Bar=true
+
+[KTextEditor Document]
+Auto Detect Indent[$i]=true
+Indentation Width[$i]=4
+Keep Extra Spaces[$i]=false
+ReplaceTabsDyn[$i]=false
+Tab Handling[$i]=2
+Tab Width[$i]=4
+
+[KTextEditor Renderer]
+Animate Bracket Matching[$i]=false
+Auto Color Theme Selection=true
+Color Theme=Breeze Dark
+Line Height Multiplier=1
+Show Indentation Lines[$i]=true
+Show Whole Bracket Expression=false
+Text Font[$i]=Hack,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+Text Font Features=
+Word Wrap Marker=false
+
+[KTextEditor View]
+Auto Brackets[$i]=true
+Bracket Match Preview[$i]=false
+Chars To Enclose Selection[$i]=<>(){}[]'"`
+Input Mode[$i]=0
+
+[KTextEditor::Search]
+Replace History=p,k,,settings.user,settings.system,settings.user.name,system = settings.system.arch;,settings.system.arch,org.garudalinux.firedragon,virtualization,zen,nixpkgs,nixpkgs-stable,nixpkgs-unstable,nixpkgs-unstable";,"nixpkgsRef/nixpkgs-unstable";,"nixpkgsRef/nixpkgs-stable";,"nixpkgs/nixpkgs-unstable";,"nixpkgs/nixpkgs";,nixpkgs.follows = "nixpkgs",(
+Search History=.config/p,.config/k,userSettings,systemSettings,userSettings.username,system = settings.system;,settings.system,git,floorp.desktop,droidcam,gc,virtualisation,libvirt,nixvirt,floorp,thorium,nixpkgs-patched,pkgs,nix,hyprland,storage,docker,nixpkgsRef,sgx,nixpkgsRef/nixpkgs-stable,nixpkgsRef/nixpkgs-unstable,nixpkgsRef/nixpkgs-unstable";,nixpkgRef,nixpkgs,emacs,packages,"nixpkgs","nixpkgs-unstable";,"nixpkgs-stable";,"nixpkgs/nixpkgs-unstable";,path,path:.,path.,"nixpkgs/nixpkgs";,"nixpkgs";,lix,icon,icons,settings.nix,home-manager.follows,nixpkgs.follows = "Settings",(Settings.,Settings.,fsType = "none"; options = [ "bind" ];
+
+[MainWindow]
+1536x864 screen: Window-Maximized=true
+2 screens: Height=794
+2 screens: Width=928
+2 screens: Window-Maximized=true
+
+[UiSettings]
+ColorScheme[$i]=Krita dark orange
+
+[filetree]
+editShade=31,81,106
+listMode=false
+middleClickToClose=false
+shadingEnabled=true
+showCloseButton=false
+showFullPathOnRoots=false
+showToolbar=true
+sortRole=0
+viewShade=81,49,95
+
+[lspclient]
+AllowedServerCommandLines=/etc/profiles/per-user/youssef/bin/nil,/run/current-system/sw/bin/bash-language-server start
+AutoHover=true
+AutoImport=true
+BlockedServerCommandLines=
+CompletionDocumentation=true
+CompletionParens=true
+Diagnostics=true
+FormatOnSave=false
+HighlightGoto=true
+IncrementalSync=false
+InlayHints=false
+Messages=true
+ReferencesDeclaration=true
+SemanticHighlighting=true
+ServerConfiguration=
+SignatureHelp=true
+SymbolDetails=false
+SymbolExpand=true
+SymbolSort=false
+SymbolTree=true
+TypeFormatting=false

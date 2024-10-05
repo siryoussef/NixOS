@@ -3,12 +3,11 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, modulesPath, settings, ... }:
 let
-storage = import settings.storagePath{inherit settings config;};
-fileSystems = storage.fileSystems;
-persistent = storage.persistent;
+storage = import settings.paths.storage{inherit settings config;};
 in{
-environment.persistence.${settings.system.persistentStorage} = (persistent.system/* // {users.${settings.user.username}=persistent.user;}*/);
- inherit fileSystems;
+environment.persistence = (storage.persistent.system);
+fileSystems = storage.fileSystems;
+
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];

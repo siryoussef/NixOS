@@ -1,8 +1,8 @@
-{pkgs,...}:
+{pkgs, pkgs-stable, pkgs-kdenlive,...}:
 # let
 # pkgs=pkgs;
 # in
-{
+rec{
   # ---- SYSTEM SETTINGS ---- #
 system = rec{
         arch = "x86_64-linux"; # system arch
@@ -47,9 +47,15 @@ user = rec {
                            editor);
         persistentStorage = "/Shared/@Persistent/home/"+"${username}";
       };
-      pkglistsPath = builtins.path{path=./pkglists.nix;};
-      storagePath = builtins.path{path=./Storage.nix;};
-      flakePath=/etc/nixos;
-      }
+paths={
+      pkglists = builtins.path{path=./pkglists.nix;};
+      storage = builtins.path{path=./Storage.nix;};
+      flake=/etc/nixos;
+      dotfiles=/Shared/dotfiles;
+      };
+pkglists=import paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;};
+storage=let settings = import ./settings.nix; in import paths.storage{inherit settings;};
+
+}
 
 

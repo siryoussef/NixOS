@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-stable, pkgs-kdenlive, lib, settings, ... }:
+{ config, pkgs, pkgs-stable, lib, settings, ... }:
 # let
 # pkglists = import ../../pkglists.nix;
 # syspkgs = pkglists.system;
@@ -21,13 +21,7 @@
       ../../system/app/appsupport.nix
       ../../system/app/virtualization.nix
       ../../system/app/syncthing.nix
-      ../../system/security/doas.nix
-      ../../system/security/gpg.nix
-      ../../system/security/blocklist.nix
-      ../../system/security/firewall.nix
-      ../../system/security/firejail.nix
-      ../../system/security/openvpn.nix
-      ../../system/security/automount.nix
+      ../../system/security.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
 #       ../../system/app/develop.nix
@@ -95,7 +89,8 @@ users = {
     ${settings.user.username} = {
       isNormalUser = true;
       description = settings.user.name;
-      extraGroups = [ "networkmanager" "wheel" "input" "dialout" "libvirtd" "vboxusers" "aria2" "syncthing"];
+      group = "users";
+      extraGroups = [ "users" "networkmanager" "wheel" "input" "dialout" "kvm" "qemu-libvirtd" "polkituser" "libvirtd" "vboxusers" "aria2" "syncthing"];
   #     packages = with pkgs; [];
       uid = 1000;
     };
@@ -122,9 +117,9 @@ users = {
 environment = {
   shells = with pkgs; [ fish zsh bash ];
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
-#   persistence.${settings.system.persistentStorage} = let storage= import settings.storagePath{inherit settings config;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
+#   persistence.${settings.system.persistentStorage} = let storage= import settings.paths.storage{inherit settings config;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
   # List packages installed in system profile.
-  systemPackages = let list = import settings.pkglistsPath{inherit pkgs pkgs-stable pkgs-kdenlive;}; in list.system;
+  systemPackages = /*let list = import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in*/ settings.pkglists.system;
   };
 fonts.fontDir.enable = true;
 xdg.portal = {
@@ -201,7 +196,6 @@ services = {
   xkb.layout = "us";
   };
   displayManager.autoLogin = { enable = true; user = settings.user.username; };
-  spice-vdagentd.enable = true ;
   pipewire = {
     enable = true;
     alsa = { enable = true; support32Bit = true; };
@@ -233,17 +227,6 @@ services = {
             x86.msr.enable = true; };
     bluetooth = { enable = true; powerOnBoot = true; };
   };
-security = {
-  rtkit.enable = true;
-  #ipa.chromiumSupport = true;
-  #chromiumSuidSandbox.enable = true;
-  tpm2.enable = false;
-  apparmor.enable = false;
-  allowSimultaneousMultithreading = true;
-  polkit.enable = true;
-  };
-
-
 
 systemd = {
 /*

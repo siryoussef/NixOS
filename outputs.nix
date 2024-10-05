@@ -1,6 +1,6 @@
 {inputs,self,...}:
 let
-      settings = import ./settings.nix {inherit pkgs;};
+      settings = import ./settings.nix {inherit pkgs pkgs-stable pkgs-kdenlive;};
       systemSettings = settings.system; # for backward
       userSettings = settings.user;     # combatibilty (temporarily > to be removed ! )
 

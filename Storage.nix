@@ -1,4 +1,4 @@
-{  settings, config, ... }:
+{  settings, ... }:
 rec{
 DiscMounts = rec{
     "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=777"];*/}; # In-RAM-Root
@@ -28,8 +28,8 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
   vscode= {mountPoint = "/home/"+settings.user.username+"/.vscode"; device = "/Shared/@Home/.vscode";};
   fish={mountPoint = "/home/"+settings.user.username+"/.local/share/fish"; device = "/Shared/@Home/fish";};
   kate={mountPoint = "/home/"+settings.user.username+"/.local/share/kate"; device = "/Shared/@Home/kate";};
-  kdevelop={mountPoint = "/home/"+settings.user.username+"/.local/share/kdevelop"; device = "/Shared/@Home/kdevelop";};
-  onlyoffice={mountPoint = "/home/"+settings.user.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice";};
+#   kdevelop={mountPoint = "/home/"+settings.user.username+"/.local/share/kdevelop"; device = "/Shared/@Home/kdevelop";};
+#   onlyoffice={mountPoint = "/home/"+settings.user.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice";};
   whatsapp-for-linux={ mountPoint = "/home/"+settings.user.username+"/.local/share/whatsapp-for-linux"; device = "/Shared/@Home/whatsapp-for-linux";};
   KotatogramDesktop={mountPoint = "/home/"+settings.user.username+"/.local/share/KotatogramDesktop"; device = "/Shared/@Home/KotatogramDesktop";};
   Github={mountPoint = "/home/"+settings.user.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop";};
@@ -57,7 +57,7 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
   });
 ## Overlayfs
 persistent={
-	system={
+	system.${settings.system.persistentStorage}={
 		directories= [
 # 		"/var/log"
 # 		"/var/lib/bluetooth"
@@ -71,7 +71,7 @@ persistent={
 		{ file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
 		];
     };
-    user= {
+    user.${settings.user.persistentStorage}= {
       directories = [
 #         "Downloads"
 #         "Music"
@@ -98,12 +98,14 @@ persistent={
 #         { directory = ".local/share/keyrings"; mode = "0700"; }
 #         ".local/share/direnv"
 #       ".local/share/keyrings"
+        ".local/share/onlyoffice"
+        ".local/share/kdevelop"
       ]
       ++
       (map(dir:{directory=dir; method="symlink";}) ["Music"])
       ;
       files = [
-        ".config/gtkrc"
+
         ".screenrc"
         ".gtkrc-2.0"
         ".bash_history"
@@ -113,30 +115,33 @@ persistent={
       allowOther=true;
     };
     libvirt={
-      system={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
-      user= {directories=["/.config/libvirt"];};
+      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
+      user.${settings.user.persistentStorage}= {directories=["/.config/libvirt"];};
     };
-    plasma=plasmaLinks;/*{
-      system={
-        directories=[];
-        files=[];
-        };
-      user={
-        directories=["plasma"];
-        files=[
-
-        ];
-      };
-    };*/
+    plasma=plasmaLinks;
 
   };
+plasmaUser=((toString settings.paths.dotfiles)+"/plasma");
 plasmaLinks={
       system={
         directories=[];
         files=[];
         };
-      user={
-        directories=[".local/share/kwalletd"];
+      user={${plasmaUser} = {
+        allowOther=true;
+        directories=
+        (map(x: ".local/share/"+x)[
+          "kwalletd"
+          "dolphin"
+          "baloo"
+          "klipper"
+          "konsole"
+        ])++(map(x: ".config/"+x)[
+          "kde.org"
+          "gtk-3.0"
+          "gtk-4.0"
+          "xsettingsd"
+        ]);
         files=(map(x: ".config/"+x)[
           "katerc"
           "konsolerc"
@@ -150,11 +155,26 @@ plasmaLinks={
           "plasma-org.kde.plasma.desktop-appletsrc"
           "kglobalshortcutsrc"
           "kwinoutputconfig.json"
+          "kwalletrc"
+
+          "kactivitymanagerdrc"
+          "kded5rc"
+          "kconf_updaterc"
+          "plasma-localerc"
+          "ktimezonedrc"
+          "PlasmaDiscoverUpdates"
+          "gtkrc-2.0"
+          "gtkrc"
+          "Trolltech.conf"
+          "baloofileinformationrc"
+          "baloofilerc"
+          "bluedevilglobalrc"
         ]);
+        };
       };
     };
 homeLinks={
-  plasma= builtins.listToAttrs(map(x:{name=x; value={source=config.lib.file.mkOutOfStoreSymlink (settings.flakePath)/user/wm/plasma/dotfiles/${x};};})(with plasmaLinks.user;(files++directories)));
+  plasma= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};})(with plasmaLinks.user.${plasmaUser};(files++directories)));
 };
 
 #   merged = (lib.recursiveUpdate DiscMounts BindMounts);

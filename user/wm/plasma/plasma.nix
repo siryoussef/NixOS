@@ -15,8 +15,8 @@
 #       #job.execCmd = lib.mkForce "exec /run/current-system/sw/bin/sddm";
 #   #     };
 # };
-home=let storage=import settings.storagePath{inherit settings config;}; dotfiles= ( (toString settings.flakePath)+"/user/wm/plasma/dotfiles"); in{
-    persistence={ ${dotfiles} = storage.persistent.plasma.user;};
+home=let storage=import settings.paths.storage{inherit settings config;};  in{
+    persistence=storage.persistent.plasma.user;
 #     packages =
 # file=storage.homeLinks.plasma;
 };

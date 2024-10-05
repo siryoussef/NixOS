@@ -1,4 +1,4 @@
-{ pkgs, pkgs-stable, settings, config, lib, ... }:
+{ pkgs, pkgs-stable, pkgs-kdenlive, settings, config, lib, ... }:
 
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
@@ -7,31 +7,8 @@
   ];
   users.users.${settings.user.username}.extraGroups = [ "docker" "podman" ];
   environment={
-    systemPackages = with pkgs; [
-  #     virtualbox
-      distrobox
-      boxbuddy
-      virt-viewer
-      spice spice-gtk
-      spice-protocol
-      win-virtio
-      win-spice
-      #virt-manager-qt (causes an error)
-      virter
-      lxqt.qtermwidget
-
-      pods
-      podman-tui
-      podman-desktop
-      podman-compose
-      dive
-      ]
-      ++
-      (with pkgs-stable;[
-      quickemu
-      quickgui
-      ]);
-    persistence.${settings.system.persistentStorage}= let storage = import settings.storagePath{inherit settings config;}; in storage.persistent.libvirt.system;
+    systemPackages = let pkglists=import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive ;}; in pkglists.virtualisation.system;
+    persistence= let storage = import settings.paths.storage{inherit settings config;}; in storage.persistent.libvirt.system;
   };
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 
@@ -156,31 +133,62 @@
 
     libvirtd = {
       enable = true;
-      allowedBridges = [ "virbr0" "nm-bridge" ];
+      allowedBridges = [ "virbr0" "vibr1" "nm-bridge" ];
       onBoot = "start";
       parallelShutdown = 3;
       onShutdown = "suspend";
       qemu = {
-        runAsRoot = false;
+        runAsRoot = true;
         swtpm.enable = true;
-        ovmf.enable = true;
-        ovmf.packages = [ pkgs.OVMFFull.fd ];
-        };
-        };
+        vhostUserPackages = [ pkgs.virtiofsd ];
+        ovmf={enable = true; packages = [ (pkgs.OVMFFull.override {secureBoot = true; tpmSupport = true;}).fd];};
+      };
+    };
     libvirt ={ # from NixVirt flake
       enable=true;
       verbose=true;
       swtpm.enable=true;
-      connections={
+      connections= /*(builtins.mapAttrs(x: y: y//{
+        pools=[
+            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+#               volumes=[
+#                 {name="";
+#                   present=true;
+#                   definition="";
+#                 }
+#               ];
+              }
+          ];
+          networks=[
+            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
+          ];
+        })*/ {
         "qemu:///system"={
           domains = [
             {definition=../virtualisation/libvirt/domains/win11.xml; active=true;}
           ];
           networks=[
-            {definition=../virtualisation/libvirt/networks/default.xml;active=true;}
+            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
           ];
           pools=[
-            {definition=../virtualisation/libvirt/storage/default.xml; active=true;}
+            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+#               volumes=[
+#                 {name="";
+#                   present=true;
+#                   definition="";
+#                 }
+#               ];
+              }
+          ];
+        };
+        "qemu:///session"={
+          domains = [
+            {definition=../virtualisation/libvirt/domains/win11.xml; active=true;}
+          ];
+          networks=[
+            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
+          ];
+          pools=[
             {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
 #               volumes=[
 #                 {name="";
@@ -216,6 +224,10 @@
 
 */
   };
+services.spice-vdagentd.enable = true;
+services.spice-webdavd.enable = true;
+services.spice-autorandr.enable =true;
+boot.extraModprobeConfig = "options kvm_intel nested=1";
 #   boot.extraModulePackages = with config.boot.kernelPackages; [  virtualbox  ]; # virtuabox not building error
 }
 

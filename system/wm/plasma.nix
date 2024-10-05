@@ -45,7 +45,6 @@ imports = [
           enableQt5Integration = true;
           };
         };
-  spice-vdagentd.enable = true ;
   gnome.gnome-keyring.enable = true;
   gnome.gnome-online-accounts.enable = true;
   gvfs.enable = true;

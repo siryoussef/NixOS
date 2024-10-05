@@ -6,7 +6,7 @@ or other application using the libvirt API.
 -->
 
 <network>
-  <name>default</name>
+  <name>SystemMain</name>
   <uuid>1330468b-bead-4177-9813-212717619f6a</uuid>
   <forward mode='nat'/>
   <bridge name='virbr0' stp='on' delay='0'/>

@@ -137,7 +137,7 @@
   ] ++ [ pkgs-kdenlive.kdenlive ]
 #   ++ (with pkgs-stable;[ floorp ])
   );
-  system = with pkgs; [
+system = with pkgs; [
       vim
       wget
       nodePackages.bash-language-server
@@ -234,4 +234,43 @@
     exfatprogs
     tmsu
     ]);
+virtualisation={
+  system=with pkgs; [
+  #     virtualbox
+      distrobox
+      boxbuddy
+      virt-viewer
+      spice spice-gtk
+      spice-protocol
+      win-virtio
+      win-spice
+      #virt-manager-qt (causes an error)
+      virter
+      lxqt.qtermwidget
+
+      pods
+      podman-tui
+      podman-desktop
+      podman-compose
+      dive
+      ]
+      ++
+      (with pkgs-stable;[
+      quickemu
+      quickgui
+      ]);
+  user=with pkgs; [
+      # Virtual Machines and wine
+      libvirt
+      virt-manager
+      qemu
+      uefi-run
+      lxc
+      swtpm
+      bottles
+
+      # Filesystems
+      dosfstools
+    ];
+};
 }

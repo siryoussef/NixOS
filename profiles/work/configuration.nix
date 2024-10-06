@@ -293,12 +293,11 @@ programs = {
   nh={enable=true; clean={enable=true; dates="weekly"; extraArgs="--keep 5 --keep-since 3d";};};
   udevil.enable = true;
   firejail.enable = true;
-  captive-browser.enable = false;
-  partition-manager.enable = true;
+  captive-browser={enable = false; package=pkgs.captive-browser;};
+  partition-manager={enable = true; package=pkgs.kdePackages.partitionmanager;};
   git={enable = true; prompt.enable=true; /*config =[];*/};
   appimage = { enable = true; binfmt = true;};
   #cfs-zen-tweaks.enable = true;
-  dconf.enable = true;
   fuse.userAllowOther = true;
   nano.syntaxHighlight = true;
   #wayfire.enable = true;
@@ -322,15 +321,6 @@ programs = {
   command-not-found.enable = false;
   miriway.enable = false;
 
-  firefox = {
-    enable = true;
-    package = pkgs-stable.floorp;
-    nativeMessagingHosts = {
-    packages = with pkgs; [ uget-integrator browserpass];
-  # uget-integrator = true;
-  # browserpass = true; ##deprecated
-    };
-  };
   kdeconnect = { enable = true; /* package = pkgs.plasma5Packages.kdeconnect-kde; */ };
   droidcam.enable=true;
   singularity = {enable=false; package=pkgs.apptainer; enableFakeroot=true; enableSuid=true; };

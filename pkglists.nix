@@ -283,7 +283,7 @@ flatpaks= (map(pkg:{appId = pkg; origin = "flathub";})[
       "page.codeberg.JakobDev.jdFlatpakSnapshot"
       "org.sqlitebrowser.sqlitebrowser"
       "com.github.tchx84.Flatseal"
-
+      "org.gnome.Boxes"
       ]) ++ (map(pkg:{appId = pkg; origin = "flathub-beta";})[
       "org.signal.Signal"
 

@@ -54,7 +54,7 @@ paths={
       dotfiles= /. + "/Shared/@Repo/dotfiles";
       };
 pkglists=import paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;};
-storage=let settings = import ./settings.nix; in import paths.storage{inherit settings;};
+storage=let settings = import ./settings.nix; in import paths.storage{inherit settings;}; #FIXME
 
 }
 

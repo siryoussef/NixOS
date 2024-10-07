@@ -1481,6 +1481,24 @@
         "type": "github"
       }
     },
+    "flake-utils_24": {
+      "inputs": {
+        "systems": "systems_29"
+      },
+      "locked": {
+        "lastModified": 1710146030,
+        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flake-utils_3": {
       "inputs": {
         "systems": "systems_7"
@@ -3527,6 +3545,7 @@
         "thorium-browser": "thorium-browser",
         "vscode": "vscode",
         "wfvm": "wfvm",
+        "winapps": "winapps",
         "ytdlp-gui": "ytdlp-gui",
         "zen-browser": "zen-browser"
       }
@@ -4483,6 +4502,21 @@
         "type": "github"
       }
     },
+    "systems_29": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "systems_3": {
       "locked": {
         "lastModified": 1689347949,
@@ -4788,6 +4822,27 @@
         "url": "https://git.m-labs.hk/M-Labs/wfvm"
       }
     },
+    "winapps": {
+      "inputs": {
+        "flake-utils": "flake-utils_23",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1728231580,
+        "narHash": "sha256-+xLRX8JtcmMOn8KYeRhwrq9rw+Ch3AxYkLtO4AGfHQg=",
+        "owner": "siryoussef",
+        "repo": "winapps",
+        "rev": "2acdc44dac6cab977231f0a7944a8eaa7994ea27",
+        "type": "github"
+      },
+      "original": {
+        "owner": "siryoussef",
+        "repo": "winapps",
+        "type": "github"
+      }
+    },
     "ws-butler": {
       "flake": false,
       "locked": {
@@ -4837,7 +4892,7 @@
     "ytdlp-gui": {
       "inputs": {
         "crane": "crane_2",
-        "flake-utils": "flake-utils_23",
+        "flake-utils": "flake-utils_24",
         "nixpkgs": "nixpkgs_18",
         "rust-overlay": "rust-overlay_3"
       },

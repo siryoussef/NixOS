@@ -294,7 +294,7 @@ programs = {
   udevil.enable = true;
   firejail.enable = true;
   captive-browser={enable = false; package=pkgs.captive-browser;};
-  partition-manager={enable = true; package=pkgs.kdePackages.partitionmanager;};
+  partition-manager={enable = true; /*package=pkgs.kdePackages.partitionmanager;*/};
   git={enable = true; prompt.enable=true; /*config =[];*/};
   appimage = { enable = true; binfmt = true;};
   #cfs-zen-tweaks.enable = true;

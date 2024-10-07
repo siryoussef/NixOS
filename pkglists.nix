@@ -21,6 +21,7 @@
     vscode-fhs
     #vscodium-fhs
     nil
+    dconf2nix
     github-desktop
     obsidian
     logseq
@@ -244,8 +245,9 @@ virtualisation={
       spice-protocol
       win-virtio
       win-spice
-      #virt-manager-qt (causes an error)
+      virt-manager-qt #(causes an error)
       virter
+      libguestfs-with-appliance
       lxqt.qtermwidget
 
       pods

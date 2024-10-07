@@ -1,6 +1,9 @@
 { pkgs, pkgs-stable, pkgs-kdenlive, settings,inputs, config, ... }:
 
 {
+imports=[
+  ./winapps.nix
+];
   # Various packages related to virtualization, compatability and sandboxing
   home={
     packages = let pkgslists= import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in pkgslists.virtualisation.user;

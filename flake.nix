@@ -19,6 +19,7 @@
   inputs ={
 #     settings.url = "git+file:///etc/nixos/settings";
     flake-parts.url = "github:hercules-ci/flake-parts";
+
 #       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
 
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
@@ -183,6 +184,8 @@
         };
     };
     wfvm={url = "git+https://git.m-labs.hk/M-Labs/wfvm";
+      inputs.nixpkgs.follows = "nixpkgs";};
+    winapps={url="github:siryoussef/winapps";
       inputs.nixpkgs.follows = "nixpkgs";};
     robotnix={url="github:siryoussef/robotnix";
       inputs={

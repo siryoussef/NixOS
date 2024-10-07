@@ -31,9 +31,11 @@
                 zen-browser
                 NixVirt
                 ]))
-                ++ [pkgs.nur.repos.ataraxiasjel.waydroid-script ]
-                ++ (map (pkg : pkg.defaultPackage.${settings.system.arch}) (with inputs; [thorium-browser] ))
-                ;
+                ++(with inputs.winapps.packages.${settings.system.arch};[winapps winapps-launcher])
+                ++[
+                pkgs.nur.repos.ataraxiasjel.waydroid-script
+                inputs.thorium-browser.defaultPackage.${settings.system.arch}
+                ];
               home-manager= rec{
                 users.${settings.user.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;

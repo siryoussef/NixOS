@@ -19,7 +19,8 @@
   inputs ={
 #     settings.url = "git+file:///etc/nixos/settings";
     flake-parts.url = "github:hercules-ci/flake-parts";
-
+    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
+    services-flake.url = "github:juspay/services-flake";
 #       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
 
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};

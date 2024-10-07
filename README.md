@@ -20,11 +20,11 @@
 # Features
  1- full flatpak support, with declarative flatpaks.
  
- 2- InRam-Root > faster purer environment.
+ 2- Impermanence with InRam-Root & In-Ram-Home
+
+ 3-kde-plasma w. plasma-manager (currently disabled but to be enabled in the future)
  
- 3- Waydroid.
- 
- 4- kde-plasma with plasma manager.
+ 4- Waydroid.
  
  5- floorp as main browser (now migrating to firedragon flatpak ).
  
@@ -33,6 +33,8 @@
  7- A nix-shell config (a regular non-flake one , will shift it to the main flake later).
  
  8-linux-zen kernel for better desktop performance.
+ 9-using lix (a better nix!)
+
  
 # WIP
 
@@ -42,38 +44,37 @@
  
  3- Configuring jupyter & python environments declaratively (currently a nix-shell environment is working fine).
  
- 4- In-Ram-Home (plasma-manager is currently in the way !).
+ 4- declarative secure passwords.
  
- 5- declarative secure passwords.
+ 5- configuring virt-manager dotfiles w.dconf declartively
+ 6-declarative virt-manager VMs (using NixVirt), starting with a windows VM (currently an imperative setup works fine).
  
- 6- Impermanence flake > better options for persistent storage other than simple bind mounts.
+ 7-exploring zen browser as an alternative to floorp & firedragon , configuring it's flatpak (or firedragon's one for that matter) to fill in place for the default browser.
  
- 7-declarative virt-manager VMs (using NixVirt), starting with a windows VM (currently an imperative setup works fine).
+ 8-exploring system-manager for configuring nixos /etc files & maybe also arch linux (if not I will just shift my 2ry OS to debian or rhino).
  
- 8-testing lix & shifting from nix > lix.
- 
- 9-exploring system-manager for configuring nixos /etc files & maybe also arch linux (if not I will just shift my 2ry OS to debian or rhino).
- 
- 10- quickemu & quickgui for rapid VM deployment!
+ 9- quickemu & quickgui for rapid VM deployment!
 
- 11-flake-parts for better organization of that to-be huge flakes project.
+ 10-flake-parts for better organization of that to-be huge flakes project.
+ 11-adding wfvm for windows apps that don't run on wine!
+ 12-winapps for using any windows app with best performance inside linux desktop environments/wms!
  
 # TODO
 1- declarative wine setup.
 
 2- declarative SQL server.
 
-3- declarative Waydroid environment (too much big of a target currently).
+3- declarative Waydroid environment (too much big of a target currently , maybe with robotnix , with planning to further develop or to find an alternative if possiple!)
 
 4- configuring disko.
 
-5- exploring zen browser as an alternative to floorp & firedragon , configuring it's flatpak (or firedragon's one for that matter) to fill in place for the default browser.
+5-nixos-wsl flake config.
 
-6-nixos-wsl flake config.
+6-nixOnDroid flake config.
 
-7-nixOnDroid flake config.
+7-adjusting nix-shell environment & adding it to nixos if possiple!
+8-adding local AI models w.flake-parts services flakes & maybe nixified AI (if found useful, i.e. too old now)
 
-8- add robotnix (with planning to further develop or to find an alternative if possiple!)
 
-9- add wfvm for windows apps that don't run on wine!
+
 

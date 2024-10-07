@@ -3353,6 +3353,21 @@
         "type": "github"
       }
     },
+    "process-compose-flake": {
+      "locked": {
+        "lastModified": 1727723765,
+        "narHash": "sha256-/3az0h2Zp02bjJQKliR0PEQiT+FMLOR1GumhH42jA4w=",
+        "owner": "Platonic-Systems",
+        "repo": "process-compose-flake",
+        "rev": "22f2aeb7e0b88006d1d27065f8422f2790d99e47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Platonic-Systems",
+        "repo": "process-compose-flake",
+        "type": "github"
+      }
+    },
     "qnr": {
       "inputs": {
         "globalRegistry": "globalRegistry"
@@ -3528,11 +3543,13 @@
         "org-yaap": "org-yaap",
         "phscroll": "phscroll",
         "plasma-manager": "plasma-manager",
+        "process-compose-flake": "process-compose-flake",
         "qnr": "qnr",
         "quickgui": "quickgui",
         "robotnix": "robotnix",
         "rust-overlay": "rust-overlay",
         "scientific-fhs": "scientific-fhs",
+        "services-flake": "services-flake",
         "snow": "snow",
         "snowfall-dotbox": "snowfall-dotbox",
         "snowfall-flake": "snowfall-flake",
@@ -3655,6 +3672,21 @@
       "original": {
         "owner": "olynch",
         "repo": "scientific-fhs",
+        "type": "github"
+      }
+    },
+    "services-flake": {
+      "locked": {
+        "lastModified": 1728174407,
+        "narHash": "sha256-4xR6EeSk6H60VpRMcwOW83KeNyVnoNBAMTTESsAQafU=",
+        "owner": "juspay",
+        "repo": "services-flake",
+        "rev": "ca67793779467735e78cb4ffffb621e6b9c1eebe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "juspay",
+        "repo": "services-flake",
         "type": "github"
       }
     },

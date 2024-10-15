@@ -1,19 +1,19 @@
 # SiragOS 
  My NixOS config files, forked from librephoenix (thanks emmet!) & my old config files, with the intention of propably adding some improvements present in ZaneyOS (nothing about this part in done yet)
 
-# A Perfect OS (my moving target):
+# A Better OS ..... a moving target? :
 
- **well, Isn't that every nixos users target? , however I have some relatively static clearly defined goals** :-
+ **well, Isn't that every nixos users target? , however I have some relatively clearly defined goals** :-
  
- 1- A libreOS (as much as possiple without harming other goals) with modularity in mind.
+ 1- A libreOS yet convenient with modularity in mind.
  
  2- universal architecture & device compatibilty (cross platform).
  
- 3- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
- 
+ 3-universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
  4- privacy : mainly by using alternative software.
  
- 5- universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
+ 5- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
+ 6- universal environment compatibility! , think VMs, Containers, devShells , home-manager on other OSes !
  ....
  Well I lied a little about the targets clarity, however the target gets clearer as we move on
  
@@ -74,7 +74,7 @@
 
 7-adjusting nix-shell environment & adding it to nixos if possiple!
 8-adding local AI models w.flake-parts services flakes & maybe nixified AI (if found useful, i.e. too old now)
-
+9- potentially handling root user directory with home-manager?
 
 
 

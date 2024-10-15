@@ -32,12 +32,14 @@
   };};};};
   imports = [
 #               (if ((settings.user.editor == "emacs") || (settings.user.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
-#               stylix.homeManagerModules.stylix
+#               inputs.stylix.homeManagerModules.stylix
              (./. + "../../../user/wm"+("/"+settings.user.wm+"/"+settings.user.wm)+".nix") # My window manager selected from flake
               ../../user/shell/sh.nix # My zsh and bash config
               ../../user/shell/cli-collection.nix # Useful CLI apps
-              ../../user/bin/phoenix.nix # My nix command wrapper
+#               ../../user/bin/phoenix.nix # My nix command wrapper
 #               ../../user/app/doom-emacs/doom.nix # My doom emacs config
+              ../../user/app/nvim/nvim.nix # My doom emacs config
+              #../../user/app/emacsng # Me experimenting with emacsng and a vanilla config
               ../../user/app/ranger/ranger.nix # My ranger file manager config
               ../../user/app/git/git.nix # My git config
 #               ../../user/app/keepass/keepass.nix # My password manager
@@ -46,7 +48,7 @@
               #../../user/app/AI/chat-gpt-retrieval-plugin.nix
               #../../user/app/AI/ollama.nix
               #../../user/app/flatpak/flatpak.nix # Flatpaks
-              #../../user/style/stylix.nix # Styling and themes for my apps
+#               ../../user/style/stylix.nix # Styling and themes for my apps
               ../../user/lang/cc/cc.nix # C and C++ tools
 #               ../../user/lang/godot/godot.nix # Game development
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure

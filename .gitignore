@@ -3,5 +3,5 @@
 /secrets
 .snowflakeos.nix.kate-swp
 *.age
-/secrets
 user/wm/plasma/dotfiles
+/venv3

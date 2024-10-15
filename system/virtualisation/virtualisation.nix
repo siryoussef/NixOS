@@ -1,13 +1,15 @@
-{ pkgs, pkgs-stable, pkgs-kdenlive, settings, config, lib, ... }:
+{ pkgs, settings, config, lib, inputs, ... }:
 
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
   imports = [
+    ./android.nix
     ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs settings lib;} )
   ];
   users.users.${settings.user.username}.extraGroups = [ "docker" "podman" ];
+  security.doas.extraRules=[{users=["${settings.user.username}"]; noPass=true; cmd="virsh";}];
   environment={
-    systemPackages = let pkglists=import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive ;}; in pkglists.virtualisation.system;
+    systemPackages = let pkglists=settings.pkglists; in pkglists.virtualisation.system;
     persistence= let storage = import settings.paths.storage{inherit settings config;}; in storage.persistent.libvirt.system;
   };
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
@@ -104,12 +106,6 @@
     hypervGuest.enable = false;
 
     spiceUSBRedirection.enable = true;
-
-    waydroid.enable = true;
-    anbox = {enable = false; image = pkgs.anbox.image;};
-
-
-
     vmware.host = { enable = false; package = pkgs.vmware-workstation; };
     xen = {
       enable = false;
@@ -150,7 +146,7 @@
       swtpm.enable=true;
       connections= /*(builtins.mapAttrs(x: y: y//{
         pools=[
-            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+            {definition=./libvirt/storage/DiscImgs.xml; active=true;
 #               volumes=[
 #                 {name="";
 #                   present=true;
@@ -160,18 +156,18 @@
               }
           ];
           networks=[
-            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
+            {definition=./libvirt/networks/SystemMain.xml;active=true;}
           ];
         })*/ {
         "qemu:///system"={
           domains = [
-            {definition=../virtualisation/libvirt/domains/win11.xml; active=true;}
+            {definition=./libvirt/domains/win11.xml; active=true;}
           ];
           networks=[
-            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
+            {definition=./libvirt/networks/SystemMain.xml;active=true;}
           ];
           pools=[
-            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+            {definition=./libvirt/storage/DiscImgs.xml; active=true;
 #               volumes=[
 #                 {name="";
 #                   present=true;
@@ -183,13 +179,13 @@
         };
         "qemu:///session"={
           domains = [
-            {definition=../virtualisation/libvirt/domains/win11.xml; active=true;}
+            {definition=./libvirt/domains/win11.xml; active=true;}
           ];
           networks=[
-            {definition=../virtualisation/libvirt/networks/SystemMain.xml;active=true;}
+            {definition=./libvirt/networks/SystemMain.xml;active=true;}
           ];
           pools=[
-            {definition=../virtualisation/libvirt/storage/DiscImgs.xml; active=true;
+            {definition=./libvirt/storage/DiscImgs.xml; active=true;
 #               volumes=[
 #                 {name="";
 #                   present=true;

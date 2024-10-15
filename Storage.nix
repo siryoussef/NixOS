@@ -1,5 +1,71 @@
+# This file is for centrally managing storage attachment by one of 3 methods (fstab mounts, Impermenance module (using bind mounts or symlinks), home-manager mkOutOfStoreSymlink method)
 {  settings, ... }:
 rec{
+## Common symlinks set to be used in 1 of the 3 storage attachment methods ##
+plasmaUser=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
+links={
+  waydroid={
+
+      system."/Shared/@Home/waydroid/System"={directories=["/var/lib/waydroid"];};
+      user."/Shared/@Home/waydroid/Data"={directories=[".local/share/waydroid"];};
+  };
+  libvirt={
+      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
+      user.${settings.user.persistentStorage}= {directories=["/.config/libvirt"];};
+  };
+  plasma={
+      system={
+        directories=[];
+        files=[];
+        };
+      user.${plasmaUser} = {
+        allowOther=true;
+        directories=
+        (map(x: ".local/share/"+x)[
+          "kwalletd"
+          "dolphin"
+          "baloo"
+          "klipper"
+          "konsole"
+        ])++(map(x: ".config/"+x)[
+          "kde.org"
+          "gtk-3.0"
+          "gtk-4.0"
+          "xsettingsd"
+        ]);
+        files=(map(x: ".config/"+x)[
+          "katerc"
+          "konsolerc"
+          "dolphinrc"
+          "kwinrc"
+          "kdeglobals"
+          "kwinrulesrc"
+          "kxkbrc"
+          "kdedefaults/kscreenlockerrc"
+          "plasmashellrc"
+          "plasma-org.kde.plasma.desktop-appletsrc"
+          "kglobalshortcutsrc"
+          "kwinoutputconfig.json"
+          "kwalletrc"
+
+          "kactivitymanagerdrc"
+          "kded5rc"
+          "kconf_updaterc"
+          "plasma-localerc"
+          "ktimezonedrc"
+          "PlasmaDiscoverUpdates"
+          "gtkrc-2.0"
+          "gtkrc"
+          "Trolltech.conf"
+          "baloofileinformationrc"
+          "baloofilerc"
+          "bluedevilglobalrc"
+        ]);
+      };
+  };
+};
+
+                  ##    1st: fstab mounts  ##
 DiscMounts = rec{
     "/" = { device = "none"; fsType = "tmpfs"; /*options=["mode=777"];*/}; # In-RAM-Root
 #     "/" = { device = "/dev/disk/by-label/NRoot"; fsType = "btrfs"; };
@@ -56,6 +122,10 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
 #    kateConfig={ mountPoint = "/home/"+settings.user.username+"/kate"; device = "/Shared/@Home/.config/kate";  };
   });
 ## Overlayfs
+
+fileSystems = DiscMounts//BindMounts;
+
+                  ##    2nd: Impermenance module  ##
 persistent={
 	system.${settings.system.persistentStorage}={
 		directories= [
@@ -105,81 +175,25 @@ persistent={
       (map(dir:{directory=dir; method="symlink";}) ["Music"])
       ;
       files = [
-
         ".screenrc"
         ".gtkrc-2.0"
         ".bash_history"
         ".gitconfig"
-
       ];
       allowOther=true;
     };
-    libvirt={
-      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
-      user.${settings.user.persistentStorage}= {directories=["/.config/libvirt"];};
-    };
-    plasma=plasmaLinks;
+
+    libvirt=links.libvirt;
+    plasma=links.plasma;
 
   };
-plasmaUser=((toString settings.paths.dotfiles)+"/plasma");
-plasmaLinks={
-      system={
-        directories=[];
-        files=[];
-        };
-      user={${plasmaUser} = {
-        allowOther=true;
-        directories=
-        (map(x: ".local/share/"+x)[
-          "kwalletd"
-          "dolphin"
-          "baloo"
-          "klipper"
-          "konsole"
-        ])++(map(x: ".config/"+x)[
-          "kde.org"
-          "gtk-3.0"
-          "gtk-4.0"
-          "xsettingsd"
-        ]);
-        files=(map(x: ".config/"+x)[
-          "katerc"
-          "konsolerc"
-          "dolphinrc"
-          "kwinrc"
-          "kdeglobals"
-          "kwinrulesrc"
-          "kxkbrc"
-          "kdedefaults/kscreenlockerrc"
-          "plasmashellrc"
-          "plasma-org.kde.plasma.desktop-appletsrc"
-          "kglobalshortcutsrc"
-          "kwinoutputconfig.json"
-          "kwalletrc"
 
-          "kactivitymanagerdrc"
-          "kded5rc"
-          "kconf_updaterc"
-          "plasma-localerc"
-          "ktimezonedrc"
-          "PlasmaDiscoverUpdates"
-          "gtkrc-2.0"
-          "gtkrc"
-          "Trolltech.conf"
-          "baloofileinformationrc"
-          "baloofilerc"
-          "bluedevilglobalrc"
-        ]);
-        };
-      };
-    };
+                  ##    3rd: home.file+mkOutOfStoreSymlink  ##
 homeLinks={
-  plasma= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};})(with plasmaLinks.user.${plasmaUser};(files++directories)));
-};
-
-#   merged = (lib.recursiveUpdate DiscMounts BindMounts);
-fileSystems = DiscMounts//BindMounts;
+  plasma= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};})(with links.plasma.user.${plasmaUser};(files++directories)));
+};# A set to implement symlinking in home-manager in different manner than persistence module (to be further compared with persistence!)
 }
-# in {inherit fileSystems;
 # persistent=persistent;
 # }
+#   merged = (lib.recursiveUpdate DiscMounts BindMounts);
+

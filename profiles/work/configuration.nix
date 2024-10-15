@@ -19,7 +19,7 @@
       ../../system/hardware/bluetooth.nix
       (./. + "../../../system/wm"+("/"+settings.user.wm)+".nix") # My window manager
       ../../system/app/appsupport.nix
-      ../../system/app/virtualization.nix
+      ../../system/virtualisation/virtualisation.nix
       ../../system/app/syncthing.nix
       ../../system/security.nix
       ../../system/style/stylix.nix

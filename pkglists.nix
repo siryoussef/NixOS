@@ -27,6 +27,9 @@
     logseq
 
     # Office
+    lyx
+    kile
+    texstudio
     libreoffice-fresh
     onlyoffice-bin_latest
     mate.atril

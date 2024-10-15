@@ -1,13 +1,18 @@
 # This file is for centrally managing storage attachment by one of 3 methods (fstab mounts, Impermenance module (using bind mounts or symlinks), home-manager mkOutOfStoreSymlink method)
-{  settings, ... }:
+{  settings, config, ... }:
 rec{
+                  ## Home Source Path String ##
+HSPS={
+  plasma=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
+  waydroid="/Shared/@Home/waydroid/Data";
+};
 ## Common symlinks set to be used in 1 of the 3 storage attachment methods ##
-plasmaUser=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
+
 links={
   waydroid={
 
-      system."/Shared/@Home/waydroid/System"={directories=["/var/lib/waydroid"];};
-      user."/Shared/@Home/waydroid/Data"={directories=[".local/share/waydroid"];};
+      system."/Shared/@Home/waydroid"={directories=["/var/lib/waydroid"]; users.${settings.user.username}={directories=[".local/share/waydroid"];};};
+      user.${HSPS.waydroid}={directories=[".local/share/waydroid"];};
   };
   libvirt={
       system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
@@ -18,7 +23,7 @@ links={
         directories=[];
         files=[];
         };
-      user.${plasmaUser} = {
+      user.${HSPS.plasma} = {
         allowOther=true;
         directories=
         (map(x: ".local/share/"+x)[
@@ -114,8 +119,8 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
   firedragonProfiles={mountPoint= "/home/"+settings.user.username+"/.firedragon"; device = floorp.device;};
 
    ## Waydroid
-  waydroidData={ mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid"; device = "/Shared/@Home/waydroid/waydroidData";};
-  waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = "/Shared/@Home/waydroid/waydroidSystem"; };
+  waydroidData={ mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid"; device = HSPS.waydroid+"/.local/share/waydroid";};
+  waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = "/Shared/@Home/waydroid/System"; };
   waydroidDownloadsShareMain= { mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+settings.user.username+"/Downloads"; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
 
    ## Plasma config files!!
@@ -185,13 +190,20 @@ persistent={
 
     libvirt=links.libvirt;
     plasma=links.plasma;
+    waydroid=links.waydroid;
 
   };
 
                   ##    3rd: home.file+mkOutOfStoreSymlink  ##
 homeLinks={
-  plasma= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};})(with links.plasma.user.${plasmaUser};(files++directories)));
-};# A set to implement symlinking in home-manager in different manner than persistence module (to be further compared with persistence!)
+  plasma=
+    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (HSPS.plasma+"/${y}")));};})(with links.plasma.user.${HSPS.plasma};(files++directories)));
+  waydroid=
+    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (HSPS.waydroid+"/${y}")));};})(with links.waydroid.user.${HSPS.waydroid};(files++directories)));
+
+#   waydroid= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};}) (with links.waydroid.user.${plasmaUser};(files++directories)));
+  };# A set to implement symlinking in home-manager in different manner than persistence module (to be further compared with persistence!)
+
 }
 # persistent=persistent;
 # }

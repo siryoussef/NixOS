@@ -1,55 +1,16 @@
- { pkgs, pkgs-stable, pkgs-r2211, userSettings, systemSettings, ... }:
+ { pkgs, pkgs-stable, settings, ... }:
 {
-environment.systemPackages= ((with pkgs;[
-    jupyter-all
-    mysqltuner
-    mysql-workbench
-    pkgs.rPackages.Anaconda
-    # grafana
-         # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
-    ]) ++
-    (with pkgs-stable;[
-      devenv
-      ]) ++
-    (with pkgs;(with python311Packages;[
-    ipykernel
-    pandas
-    numpy
-    matplotlib
-    spyder
-    spyder-kernels
-    pyls-spyder
-#     qdarkstyle
-    ])));
+environment.systemPackages= settings.pkglists.systemDevEnv;
 services = {
     jupyterhub = {
     enable = false;
-    jupyterlabEnv = pkgs.python3.withPackages (p: with p; [
-        jupyterhub
-        jupyterlab
-        ipykernel
-        numpy
-        pandas
-    ]); };
-  jupyter = { enable = true; user = userSettings.username; group = "jupyter"; password = "'sha1:1b961dc713fb:88483270a63e57d18d43cf337e629539de1436ba'"; };
+    jupyterlabEnv = settings.pkglists.jupyter.lab; };
+  jupyter = { enable = true; user = settings.user.username; group = "jupyter"; password = "'sha1:1b961dc713fb:88483270a63e57d18d43cf337e629539de1436ba'"; };
 
 
   jupyter.kernels =
   {
-  python3 = let
-    env = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
-            jupyter
-            jupyterlab-server
-            ipykernel
-            pandas
-            scikit-learn
-#              spyder
-           # jedi
-           # qdarkstyle
-           # pyls-spyder
-           # spyder-kernels
-          ]));
-  in {
+  python3 = let env = settings.pkglists.jupyter.kernels.python3; in{
     displayName = "Python 3 for machine learning";
     argv = [
       "${env.interpreter}"

@@ -154,7 +154,7 @@ let
 
       };
       flake = {
-        devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable;};
+        devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable pkgs;};
         systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
         modules = [
 #           ./modules

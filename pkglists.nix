@@ -1,3 +1,5 @@
+# This file is for central package control, it's target is to make nix package management easier when defining several environments
+
 {pkgs, pkgs-stable,pkgs-kdenlive,...}:
 {home=(with pkgs; [
     # Core
@@ -52,6 +54,7 @@
     wine
     bottles
     qbittorrent
+    qdirstat
 #     yt-dlg # fails to build after updating to python 3.12 as it uses wxpython which is not compatible with python 3.12!!
 
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
@@ -146,7 +149,11 @@ system = with pkgs; [
       wget
       nodePackages.bash-language-server
       zsh
+
       git
+      jujutsu
+      dvc-with-remotes
+
       jre_minimal
       cryptsetup
       home-manager
@@ -156,15 +163,17 @@ system = with pkgs; [
       appstream-glib
       droidcam
       haskellPackages.nix-tree
-      /*
+      nix-du
+      graphviz
+      nix-web
       nix-top
-      nix-doc
-      nix-init
-      nix-diff
-      nix-melt
-      nix-index
-      nix-ld
-      */
+#       nix-doc
+#       nix-init
+#       nix-diff
+#       nix-melt
+#       nix-index
+#       nix-ld
+
       nixpkgs-lint-community
       ntfs3g
       pacman
@@ -279,6 +288,108 @@ virtualisation={
       dosfstools
     ];
 };
+systemDevEnv=((with pkgs;[
+    jupyter-all
+    mysqltuner
+    mysql-workbench
+    pkgs.rPackages.Anaconda
+    # grafana
+         # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
+    ]) ++
+    (with pkgs-stable;[
+      devenv
+      ]) ++
+    (with pkgs;(with python311Packages;[
+    ipykernel
+    pandas
+    numpy
+    matplotlib
+    spyder
+    spyder-kernels
+    pyls-spyder
+#     qdarkstyle
+    ])));
+jupyter={
+  lab= pkgs.python3.withPackages (p: with p; [
+        jupyterhub
+        jupyterlab
+        ipykernel
+        numpy
+        pandas
+    ]);
+  kernels={
+    python3= (pkgs.python3.withPackages (pythonPackages: with pythonPackages;[
+            jupyter
+            jupyterlab-server
+            ipykernel
+            pandas
+            scikit-learn
+#             spyder
+#             jedi
+#             qdarkstyle
+#             pyls-spyder
+#             spyder-kernels
+          ]));
+  };
+};
+shells={
+  NixDevEnv= with pkgs-stable;mkShell{
+    name = "pip-env";buildInputs =(with pkgs-stable.python3.pkgs; [
+      jupyterlab-git
+      jupyterlab-lsp
+      jupyterlab-widgets
+      jupyter-collaboration
+#       # Python requirements (enough to get a virtualenv going).
+      psutil
+#       tensorflow
+#       keras
+      pyarrow
+      pandas
+      matplotlib
+      seaborn
+      scikit-learn
+
+      ipykernel
+      jupyter
+      pytest
+      setuptools
+      wheel
+#       venvShellHook
+#       ipython-sql
+#       sqlalchemy_1_4
+#       pymysql
+#       imbalanced-learn
+      statsmodels
+      clickclick
+      click
+      openpyxl
+      nltk
+    ])++ (with pkgs;[
+#       azure-cli
+      kubectl
+      libffi
+      openssl
+      gcc
+      unzip
+    ]);
+    venvDir = "venv3";
+    src = null;
+    postVenv = ''
+      unset SOURCE_DATE_EPOCH
+      ./scripts/install_local_packages.sh
+    '';
+    postShellHook = ''
+      # Allow the use of wheels.
+      unset SOURCE_DATE_EPOCH
+
+      # get back nice looking PS1
+      source ~/.bashrc
+      source <(kubectl completion bash)
+
+      PYTHONPATH=$PWD/$venvDir/${python.sitePackages}:$PYTHONPATH
+    '';
+  };
+};
 flatpaks= (map(pkg:{appId = pkg; origin = "flathub";})[
       "io.github._0xzer0x.qurancompanion"
       "io.github.flattool.Warehouse"
@@ -295,8 +406,8 @@ flatpaks= (map(pkg:{appId = pkg; origin = "flathub";})[
       ]) ++[
       { appId = "com.brave.Browser"; origin = "flathub";  }
 #       { appId = "org.signal.Signal"; origin = "flathub-beta";}
-  #     "com.obsproject.Studio"
-  #     "im.riot.Riot"
+#       "com.obsproject.Studio"
+#       "im.riot.Riot"
     ];
 flatpakRepos= [
       {name = "flathub-beta"; location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";}

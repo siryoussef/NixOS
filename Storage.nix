@@ -175,6 +175,7 @@ persistent={
 #       ".local/share/keyrings"
         ".local/share/onlyoffice"
         ".local/share/kdevelop"
+        ".thunderbird"
       ]
       ++
       (map(dir:{directory=dir; method="symlink";}) ["Music"])

@@ -10,9 +10,11 @@
  2- universal architecture & device compatibilty (cross platform).
  
  3-universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
+
  4- privacy : mainly by using alternative software.
  
  5- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
+
  6- universal environment compatibility! , think VMs, Containers, devShells , home-manager on other OSes !
  ....
  Well I lied a little about the targets clarity, however the target gets clearer as we move on
@@ -33,6 +35,7 @@
  7- A nix-shell config (a regular non-flake one , will shift it to the main flake later).
  
  8-linux-zen kernel for better desktop performance.
+
  9-using lix (a better nix!)
 
  
@@ -56,7 +59,9 @@
  9- quickemu & quickgui for rapid VM deployment!
 
  10-flake-parts for better organization of that to-be huge flakes project.
+
  11-adding wfvm for windows apps that don't run on wine!
+
  12-winapps for using any windows app with best performance inside linux desktop environments/wms!
  
 # TODO
@@ -73,8 +78,13 @@
 6-nixOnDroid flake config.
 
 7-adjusting nix-shell environment & adding it to nixos if possiple!
+
 8-adding local AI models w.flake-parts services flakes & maybe nixified AI (if found useful, i.e. too old now)
+
 9- potentially handling root user directory with home-manager?
 
+10- Building a DaC streamlining environment , starting with dvc
+
+11- fixing emmet's Emacs building errors (readapting emacs customizations to current build )
 
 

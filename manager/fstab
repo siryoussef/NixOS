@@ -1,0 +1,51 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a device; this may
+# be used with UUID= as a more robust way to name devices that works even if
+# disks are added and removed. See fstab(5).
+#
+# <file system>             <mount point>  <type>  <options>  <dump>  <pass>
+LABEL=Boot /boot          btrfs    subvol=@Arch,defaults,noatime 0 2
+LABEL=BEFI  /boot/efi      vfat    defaults,noatime 0 2
+# LABEL=Home /home          auto    subvol=@AHome,defaults,noatime 0 2
+none     /home/youssef          tmpfs    defaults,noatime,uid=youssef,gid=users,mode=777 0 2
+none     /home/youssef/.local          tmpfs    defaults,noatime,uid=youssef,gid=users,mode=777 0 2
+none     /home/youssef/.local/share          tmpfs    defaults,noatime,uid=youssef,gid=users,mode=777 0 2
+none     /home/youssef/.config          tmpfs    defaults,noatime,uid=youssef,gid=users,mode=777 0 2
+none     /home/youssef/.cache         tmpfs    defaults,noatime,uid=youssef,gid=users,mode=777 0 2
+LABEL=ARoot /              ext4    defaults,noatime 0 1
+LABEL=Nix   /nix           ext4    defaults,noatime 0 2
+LABEL=Volume  /Volume       auto   defaults,rw,noatime,x-gvfs-show 0 2
+LABEL=Shared /Shared auto nosuid,nodev,nofail,rw,x-gvfs-show 0 2
+
+
+LABEL=NRoot   /mnt/NixOS     btrfs    defaults,noatime 0 2
+# none     /mnt/NixOS          tmpfs    defaults,noatime 0 2
+LABEL=Nix   /mnt/NixOS/nix     ext4   defaults,noatime   0 2
+# LABEL=NHome /mnt/NixOS/home   btrfs  defaults,noatime  0 2
+none     /mnt/NixOS/home   tmpfs  defaults,noatime  0 2
+LABEL=Boot  /mnt/NixOS/boot   btrfs   subvol=@Nix,defaults,noatime   0 2
+LABEL=BEFI  /mnt/NixOS/boot/efi  vfat  defaults,noatime   0 2
+#LABEL=Volume  /mnt/NixOS/Volume auto  defaults,noatime,x-gvfs-hide 0 2
+LABEL=Shared /mnt/NixOS/Shared auto nosuid,nodev,nofail,rw,x-gvfs-show 0 2
+
+/mnt/NixOS/Shared/@Repo/NixOS   /mnt/NixOS/etc/nixos    auto   bind,defaults,x-gvfs-hide  0 2
+
+
+
+/Shared/@Home/.vscode   /home/youssef/.vscode   auto   bind,defaults 0 2
+/Shared/@Home/.thunderbird   /home/youssef/.thunderbird   auto   bind,defaults 0 2
+/Shared/@Home/.floorp   /home/youssef/.floorp   auto   bind,defaults 0 2
+/Shared/@Home/.floorp /home/youssef/.var/app/org.garudalinux.firedragon/.firedragon none bind 0 0
+/Shared/@Home/.floorp /home/youssef/.firedragon none bind 0 0
+/Shared/@Home/fish      /home/youssef/.local/share/fish   auto   bind,defaults 0 2
+/Volume/@Storage/Downloads     /home/youssef/Downloads   auto   bind,defaults 0 2
+
+/Shared/@Home/.config/GitHub\ Desktop  /home/youssef/.config/GitHub\ Desktop  auto bind,defaults 0 2
+/Shared/@Repo           /home/youssef/Documents/GitHub  auto  bind,defaults 0 2
+#/dev/disk/by-uuid/3448b71e-714f-42c2-b642-1f025112d4ea /mnt/3448b71e-714f-42c2-b642-1f025112d4ea btrfs nosuid,nodev,nofail,x-gvfs-show,ro,rescue=all 0 0
+#/dev/disk/by-label/Volume /Volume auto nosuid,nodev,nofail,x-gvfs-show 0 0
+
+/Shared/flatpak/system /var/lib/flatpak none bind 0 0
+/Shared/flatpak/user /home/youssef/.local/share/flatpak none bind 0 0
+/Shared/flatpak/appdata /home/youssef/.var/app none bind 0 0

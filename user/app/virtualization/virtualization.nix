@@ -5,13 +5,18 @@ imports=[
   ./winapps.nix
 ];
   # Various packages related to virtualization, compatability and sandboxing
-  home={
-    packages = let pkgslists= import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in pkgslists.virtualisation.user;
-    file.".config/libvirt/qemu.conf".text = '' nvram = [ "/run/libvirt/nix-ovmf/AAVMF_CODE.fd:/run/libvirt/nix-ovmf/AAVMF_VARS.fd", "/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd" ] '';
+  home=let
+    storage= import settings.paths.storage{inherit settings config;};
+    pkgslists= import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;};
+  in{
+    packages= pkgslists.virtualisation.user;
+    file=
+#       storage.homeLinks.libvirt//
+      {".config/libvirt/qemu.conf".text = '' nvram = [ "/run/libvirt/nix-ovmf/AAVMF_CODE.fd:/run/libvirt/nix-ovmf/AAVMF_VARS.fd", "/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd" ] '';};
       # Adapted from /var/lib/libvirt/qemu.conf
 # Note that AAVMF and OVMF are for Aarch64 and x86 respectively
 
-    persistence= let storage = import settings.paths.storage{inherit settings config;}; in storage.persistent.libvirt.user;
+#     persistence=  storage.persistent.libvirt.user;
   };
     virtualisation.libvirt={
       swtpm.enable=true;

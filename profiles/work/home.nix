@@ -13,9 +13,9 @@
       TERM = settings.user.term;
       BROWSER = settings.user.browser;
       };
-    persistence =storage.persistent.user;
-    packages = list.home;
-#     file=storage.homeLinks.plasma;
+#     persistence =storage.persistent.user;
+    packages = list.home ++[inputs.system-manager.packages.${settings.system.arch}.system-manager];
+    file=storage.homeLinks.user;
 #     file.".config/kdedefaults".source= config.lib.file.mkOutOfStoreSymlink ./user/wm/plasma/dotfiles/kdedefaults;
     };
 
@@ -57,7 +57,7 @@
             ];
 
 
-  services.syncthing.enable = true;
+  services.syncthing={ enable = true; tray.enable=true;};
 
 xdg = {
   enable = true;

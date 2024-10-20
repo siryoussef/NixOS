@@ -3,7 +3,7 @@ let
       settings = import ./settings.nix {inherit pkgs pkgs-stable pkgs-kdenlive;};
       systemSettings = settings.system; # for backward
       userSettings = settings.user;     # combatibilty (temporarily > to be removed ! )
-
+#       Storage = import settings.paths.storage{inherit settings config;};
       # create patched nixpkgs
 
 #       nixpkgs=inputs.nixpkgsRef.nixpkgs; #{ inherit systemSettings;};
@@ -155,13 +155,18 @@ let
       };
       flake = {
         devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable pkgs;};
-        systemConfigs.default = inputs.system-manager.lib.makeSystemConfig {
-        modules = [
-#           ./modules
-        ];
-        };
+#         systemConfigs.default = {config,...}: inputs.system-manager.lib.makeSystemConfig {
+#         modules = [
+#           (import ./manager{inherit settings lib pkgs config ;})
+#         ];
+#         };
 
         homeConfigurations = {
+        root = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
+          extraSpecialArgs = unifiedHome.extraSpecialArgs;
+        };
         ${settings.user.username} = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;

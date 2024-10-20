@@ -1,6 +1,6 @@
-{pkgs,...}:
+{pkgs, inputs, settings,...}:
 {
-/*
+
 systemd.user=  {
   services.winappsSetup = {
     description = "Run WinApps Setup After Windows VM is Ready";
@@ -34,5 +34,5 @@ ${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --u
             };
     };
 };
-*/
+
 }

@@ -3,6 +3,7 @@
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
   imports = [
+#     ./winapps.nix
     ./android.nix
     ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs settings lib;} )
   ];

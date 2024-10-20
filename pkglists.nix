@@ -1,9 +1,21 @@
 # This file is for central package control, it's target is to make nix package management easier when defining several environments
 
 {pkgs, pkgs-stable,pkgs-kdenlive,...}:
-{home=(with pkgs; [
+rec{home=(with pkgs; [
+    # Nix tools
+    fh
+    haskellPackages.nix-tree
+    nix-du
+    graphviz
+    nix-web
+    nix-top
+    nil
+    dconf2nix
+    # app tools
+    appstream
+    appstream-glib
     # Core
-    zsh
+    unrar
 #     alacritty
 #     qutebrowser
     microsoft-edge
@@ -11,7 +23,6 @@
     tor-browser
     dmenu
     rofi
-    git
     syncthing
 
     zoom-us
@@ -20,13 +31,18 @@
     kdePackages.plasmatube
     whatsapp-for-linux
     beeper
+
+    # Code/text
     vscode-fhs
     #vscodium-fhs
-    nil
-    dconf2nix
+    vim
+    wget
+    nodePackages.bash-language-server
     github-desktop
     obsidian
     logseq
+    jujutsu
+    dvc-with-remotes
 
     # Office
     lyx
@@ -34,12 +50,12 @@
     texstudio
     libreoffice-fresh
     onlyoffice-bin_latest
+    kcalc
     mate.atril
     openboard
     xournalpp
     glib
     newsflash
-
     nautilus
     gnome-calendar
     seahorse
@@ -53,8 +69,25 @@
 
     wine
     bottles
+    junest
     qbittorrent
     qdirstat
+    # partitioning tools
+    duperemove
+    btrfs-assistant
+    snapper-gui
+    gnome-disk-utility
+    gparted
+
+  ## USB-flashing
+    unetbootin
+    ventoy-full
+    woeusb-ng
+    wimboot
+
+    rclone
+    rclone-browser
+    grsync
 #     yt-dlg # fails to build after updating to python 3.12 as it uses wxpython which is not compatible with python 3.12!!
 
     # The following requires 64-bit FL Studio (FL64) to be installed to a bottle
@@ -91,7 +124,6 @@
     vlc
     vlc-bittorrent
     smplayer
-    obs-studio
     handbrake
 #     mpv
     yt-dlp
@@ -124,7 +156,7 @@
     */
     obs-studio
     obs-studio-plugins.droidcam-obs
-#     droidcam
+    droidcam
     ffmpeg
     (pkgs.writeScriptBin "kdenlive-accel" ''
       #!/bin/sh
@@ -144,29 +176,16 @@
   ] ++ [ pkgs-kdenlive.kdenlive ]
 #   ++ (with pkgs-stable;[ floorp ])
   );
-system = with pkgs; [
-      vim
-      wget
-      nodePackages.bash-language-server
-      zsh
+manager= system++[
 
-      git
-      jujutsu
-      dvc-with-remotes
+  ];
+system = with pkgs; [
 
       jre_minimal
       cryptsetup
       home-manager
       devbox
-      fh
-      appstream
-      appstream-glib
-      droidcam
-      haskellPackages.nix-tree
-      nix-du
-      graphviz
-      nix-web
-      nix-top
+
 #       nix-doc
 #       nix-init
 #       nix-diff
@@ -178,38 +197,24 @@ system = with pkgs; [
       ntfs3g
       pacman
       apt
-      junest
       aptly
       pmutils
       ## Appimage support (currently broken due to " error : execve : No such file or directory ")
       appimage-run
       appimagekit
       libappimage
-      gnome-disk-utility
-      gparted
-      duperemove
-      btrfs-assistant
-      snapper-gui
+
+
       #librewolf
       #chromium
       protonvpn-gui
       pitch-black
 
 
-      rclone
-      rclone-browser
-      syncthing
-      syncthing-tray
-      grsync
-      unrar
 
       wsysmon
       tldr
-      kcalc
-      unetbootin
-      ventoy-full
-      woeusb-ng
-      wimboot
+
       adwaita-icon-theme
 
       wget
@@ -251,21 +256,14 @@ virtualisation={
   system=with pkgs; [
   #     virtualbox
       distrobox
-      boxbuddy
-      virt-viewer
+
       spice spice-gtk
       spice-protocol
       win-virtio
       win-spice
-      virt-manager-qt #(causes an error)
-      virter
-      libguestfs-with-appliance
-      lxqt.qtermwidget
 
-      pods
-      podman-tui
-      podman-desktop
-      podman-compose
+      libguestfs-with-appliance
+
       dive
       ]
       ++
@@ -278,14 +276,26 @@ virtualisation={
       libvirt
       virtiofsd
       virt-manager
+      virt-manager-qt #(causes an error)
+      virter
+      virt-viewer
+      virt-top
+#       virt-what
       qemu
       uefi-run
+      # Containers
       lxc
       swtpm
       bottles
-
+      pods
+      podman-tui
+      podman-desktop
+      podman-compose
+      boxbuddy
       # Filesystems
       dosfstools
+
+      lxqt.qtermwidget
     ];
 };
 systemDevEnv=((with pkgs;[
@@ -334,7 +344,7 @@ jupyter={
 };
 shells={
   NixDevEnv= with pkgs-stable;mkShell{
-    name = "pip-env";buildInputs =(with pkgs-stable.python3.pkgs; [
+    name = "pip-env"; buildInputs =(with pkgs-stable.python3.pkgs; [
       jupyterlab-git
       jupyterlab-lsp
       jupyterlab-widgets
@@ -346,32 +356,34 @@ shells={
       pyarrow
       pandas
       matplotlib
-      seaborn
+#       seaborn
       scikit-learn
-
+#
       ipykernel
-      jupyter
+#       jupyter # Errors as a built input
       pytest
       setuptools
       wheel
-#       venvShellHook
-#       ipython-sql
-#       sqlalchemy_1_4
-#       pymysql
-#       imbalanced-learn
+      venvShellHook
+      ipython-sql
+      sqlalchemy_1_4
+      pymysql
+      imbalanced-learn
       statsmodels
       clickclick
       click
       openpyxl
       nltk
-    ])++ (with pkgs;[
+    ])
+    ++ (with pkgs;[
 #       azure-cli
       kubectl
       libffi
       openssl
       gcc
       unzip
-    ]);
+    ])
+    ;
     venvDir = "venv3";
     src = null;
     postVenv = ''

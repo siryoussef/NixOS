@@ -1,7 +1,8 @@
 # This file is for central package control, it's target is to make nix package management easier when defining several environments
 
 {pkgs, pkgs-stable,pkgs-kdenlive,...}:
-rec{home=(with pkgs; [
+rec{
+  home=(with pkgs; [
     # Nix tools
     fh
     haskellPackages.nix-tree
@@ -176,6 +177,9 @@ rec{home=(with pkgs; [
   ] ++ [ pkgs-kdenlive.kdenlive ]
 #   ++ (with pkgs-stable;[ floorp ])
   );
+root= [
+
+];
 manager= system++[
 
   ];

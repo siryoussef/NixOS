@@ -1,15 +1,18 @@
 # This file is for centrally managing storage attachment by one of 3 methods (fstab mounts, Impermenance module (using bind mounts or symlinks), home-manager mkOutOfStoreSymlink method)
 {  settings, config, ... }:
 rec{
-                  ## Home Source Path String ##
+                ## Abbreviations ##
+userdir = settings.user.persistentStorage;
+username = settings.user.username;
+                ## Home Source Path String ##
 HSPS={
   plasma=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
-  waydroid="/Shared/@Home/waydroid/Data";
+  waydroid=userdir+"/waydroid/Data";
 };
 ## Common symlinks set to be used in 1 of the 3 storage attachment methods ##
 
 links={
-  user.${settings.user.persistentStorage}= {
+  user.${userdir}= {
       directories = (map(x: ".local/share/"+x)[
         "onlyoffice"
         "kdevelop"
@@ -30,6 +33,7 @@ links={
         "Videos"
         "VirtualBox VMs"
         "Desktop"
+        ".vscode"
         ".gnupg"
         ".ssh"
         ".nixops"
@@ -37,7 +41,6 @@ links={
 #         ".mysql"
         ".android"
         "kdeconnect"
-
         ".cache/zen"
         ".zen"
 #         ".floorp"
@@ -61,12 +64,12 @@ links={
       allowOther=true;
     };
   waydroid=rec{
-      system."/Shared/@Home/waydroid"={directories=["/var/lib/waydroid"]; users.${settings.user.username}={directories=user.${HSPS.waydroid}.directories;};};
+      system."${userdir}/waydroid"={directories=["/var/lib/waydroid"]; users.${username}={directories=user.${HSPS.waydroid}.directories;};};
       user.${HSPS.waydroid}={directories=[".local/share/waydroid"]; files=[];};
   };
   libvirt={
       system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
-      user.${settings.user.persistentStorage}= {directories=[".config/libvirt"]; files=[];};
+      user.${userdir}= {directories=[".config/libvirt"]; files=[];};
   };
   plasma={
       system={
@@ -127,14 +130,14 @@ DiscMounts = rec{
     "/nix" = { device = "/dev/disk/by-label/Nix"; fsType = "ext4"; depends = ["/" "/home"];};
     "/boot" = { device = "/dev/disk/by-label/Boot"; fsType = "btrfs"; options = [ "subvol=@Nix" ]; };
 #     "/home" = { device = "/dev/disk/by-label/Home"; fsType = "btrfs"; options =["subvol=@NHome"];};
-#       Home={mountPoint= "/home/" + settings.user.username; device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${settings.user.username}" "gid=users" "mode=777"]; depends = ["/"]; };# In-RAM-Home
+#       Home={mountPoint= "/home/" + username; device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${username}" "gid=users" "mode=777"]; depends = ["/"]; };# In-RAM-Home
 
     "/Volume" = { device = "/dev/disk/by-label/Volume"; fsType = "auto"; };
     "/Shared" = { device = "/dev/disk/by-label/Shared"; fsType = "auto"; neededForBoot=true; };
     "/boot/efi" = { device = "/dev/disk/by-label/BEFI"; fsType = "vfat"; };
      }
-     //(builtins.mapAttrs(x: y: y // {device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${settings.user.username}" "gid=users" "mode=777"]; depends = ["/"];})rec{
-     Home={mountPoint= "/home/" + settings.user.username;};
+     //(builtins.mapAttrs(x: y: y // {device = "none"; fsType = "tmpfs"; options = [/*"rw" "user" */ "uid=${username}" "gid=users" "mode=777"]; depends = ["/"];})rec{
+     Home={mountPoint= "/home/" + username;};
      local={mountPoint=Home.mountPoint+"/.local";};
      local-share={mountPoint=local.mountPoint+"/share";};
      cache={mountPoint=Home.mountPoint+"/.cache";};
@@ -145,37 +148,37 @@ DiscMounts = rec{
 BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mode=777"];}) rec{
   "/etc/nixos" = { device = "/Shared/@Repo/NixOS";};
   "/etc/nixos/secrets" = { device = "/Shared/@Repo/NixOS-private";};
-  Downloads = { mountPoint = "/home/"+settings.user.username+"/Downloads"; device = "/Volume/@Storage/Downloads"; depends = [ "/" "/home" "/Volume"]; };
-  vscode= {mountPoint = "/home/"+settings.user.username+"/.vscode"; device = "/Shared/@Home/.vscode";};
-  fish={mountPoint = "/home/"+settings.user.username+"/.local/share/fish"; device = "/Shared/@Home/fish";};
-#   kate={mountPoint = "/home/"+settings.user.username+"/.local/share/kate"; device = "/Shared/@Home/kate";};
-#   kdevelop={mountPoint = "/home/"+settings.user.username+"/.local/share/kdevelop"; device = "/Shared/@Home/kdevelop";};
-#   onlyoffice={mountPoint = "/home/"+settings.user.username+"/.local/share/onlyoffice"; device = "/Shared/@Home/onlyoffice";};
-#   whatsapp-for-linux={ mountPoint = "/home/"+settings.user.username+"/.local/share/whatsapp-for-linux"; device = "/Shared/@Home/whatsapp-for-linux";};
-#   KotatogramDesktop={mountPoint = "/home/"+settings.user.username+"/.local/share/KotatogramDesktop"; device = "/Shared/@Home/KotatogramDesktop";};
-#   Github={mountPoint = "/home/"+settings.user.username+"/.config/GitHub Desktop"; device = "/Shared/@Home/.config/GitHub Desktop";};
-  GitRepos= {mountPoint = "/home/"+settings.user.username+"/Documents/GitHub"; device = "/Shared/@Repo";};
-  logseq= {mountPoint = "/home/"+settings.user.username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq";};
-  Note= {mountPoint = "/home/"+settings.user.username+"/Note"; device = "/Shared/@Repo/Note";};
+  Downloads = { mountPoint = "/home/"+username+"/Downloads"; device = "/Volume/@Storage/Downloads"; depends = [ "/" "/home" "/Volume"]; };
+#   vscode= {mountPoint = "/home/"+username+"/.vscode"; device = userdir+"/.vscode";};
+  fish={mountPoint = "/home/"+username+"/.local/share/fish"; device = userdir+"/fish";};
+#   kate={mountPoint = "/home/"+username+"/.local/share/kate"; device = userdir+"/kate";};
+#   kdevelop={mountPoint = "/home/"+username+"/.local/share/kdevelop"; device = userdir+"/kdevelop";};
+#   onlyoffice={mountPoint = "/home/"+username+"/.local/share/onlyoffice"; device = userdir+"/onlyoffice";};
+#   whatsapp-for-linux={ mountPoint = "/home/"+username+"/.local/share/whatsapp-for-linux"; device = userdir+"/whatsapp-for-linux";};
+#   KotatogramDesktop={mountPoint = "/home/"+username+"/.local/share/KotatogramDesktop"; device = userdir+"/KotatogramDesktop";};
+#   Github={mountPoint = "/home/"+username+"/.config/GitHub Desktop"; device = userdir+"/.config/GitHub Desktop";};
+  GitRepos= {mountPoint = "/home/"+username+"/Documents/GitHub"; device = "/Shared/@Repo";};
+  logseq= {mountPoint = "/home/"+username+"/.logseq"; device = "/Shared/@Repo/Note/.logseq";};
+  Note= {mountPoint = "/home/"+username+"/Note"; device = "/Shared/@Repo/Note";};
 
    ## Flatpak bind mounts
   "/var/lib/flatpak" ={device = "/Shared/flatpak/system";};
-  User-flatpaks ={mountPoint="/home/"+settings.user.username+"/.local/share/flatpak";device = "/Shared/flatpak/user";};
-  FlatpakAppData ={mountPoint="/home/"+settings.user.username+"/.var/app";device = "/Shared/flatpak/appdata";};
+  User-flatpaks ={mountPoint="/home/"+username+"/.local/share/flatpak";device = "/Shared/flatpak/user";};
+  FlatpakAppData ={mountPoint="/home/"+username+"/.var/app";device = "/Shared/flatpak/appdata";};
 
   ## WebBrowsers
-  floorp= { mountPoint = "/home/"+settings.user.username+"/.floorp"; device = "/Shared/@Home/.floorp";  };
+  floorp= { mountPoint = "/home/"+username+"/.floorp"; device = userdir+"/.floorp";  };
   firedragonFlatpakProfiles={mountPoint= FlatpakAppData.mountPoint+"/org.garudalinux.firedragon/.firedragon"; device = floorp.device;};
-  firedragonProfiles={mountPoint= "/home/"+settings.user.username+"/.firedragon"; device = floorp.device;};
-  thunderbird= { mountPoint = "/home/"+settings.user.username+"/.thunderbird"; device = "/Shared/@Home/.thunderbird";  };
+  firedragonProfiles={mountPoint= "/home/"+username+"/.firedragon"; device = floorp.device;};
+  thunderbird= { mountPoint = "/home/"+username+"/.thunderbird"; device = userdir+"/.thunderbird";  };
 
    ## Waydroid
-  waydroidData={ mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid"; device = HSPS.waydroid+"/.local/share/waydroid";};
-  waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = "/Shared/@Home/waydroid/System"; };
-  waydroidDownloadsShareMain= { mountPoint = "/home/"+settings.user.username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+settings.user.username+"/Downloads"; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
+  waydroidData={ mountPoint = "/home/"+username+"/.local/share/waydroid"; device = HSPS.waydroid+"/.local/share/waydroid";};
+  waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = userdir+"/waydroid/System"; };
+  waydroidDownloadsShareMain= { mountPoint = "/home/"+username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+username+"/Downloads"; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
 
    ## Plasma config files!!
-#    kateConfig={ mountPoint = "/home/"+settings.user.username+"/kate"; device = "/Shared/@Home/.config/kate";  };
+#    kateConfig={ mountPoint = "/home/"+username+"/kate"; device = userdir+"/.config/kate";  };
   });
 ## Overlayfs
 
@@ -206,17 +209,17 @@ persistent={
   };
 
                   ##    3rd: home.file+mkOutOfStoreSymlink  ##
-homeLinks={
-  user=
-    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (settings.user.persistentStorage+"/${y}")));};})(with links.user.${settings.user.persistentStorage};(files++directories)));
-  plasma=
-    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (HSPS.plasma+"/${y}")));};})(with links.plasma.user.${HSPS.plasma};(files++directories)));
-  waydroid=
-    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (HSPS.waydroid+"/${y}")));};})(with links.waydroid.user.${HSPS.waydroid};(files++directories)));
-  libvirt=
-    builtins.listToAttrs (map (y:{name=y; value={source=(config.lib.file.mkOutOfStoreSymlink(/. + (settings.user.persistentStorage+"/${y}")));};})(with links.libvirt.user.${settings.user.persistentStorage};(files++directories)));
 
-#   waydroid= builtins.listToAttrs(map(x:{name=x; value=let config=config; in {source=config.lib.file.mkOutOfStoreSymlink (settings.paths.dotfiles)/plasma/${x};};}) (with links.waydroid.user.${plasmaUser};(files++directories)));
+        # Abstract function to generate symlinked home links (make out of store link set)
+mkOOSLinkSet = { prefix, linkSet }:
+    builtins.listToAttrs (map (y: { name = y; value ={ source = config.lib.file.mkOutOfStoreSymlink("/." + (prefix + "/${y}"));
+      };}) (with linkSet; (files++directories)));
+
+homeLinks={
+  user= mkOOSLinkSet {prefix=userdir; linkSet = (links.user.${userdir}); };
+  libvirt=mkOOSLinkSet {prefix=(userdir); linkSet=(links.libvirt.user.${userdir}); };
+  plasma=mkOOSLinkSet {prefix=(HSPS.plasma); linkSet=(links.plasma.user.${HSPS.plasma}); };
+  waydroid=mkOOSLinkSet {prefix=(HSPS.waydroid); linkSet=(links.waydroid.user.${HSPS.waydroid}); };
   };# A set to implement symlinking in home-manager in different manner than persistence module (to be further compared with persistence!)
 
 fstab= ''
@@ -230,11 +233,11 @@ fstab= ''
 LABEL=Boot /boot          btrfs    subvol=@Arch,defaults,noatime 0 2
 LABEL=BEFI  /boot/efi      vfat    defaults,noatime 0 2
 # LABEL=Home /home          auto    subvol=@AHome,defaults,noatime 0 2
-none     /home/${settings.user.username}          tmpfs    defaults,noatime,uid=${settings.user.username},gid=users,mode=777 0 2
-none     /home/${settings.user.username}/.local          tmpfs    defaults,noatime,uid=${settings.user.username},gid=users,mode=777 0 2
-none     /home/${settings.user.username}/.local/share          tmpfs    defaults,noatime,uid=${settings.user.username},gid=users,mode=777 0 2
-none     /home/${settings.user.username}/.config          tmpfs    defaults,noatime,uid=${settings.user.username},gid=users,mode=777 0 2
-none     /home/${settings.user.username}/.cache         tmpfs    defaults,noatime,uid=${settings.user.username},gid=users,mode=777 0 2
+none     /home/${username}          tmpfs    defaults,noatime,uid=${username},gid=users,mode=777 0 2
+none     /home/${username}/.local          tmpfs    defaults,noatime,uid=${username},gid=users,mode=777 0 2
+none     /home/${username}/.local/share          tmpfs    defaults,noatime,uid=${username},gid=users,mode=777 0 2
+none     /home/${username}/.config          tmpfs    defaults,noatime,uid=${username},gid=users,mode=777 0 2
+none     /home/${username}/.cache         tmpfs    defaults,noatime,uid=${username},gid=users,mode=777 0 2
 LABEL=ARoot /              ext4    defaults,noatime 0 1
 LABEL=Nix   /nix           ext4    defaults,noatime 0 2
 LABEL=Volume  /Volume       auto   defaults,rw,noatime,x-gvfs-show 0 2
@@ -252,22 +255,22 @@ LABEL=Shared /mnt/NixOS/Shared auto nosuid,nodev,nofail,rw,x-gvfs-show 0 2
 
 /mnt/NixOS/Shared/@Repo/NixOS   /mnt/NixOS/etc/nixos    auto   bind,defaults,x-gvfs-hide  0 2
 
-/Shared/@Home/.vscode   /home/${settings.user.username}/.vscode   auto   bind,defaults 0 2
-/Shared/@Home/.thunderbird   /home/${settings.user.username}/.thunderbird   auto   bind,defaults 0 2
-/Shared/@Home/.floorp   /home/${settings.user.username}/.floorp   auto   bind,defaults 0 2
-/Shared/@Home/.floorp /home/${settings.user.username}/.var/app/org.garudalinux.firedragon/.firedragon none bind 0 0
-/Shared/@Home/.floorp /home/${settings.user.username}/.firedragon none bind 0 0
-/Shared/@Home/fish      /home/${settings.user.username}/.local/share/fish   auto   bind,defaults 0 2
-/Volume/@Storage/Downloads     /home/${settings.user.username}/Downloads   auto   bind,defaults 0 2
+${userdir}/.vscode   /home/${username}/.vscode   auto   bind,defaults 0 2
+${userdir}/.thunderbird   /home/${username}/.thunderbird   auto   bind,defaults 0 2
+${userdir}/.floorp   /home/${username}/.floorp   auto   bind,defaults 0 2
+${userdir}/.floorp /home/${username}/.var/app/org.garudalinux.firedragon/.firedragon none bind 0 0
+${userdir}/.floorp /home/${username}/.firedragon none bind 0 0
+${userdir}/fish      /home/${username}/.local/share/fish   auto   bind,defaults 0 2
+/Volume/@Storage/Downloads     /home/${username}/Downloads   auto   bind,defaults 0 2
 
-/Shared/@Home/.config/GitHub\ Desktop  /home/${settings.user.username}/.config/GitHub\ Desktop  auto bind,defaults 0 2
-/Shared/@Repo           /home/${settings.user.username}/Documents/GitHub  auto  bind,defaults 0 2
+${userdir}/.config/GitHub\ Desktop  /home/${username}/.config/GitHub\ Desktop  auto bind,defaults 0 2
+/Shared/@Repo           /home/${username}/Documents/GitHub  auto  bind,defaults 0 2
 #/dev/disk/by-uuid/3448b71e-714f-42c2-b642-1f025112d4ea /mnt/3448b71e-714f-42c2-b642-1f025112d4ea btrfs nosuid,nodev,nofail,x-gvfs-show,ro,rescue=all 0 0
 #/dev/disk/by-label/Volume /Volume auto nosuid,nodev,nofail,x-gvfs-show 0 0
 
 /Shared/flatpak/system /var/lib/flatpak none bind 0 0
-/Shared/flatpak/user /home/${settings.user.username}/.local/share/flatpak none bind 0 0
-/Shared/flatpak/appdata /home/${settings.user.username}/.var/app none bind 0 0
+/Shared/flatpak/user /home/${username}/.local/share/flatpak none bind 0 0
+/Shared/flatpak/appdata /home/${username}/.var/app none bind 0 0
 
 '';
 }

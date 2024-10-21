@@ -154,17 +154,16 @@ let
 
       };
       flake = {
+        systemConfigs.default =  inputs.system-manager.lib.makeSystemConfig {
+        modules =  [
+          ({config,...}:import ./manager{inherit settings lib pkgs config ;})
+        ];
+        };
         devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable pkgs;};
-#         systemConfigs.default = {config,...}: inputs.system-manager.lib.makeSystemConfig {
-#         modules = [
-#           (import ./manager{inherit settings lib pkgs config ;})
-#         ];
-#         };
-
         homeConfigurations = {
         root = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = unifiedHome.modules ++ [(unifiedHome.path)] ++ unifiedHome.nixpkgs;
+          modules = unifiedHome.modules ++ [(./manager/rootHome.nix)] ++ unifiedHome.nixpkgs;
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         };
         ${settings.user.username} = home-manager.lib.homeManagerConfiguration {

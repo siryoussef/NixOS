@@ -26,7 +26,7 @@ links={
 #         "Downloads"
         "Music"
         "Pictures"
-        "Documents"
+#        "Documents"
         "Videos"
         "VirtualBox VMs"
         "Desktop"

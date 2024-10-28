@@ -428,15 +428,10 @@ in
     systemd.enable = true;
   };
 
-  home.packages = (with pkgs; [
-    alacritty
-    kitty
-    feh
-    killall
-    polkit_gnome
-    nwg-launchers
-    papirus-icon-theme
-    (pkgs.writeScriptBin "nwggrid-wrapper" ''
+  home.packages = settings.pkglists.hyprland.user++
+   [ inputs.hyprlock.packages.${pkgs.system}.default]
+   ++ (with pkgs;[
+    (writeScriptBin "nwggrid-wrapper" ''
       #!/bin/sh
       if pgrep -x "nwggrid-server" > /dev/null
       then
@@ -445,10 +440,7 @@ in
         GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache nwggrid-server -layer-shell-exclusive-zone -1 -g adw-gtk3 -o 0.55 -b ${config.lib.stylix.colors.base00}
       fi
     '')
-    libva-utils
-    libinput-gestures
-    gsettings-desktop-schemas
-    (pkgs.makeDesktopItem {
+    (makeDesktopItem {
       name = "nwggrid";
       desktopName = "Application Launcher";
       exec = "nwggrid-wrapper";
@@ -478,33 +470,7 @@ in
         };
      })
     )
-    gnome.zenity
-    wlr-randr
-    wtype
-    ydotool
-    wl-clipboard
-    hyprland-protocols
-    hyprpicker
-    inputs.hyprlock.packages.${pkgs.system}.default
-    hypridle
-    hyprpaper
-    fnott
-    keepmenu
-    pinentry-gnome3
-    wev
-    grim
-    slurp
-    libsForQt5.qt5.qtwayland
-    qt6.qtwayland
-    xdg-utils
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
-    wlsunset
-    pavucontrol
-    pamixer
-    tesseract4
-    (pkgs.writeScriptBin "screenshot-ocr" ''
+    (writeScriptBin "screenshot-ocr" ''
       #!/bin/sh
       imgname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S).png"
       txtname="/tmp/screenshot-ocr-$(date +%Y%m%d%H%M%S)"
@@ -513,7 +479,7 @@ in
       tesseract $imgname $txtname;
       wl-copy -n < $txtfname
     '')
-    (pkgs.writeScriptBin "nwg-dock-wrapper" ''
+    (writeScriptBin "nwg-dock-wrapper" ''
       #!/bin/sh
       if pgrep -x ".nwg-dock-hyprl" > /dev/null
       then
@@ -522,7 +488,7 @@ in
         nwg-dock-hyprland -f -x -i 64 -nolauncher -a start -ml 8 -mr 8 -mb 8
       fi
     '')
-    (pkgs.writeScriptBin "sct" ''
+    (writeScriptBin "sct" ''
       #!/bin/sh
       killall wlsunset &> /dev/null;
       if [ $# -eq 1 ]; then
@@ -533,7 +499,7 @@ in
         killall wlsunset &> /dev/null;
       fi
     '')
-    (pkgs.writeScriptBin "obs-notification-mute-daemon" ''
+    (writeScriptBin "obs-notification-mute-daemon" ''
       #!/bin/sh
       while true; do
         if pgrep -x .obs-wrapped > /dev/null;
@@ -545,12 +511,12 @@ in
         sleep 10;
       done
     '')
-    (pkgs.writeScriptBin "suspend-unless-render" ''
+    (writeScriptBin "suspend-unless-render" ''
       #!/bin/sh
       if pgrep -x nixos-rebuild > /dev/null || pgrep -x home-manager > /dev/null || pgrep -x kdenlive > /dev/null || pgrep -x FL64.exe > /dev/null || pgrep -x blender > /dev/null || pgrep -x flatpak > /dev/null;
       then echo "Shouldn't suspend"; sleep 10; else echo "Should suspend"; systemctl suspend; fi
     '')
-    (pkgs.makeDesktopItem {
+    (makeDesktopItem {
       name = "emacsclientnewframe";
       desktopName = "Emacs Client New Frame";
       exec = "emacsclient -c -a emacs";

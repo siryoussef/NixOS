@@ -24,11 +24,9 @@ rec{
     tor-browser
     dmenu
     rofi
-
     zoom-us
     kotatogram-desktop
     kdePackages.neochat
-    kdePackages.plasmatube
     whatsapp-for-linux
     beeper
 
@@ -50,7 +48,6 @@ rec{
     texstudio
     libreoffice-fresh
     onlyoffice-bin_latest
-    kcalc
     mate.atril
     openboard
     xournalpp
@@ -191,7 +188,7 @@ system = with pkgs; [
 
 #       nix-doc
 #       nix-init
-#       nix-diff
+      nix-diff
 #       nix-melt
 #       nix-index
 #       nix-ld
@@ -255,6 +252,112 @@ system = with pkgs; [
     exfatprogs
     tmsu
     ]);
+plasma={
+  system=((((with pkgs; [
+    gnome-control-center
+    plasma-hud
+    systemdgenie
+    gsignondPlugins.oauth
+
+  ])++(with pkgs.kdePackages;[
+    kio
+    kio-gdrive
+    kio-fuse
+    kio-admin
+    kio-extras
+    kio-extras-kf5
+    kio-zeroconf
+    audiocd-kio
+    kdesdk-kio
+    plasma5support
+    kcmutils
+    sddm-kcm
+    kcmutils
+    flatpak-kcm
+    kpipewire
+    plymouth-kcm
+    plasma-disks
+    kdenlive
+    plasmatube
+    appstream-qt
+    kmailtransport
+    kaccounts-providers
+    kaccounts-integration
+    signond
+    signon-kwallet-extension
+#     kdevelop kdev-python
+    discover
+    ]))
+#   ++ (with pkgs-stable;(with kdePackages;[ kdevelop kdev-python ]))
+  ++ (with pkgs.libsForQt5;[
+
+    qmltermwidget
+    libkomparediff2
+    ]))) ;
+  user=(
+    with pkgs;[
+      libreoffice-qt
+      krusader
+      pcmanfm-qt
+    # plasma-browser-integration
+    ]++(with pkgs.kdePackages;[
+      kate
+      kcalc
+      filelight
+    ]
+    )++(with pkgs.libsForQt5;[
+      kdevelop
+      kdev-python
+    ]));
+};
+gnome={
+  system=([
+
+  ]);
+  user=([
+
+  ]);
+hyprland={
+  user=(with pkgs; [
+    alacritty
+    kitty
+    feh
+    killall
+    polkit_gnome
+    nwg-launchers
+    papirus-icon-theme
+    libva-utils
+    libinput-gestures
+    gsettings-desktop-schemas
+    gnome.zenity
+    wlr-randr
+    wtype
+    ydotool
+    wl-clipboard
+    hyprland-protocols
+    hyprpicker
+    hypridle
+    hyprpaper
+    fnott
+    keepmenu
+    pinentry-gnome3
+    wev
+    grim
+    slurp
+    libsForQt5.qt5.qtwayland
+    qt6.qtwayland
+    xdg-utils
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland
+    wlsunset
+    pavucontrol
+    pamixer
+    tesseract4
+    ]);
+  system=[];
+};
+};
 virtualisation={
   system=with pkgs; [
   #     virtualbox

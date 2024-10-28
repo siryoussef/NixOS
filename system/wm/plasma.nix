@@ -69,56 +69,7 @@ imports = [
 environment = {
   plasma5.excludePackages = [ /* pkgs.elisa */ ];
   plasma6.excludePackages = [ /* pkgs.elisa */ ];
-  systemPackages = ((with pkgs; [
-    gnome-control-center
-    plasma-hud
-    systemdgenie
-   # plasma-browser-integration
-    libreoffice-qt
-    krusader
-    gsignondPlugins.oauth
-    pcmanfm-qt
-
-  ]) ++ (with pkgs; (with kdePackages;[
-    kate
-    kcalc
-    kio
-    kio-gdrive
-    kio-fuse
-    kio-admin
-    kio-extras
-    kio-extras-kf5
-    kio-zeroconf
-    audiocd-kio
-    kdesdk-kio
-    plasma5support
-    kcmutils
-    sddm-kcm
-    kcmutils
-    flatpak-kcm
-    kpipewire
-    plymouth-kcm
-    plasma-disks
-    filelight
-    kdenlive
-    neochat
-    appstream-qt
-    kmailtransport
-    kaccounts-providers
-    kaccounts-integration
-    signond
-    signon-kwallet-extension
-#     kdevelop kdev-python
-    discover
-    ]))
-
-#   ++ (with pkgs-stable;(with kdePackages;[ kdevelop kdev-python ]))
-
-  ++ (with pkgs;(with libsForQt5;[
-    kdevelop kdev-python
-    qmltermwidget
-    libkomparediff2
-    ]))) ;
+  systemPackages = settings.pkglists.plasma.system;
 };
 
   programs = {

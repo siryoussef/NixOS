@@ -21,7 +21,7 @@
               in {
                 nixpkgs.overlays = with inputs;[nur.overlay ];
                 imports = [ nur-no-pkgs.repos.iopq.modules.xraya  ];
-                services.xraya.enable = true;
+                services.xraya.enable = false;
                 environment.systemPackages = (map (pkg: (with pkg;(packages.${settings.system.arch}.default)))  (with inputs;[
                 fh
                 agenix

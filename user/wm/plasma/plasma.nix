@@ -17,7 +17,7 @@
 # };
 home=let storage=import settings.paths.storage{inherit settings config;};  in{
 #     persistence=storage.persistent.plasma.user;
-#     packages =
     file=storage.homeLinks.plasma;
+     packages = settings.pkglists.plasma.user;
 };
 }

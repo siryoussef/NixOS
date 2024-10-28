@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ lib, pkgs, systemSettings, userSettings, ... }:
+{ lib, pkgs, settings, ... }:
 
 with lib;
 let
@@ -28,7 +28,7 @@ in
   wsl = {
     enable = true;
     automountPath = "/mnt";
-    defaultUser = userSettings.username;
+    defaultUser = settings.user.username;
     startMenuLaunchers = true;
 
     # Enable native Docker support
@@ -61,27 +61,27 @@ in
   boot.kernelModules = [ "i2c-dev" "i2c-piix4" "cpufreq_powersave" ];
 
   # Networking
-  networking.hostName = systemSettings.hostname; # Define your hostname.
+  networking.hostName = settings.system.hostname; # Define your hostname.
 
   # Timezone and locale
-  time.timeZone = systemSettings.timezone; # time zone
-  i18n.defaultLocale = systemSettings.locale;
+  time.timeZone = settings.system.timezone; # time zone
+  i18n.defaultLocale = settings.system.locale;
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = systemSettings.locale;
-    LC_IDENTIFICATION = systemSettings.locale;
-    LC_MEASUREMENT = systemSettings.locale;
-    LC_MONETARY = systemSettings.locale;
-    LC_NAME = systemSettings.locale;
-    LC_NUMERIC = systemSettings.locale;
-    LC_PAPER = systemSettings.locale;
-    LC_TELEPHONE = systemSettings.locale;
-    LC_TIME = systemSettings.locale;
+    LC_ADDRESS = settings.system.locale;
+    LC_IDENTIFICATION = settings.system.locale;
+    LC_MEASUREMENT = settings.system.locale;
+    LC_MONETARY = settings.system.locale;
+    LC_NAME = settings.system.locale;
+    LC_NUMERIC = settings.system.locale;
+    LC_PAPER = settings.system.locale;
+    LC_TELEPHONE = settings.system.locale;
+    LC_TIME = settings.system.locale;
   };
 
   # User account
-  users.users.${userSettings.username} = {
+  users.users.${settings.user.username} = {
     isNormalUser = true;
-    description = userSettings.name;
+    description = settings.user.name;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
     uid = 1000;

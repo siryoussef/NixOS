@@ -1,4 +1,4 @@
-{ config, pkgs, lib, systemSettings, userSettings,... }:
+{ pkgs, settings,... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -9,9 +9,9 @@
         syncthing = {
             enable = true;
             systemService = true;
-            user = userSettings.username;
-            dataDir = "/Shared"; # "/home/"+userSettings.username+"syncthing";
-            configDir = "/Shared/.syncthing"; # "/home/"+userSettings.username+"/syncthing/./config";
+            user = settings.user.username;
+            dataDir = "/Shared"; # "/home/"+settings.user.username+"syncthing";
+            configDir = "/Shared/.syncthing"; # "/home/"+settings.user.username+"/syncthing/./config";
 
         };
     };

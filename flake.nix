@@ -17,6 +17,7 @@
   };
 
   inputs ={
+    systems={url = "path:./systems.nix"; flake = false;};
 #     settings.url = "git+file:///etc/nixos/settings";
     flake-parts.url = "github:hercules-ci/flake-parts";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
@@ -25,7 +26,9 @@
 
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
 #     nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
-    nixpkgs.follows ="nixpkgs-unstable";
+    nixpkgs.follows = /*"nixpkgsRef"; */ "nixpkgs-unstable";
+#     nixpkgsRef={url = "path:./nixpkgsRef.nix"; flake = false;};
+
     nixpkgs-stable.url = "nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";#"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
     nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
@@ -34,6 +37,7 @@
     kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
     nwg-dock-hyprland-pin-nixpkgs.url = "nixpkgs/2098d845d76f8a21ae4fe12ed7c7df49098d3f15";
     emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
+    chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
 
 
     lix-module = {

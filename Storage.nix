@@ -8,6 +8,7 @@ username = settings.user.username;
 HSPS={
   plasma=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
   waydroid=userdir+"/waydroid/Data";
+  junest=userdir+"/.junest";
 };
 ## Common symlinks set to be used in 1 of the 3 storage attachment methods ##
 
@@ -70,6 +71,7 @@ links={
   libvirt={
       system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
       user.${userdir}= {directories=[".config/libvirt"]; files=[];};
+
   };
   plasma={
       system={
@@ -121,6 +123,7 @@ links={
         ]);
       };
   };
+
 };
 
                   ##    1st: fstab mounts  ##
@@ -212,8 +215,7 @@ persistent={
 
         # Abstract function to generate symlinked home links (make out of store link set)
 mkOOSLinkSet = { prefix, linkSet }:
-    builtins.listToAttrs (map (y: { name = y; value ={ source = config.lib.file.mkOutOfStoreSymlink("/." + (prefix + "/${y}"));
-      };}) (with linkSet; (files++directories)));
+    builtins.listToAttrs (map (y: { name = y; value ={ source = config.lib.file.mkOutOfStoreSymlink(/. + (prefix + "/${y}"));};}) (with linkSet; (files++directories)));
 
 homeLinks={
   user= mkOOSLinkSet {prefix=userdir; linkSet = (links.user.${userdir}); };

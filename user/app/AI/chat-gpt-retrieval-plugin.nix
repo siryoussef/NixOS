@@ -1,4 +1,4 @@
-{ config, pkgs, userSettings, ... }:
+{ config, pkgs, ... }:
 {
     services.chatgpt-retrieval-plugin = {
         enable = true;

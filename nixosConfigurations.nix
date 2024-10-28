@@ -1,17 +1,19 @@
-{settings, systemSettings, userSettings, unifiedHome, home-manager, nixpkgs-patched, lib, inputs, pkgs-stable,...}:{
+{settings, unifiedHome, home-manager, nixpkgs-patched, lib, inputs, pkgs-stable,...}:{
         ${settings.system.hostname} = lib.nixosSystem {
 #           system = settings.system.arch;
-          modules = [ home-manager.nixosModules.home-manager
-             inputs.qnr.nixosModules.local-registry
-             ]
-          ++ (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) ["impermanence" "nix-flatpak" "nix-data" ])
-          ++ (map(x: with x; (nixosModules.default)) (with inputs; [agenix NixVirt lix-module ]))
-            ++
-            [
-            (./. + "/profiles" + ("/" + settings.system.profile)
-              + "/configuration.nix")
-
-            ({ pkgs, config, ... }:
+          modules = (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) [
+          "impermanence"
+          "nix-flatpak"
+          "nix-data"
+          ])++(map(x: with x; (nixosModules.default)) (with inputs; [
+          agenix
+          NixVirt
+          lix-module
+          chaotic
+          ]))++[
+          home-manager.nixosModules.home-manager
+          inputs.qnr.nixosModules.local-registry
+          (./. + "/profiles" + ("/" + settings.system.profile)+ "/configuration.nix")({ pkgs, config, ... }:
               let
                 nur-no-pkgs = import inputs.nur {
                   nurpkgs = import nixpkgs-patched { system = settings.system.arch; };
@@ -58,18 +60,14 @@
                   enable = true;# Enable quick-nix-registry
                   cacheGlobalRegistry = true;# Cache the default nix registry locally, to avoid extraneous registry updates from nix cli.
                   noGlobalRegistry = false;}; # Set an empty global registry.
-                })
-
-
+                }
+            )
           ]; # load configuration.nix from selected PROFILE
           specialArgs = {
             # pass config variables from above
             inherit pkgs-stable;
             inherit settings;
-            inherit systemSettings;
-            inherit userSettings;
             inherit inputs;
           };
-
         };
         }

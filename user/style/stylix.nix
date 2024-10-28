@@ -1,16 +1,16 @@
-{ config, lib, pkgs, inputs, userSettings, ... }:
+{ config, lib, pkgs, inputs, settings, ... }:
 
 let
-  themePath = "../../../themes"+("/"+userSettings.theme+"/"+userSettings.theme)+".yaml";
-  themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../themes"+("/"+userSettings.theme)+"/polarity.txt"));
-  backgroundUrl = builtins.readFile (./. + "../../../themes"+("/"+userSettings.theme)+"/backgroundurl.txt");
-  backgroundSha256 = builtins.readFile (./. + "../../../themes/"+("/"+userSettings.theme)+"/backgroundsha256.txt");
+  themePath = "../../../themes"+("/"+settings.user.theme+"/"+settings.user.theme)+".yaml";
+  themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../themes"+("/"+settings.user.theme)+"/polarity.txt"));
+  backgroundUrl = builtins.readFile (./. + "../../../themes"+("/"+settings.user.theme)+"/backgroundurl.txt");
+  backgroundSha256 = builtins.readFile (./. + "../../../themes/"+("/"+settings.user.theme)+"/backgroundsha256.txt");
 in
 {
 
   imports = [ inputs.stylix.homeManagerModules.stylix ];
 
-  home.file.".currenttheme".text = userSettings.theme;
+  home.file.".currenttheme".text = settings.user.theme;
   stylix.autoEnable = false;
   stylix.polarity = themePolarity;
   stylix.image = pkgs.fetchurl {
@@ -21,16 +21,16 @@ in
 
   stylix.fonts = {
     monospace = {
-      name = userSettings.font;
-      package = userSettings.fontPkg;
+      name = settings.user.font;
+      package = settings.user.fontPkg;
     };
     serif = {
-      name = userSettings.font;
-      package = userSettings.fontPkg;
+      name = settings.user.font;
+      package = settings.user.fontPkg;
     };
     sansSerif = {
-      name = userSettings.font;
-      package = userSettings.fontPkg;
+      name = settings.user.font;
+      package = settings.user.fontPkg;
     };
     emoji = {
       name = "Noto Emoji";
@@ -72,12 +72,12 @@ in
       bright.white = "#"+config.lib.stylix.colors.base07;
     };
     font.size = config.stylix.fonts.sizes.terminal;
-    font.normal.family = userSettings.font;
+    font.normal.family = settings.user.font;
   };
   stylix.targets.kitty.enable = true;
   stylix.targets.gtk.enable = true;
-  stylix.targets.rofi.enable = if (userSettings.wmType == "x11") then true else false;
-  stylix.targets.feh.enable = if (userSettings.wmType == "x11") then true else false;
+  stylix.targets.rofi.enable = if (settings.user.wmType == "x11") then true else false;
+  stylix.targets.feh.enable = if (settings.user.wmType == "x11") then true else false;
   programs.feh.enable = true;
   home.file.".fehbg-stylix".text = ''
     #!/bin/sh
@@ -115,8 +115,8 @@ in
     platformTheme = "kde";
   };
   fonts.fontconfig.defaultFonts = {
-    monospace = [ userSettings.font ];
-    sansSerif = [ userSettings.font ];
-    serif = [ userSettings.font ];
+    monospace = [ settings.user.font ];
+    sansSerif = [ settings.user.font ];
+    serif = [ settings.user.font ];
   };
 }

@@ -1,12 +1,10 @@
 {inputs,self,...}:
 let
       settings = import ./settings.nix {inherit pkgs pkgs-stable pkgs-kdenlive;};
-      systemSettings = settings.system; # for backward
-      userSettings = settings.user;     # combatibilty (temporarily > to be removed ! )
 #       Storage = import settings.paths.storage{inherit settings config;};
       # create patched nixpkgs
 
-#       nixpkgs=inputs.nixpkgsRef.nixpkgs; #{ inherit systemSettings;};
+#       nixpkgs=inputs.nixpkgsRef.nixpkgs; #{ inherit settings;};
 #       inputs= {inherit inputs;} // {nixpkgs=nixpkgs;};
       nixpkgs=(if ((settings.system.profile == "homelab") || (settings.system.profile == "worklab"))
              then
@@ -80,13 +78,11 @@ let
           inherit pkgs-kdenlive;
           inherit pkgs-nwg-dock-hyprland;
           inherit settings;
-          inherit systemSettings;
-          inherit userSettings;
           inherit inputs;
           };
         modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" ])
          ++ (with inputs;[impermanence.nixosModules.home-manager.impermanence
-         NixVirt.homeModules.default])
+         NixVirt.homeModules.default chaotic.homeManagerModules.default])
          ++ [
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
@@ -172,7 +168,7 @@ let
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         }; };
 
-        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings systemSettings userSettings unifiedHome home-manager nixpkgs-patched lib inputs pkgs-stable;};
+        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings unifiedHome home-manager nixpkgs-patched lib inputs pkgs-stable;};
 
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although

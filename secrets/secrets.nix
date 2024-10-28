@@ -1,11 +1,11 @@
- {userSettings, systemSettings,...}:
+ { settings,...}:
 
 
 #  {
 # age.secrets.youpass.file = ../secrets/youpass.age;
-# users.users.${userSettings.username} = {
+# users.users.${settings.user.username} = {
 #     isNormalUser = true;
-#     passwordFile = config.age.secrets.${userSettings.username}.path;
+#     passwordFile = config.age.secrets.${settings.user.username}.path;
 # }
 
 
@@ -23,12 +23,12 @@
 # }
 
 let
-  ${userSettings.username} = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0idNvgGiucWgup/mP78zyC23uFjYq0evcWdjGQUaBH";
-  users = [ ${userSettings.username} ];
+  ${settings.user.username} = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0idNvgGiucWgup/mP78zyC23uFjYq0evcWdjGQUaBH";
+  users = [ ${settings.user.username} ];
 
-  ${systemSettings.hostname} = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJDyIr/FSz1cJdcoW69R+NrWzwGK/+3gJpqD1t8L2zE";
-  systems = [ ${systemSettings.hostname} ];
+  ${settings.system.hostname} = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJDyIr/FSz1cJdcoW69R+NrWzwGK/+3gJpqD1t8L2zE";
+  systems = [ ${settings.system.hostname} ];
 in
 {
-  "youpass.age".publicKeys = [ ${userSettings.username} ${systemSettings.hostname} ];
+  "youpass.age".publicKeys = [ ${settings.user.username} ${settings.system.hostname} ];
 }

@@ -40,8 +40,8 @@ services = {
         replication = {
             role = "master";
             serverId = 1 ;
-            masterUser = userSettings.username;
-            masterHost = systemSettings.hostname;
+            masterUser = settings.user.username;
+            masterHost = settings.system.hostname;
             masterPassword = "123456";
             slaveHost = "wanky";
             };
@@ -53,12 +53,12 @@ services = {
 /*
   ## MySQL server
 
-  services.longview.mysqlUser = userSettings.username;
+  services.longview.mysqlUser = settings.user.username;
   services.longview.mysqlPassword = "123456";
 */
 
 
-#   users.mysql={enable = true ; user = userSettings.username; passwordFile = "${toString ../../secrets/mysql.age}";};
+#   users.mysql={enable = true ; user = settings.user.username; passwordFile = "${toString ../../secrets/mysql.age}";};
 #   users.mysql.nss = import ./mysql-nss.cfg;
 
 

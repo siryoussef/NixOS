@@ -1,9 +1,8 @@
 {
 outputs=inputs@{...}:
 let
-Settings = import ./settings.nix;
-systemSettings = Settings.systemSettings;
-nixpkgs=(if ((systemSettings.profile == "homelab") || (systemSettings.profile == "worklab"))
+settings = import ./settings.nix;
+nixpkgs=(if ((settings.system.profile == "homelab") || (settings.system.profile == "worklab"))
              then
                inputs.nixpkgs-stable
              else
@@ -12,7 +11,7 @@ nixpkgs=(if ((systemSettings.profile == "homelab") || (systemSettings.profile ==
 in {inherit nixpkgs;}
 # // {
 #       inherit (nixpkgs) lib checks devShells legacyPackages nixosModules htmlDocs;
-#     packages.${systemSettings.system}.default = nixpkgs.legacyPackages.${systemSettings.system}.hello;
+#     packages.${settings.system.system}.default = nixpkgs.legacyPackages.${settings.system.system}.hello;
 #     }
 
 #     //{

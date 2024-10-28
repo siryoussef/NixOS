@@ -1,4 +1,4 @@
-{ lib, pkgs, systemSettings, userSettings, ... }:
+{ lib, pkgs, settings, ... }:
 
 {
   imports =
@@ -6,7 +6,7 @@
       ../../system/hardware/time.nix # Network time sync
       ../../system/security/doas.nix
       ../../system/security/gpg.nix
-      ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit userSettings pkgs lib;} )
+      ( import ../../system/app/docker.nix {storageDriver = "btrfs"; inherit settings pkgs lib;} )
     ];
 
   # Fix nix path
@@ -29,35 +29,35 @@
 
   # Bootloader
   # Use systemd-boot if uefi, default to grub otherwise
-  boot.loader.systemd-boot.enable = if (systemSettings.bootMode == "uefi") then true else false;
-  boot.loader.efi.canTouchEfiVariables = if (systemSettings.bootMode == "uefi") then true else false;
-  boot.loader.efi.efiSysMountPoint = systemSettings.bootMountPath; # does nothing if running bios rather than uefi
-  boot.loader.grub.enable = if (systemSettings.bootMode == "uefi") then false else true;
-  boot.loader.grub.device = systemSettings.grubDevice; # does nothing if running uefi rather than bios
+  boot.loader.systemd-boot.enable = if (settings.system.bootMode == "uefi") then true else false;
+  boot.loader.efi.canTouchEfiVariables = if (settings.system.bootMode == "uefi") then true else false;
+  boot.loader.efi.efiSysMountPoint = settings.system.bootMountPath; # does nothing if running bios rather than uefi
+  boot.loader.grub.enable = if (settings.system.bootMode == "uefi") then false else true;
+  boot.loader.grub.device = settings.system.grubDevice; # does nothing if running uefi rather than bios
 
   # Networking
-  networking.hostName = systemSettings.hostname; # Define your hostname.
+  networking.hostName = settings.system.hostname; # Define your hostname.
   networking.networkmanager.enable = true; # Use networkmanager
 
   # Timezone and locale
-  time.timeZone = systemSettings.timezone; # time zone
-  i18n.defaultLocale = systemSettings.locale;
+  time.timeZone = settings.system.timezone; # time zone
+  i18n.defaultLocale = settings.system.locale;
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = systemSettings.locale;
-    LC_IDENTIFICATION = systemSettings.locale;
-    LC_MEASUREMENT = systemSettings.locale;
-    LC_MONETARY = systemSettings.locale;
-    LC_NAME = systemSettings.locale;
-    LC_NUMERIC = systemSettings.locale;
-    LC_PAPER = systemSettings.locale;
-    LC_TELEPHONE = systemSettings.locale;
-    LC_TIME = systemSettings.locale;
+    LC_ADDRESS = settings.system.locale;
+    LC_IDENTIFICATION = settings.system.locale;
+    LC_MEASUREMENT = settings.system.locale;
+    LC_MONETARY = settings.system.locale;
+    LC_NAME = settings.system.locale;
+    LC_NUMERIC = settings.system.locale;
+    LC_PAPER = settings.system.locale;
+    LC_TELEPHONE = settings.system.locale;
+    LC_TIME = settings.system.locale;
   };
 
   # User account
-  users.users.${userSettings.username} = {
+  users.users.${settings.user.username} = {
     isNormalUser = true;
-    description = userSettings.name;
+    description = settings.user.name;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
     uid = 1000;

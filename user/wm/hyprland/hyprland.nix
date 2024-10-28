@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, userSettings, systemSettings, pkgs-nwg-dock-hyprland, ... }: let
+{ inputs, config, lib, pkgs, settings, pkgs-nwg-dock-hyprland, ... }: let
   pkgs-hyprland = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
@@ -10,7 +10,7 @@ in
     })
     ../input/nihongo.nix
   ] ++
-  (if (systemSettings.profile == "personal") then
+  (if (settings.system.profile == "personal") then
     [ (import ./hyprprofiles/hyprprofiles.nix {
         dmenuCmd = "fuzzel -d"; inherit config lib pkgs; })]
   else
@@ -163,13 +163,13 @@ in
        bind = SUPER,R,pass,^(com\.obsproject\.Studio)$
        bind = SUPERSHIFT,R,pass,^(com\.obsproject\.Studio)$
 
-       bind=SUPER,RETURN,exec,'' + userSettings.term + ''
+       bind=SUPER,RETURN,exec,'' + settings.user.term + ''
 
-       bind=SUPERSHIFT,RETURN,exec,'' + userSettings.term + " " + '' --class float_term
+       bind=SUPERSHIFT,RETURN,exec,'' + settings.user.term + " " + '' --class float_term
 
-       bind=SUPER,A,exec,'' + userSettings.spawnEditor + ''
+       bind=SUPER,A,exec,'' + settings.user.spawnEditor + ''
 
-       bind=SUPER,S,exec,'' + userSettings.spawnBrowser + ''
+       bind=SUPER,S,exec,'' + settings.user.spawnBrowser + ''
 
        bind=SUPERCTRL,S,exec,container-open # qutebrowser only
 
@@ -184,7 +184,7 @@ in
        bindm=SUPER,mouse:273,resizewindow
        bind=SUPER,T,togglefloating
        bind=SUPER,G,exec,hyprctl dispatch focusworkspaceoncurrentmonitor 9 && pegasus-fe;
-       bind=,code:148,exec,''+ userSettings.term + " "+''-e numbat
+       bind=,code:148,exec,''+ settings.user.term + " "+''-e numbat
 
        bind=,code:107,exec,grim -g "$(slurp)"
        bind=SHIFT,code:107,exec,grim -g "$(slurp -o)"
@@ -403,7 +403,7 @@ in
          mouse_move_enables_dpms = true
          enable_swallow = true
          swallow_regex = (scratch_term)|(Alacritty)|(kitty)
-         font_family = '' + userSettings.font + ''
+         font_family = '' + settings.user.font + ''
 
        }
        decoration {
@@ -455,7 +455,7 @@ in
       terminal = false;
       type = "Application";
       noDisplay = true;
-      icon = "/home/"+userSettings.username+"/.local/share/pixmaps/hyprland-logo-stylix.svg";
+      icon = "/home/"+settings.user.username+"/.local/share/pixmaps/hyprland-logo-stylix.svg";
     })
     (hyprnome.override (oldAttrs: {
         rustPlatform = oldAttrs.rustPlatform // {
@@ -714,7 +714,7 @@ in
       text = Hello, Emmet
       color = rgb(''+config.lib.stylix.colors.base07-rgb-r+'',''+config.lib.stylix.colors.base07-rgb-g+'', ''+config.lib.stylix.colors.base07-rgb-b+'')
       font_size = 25
-      font_family = ''+userSettings.font+''
+      font_family = ''+settings.user.font+''
 
       rotate = 0 # degrees, counter-clockwise
 
@@ -994,7 +994,7 @@ in
     style = ''
       * {
           /* `otf-font-awesome` is required to be installed for icons */
-          font-family: FontAwesome, ''+userSettings.font+'';
+          font-family: FontAwesome, ''+settings.user.font+'';
 
           font-size: 20px;
       }
@@ -1336,7 +1336,7 @@ in
     });
   programs.fuzzel.settings = {
     main = {
-      font = userSettings.font + ":size=20";
+      font = settings.user.font + ":size=20";
       dpi-aware = "no";
       show-actions = "yes";
       terminal = "${pkgs.alacritty}/bin/alacritty";
@@ -1361,9 +1361,9 @@ in
       anchor = "bottom-right";
       stacking-order = "top-down";
       min-width = 400;
-      title-font = userSettings.font + ":size=14";
-      summary-font = userSettings.font + ":size=12";
-      body-font = userSettings.font + ":size=11";
+      title-font = settings.user.font + ":size=14";
+      summary-font = settings.user.font + ":size=12";
+      body-font = settings.user.font + ":size=11";
       border-size = 0;
     };
     low = {

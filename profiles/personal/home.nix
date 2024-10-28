@@ -1,10 +1,10 @@
-{ config, pkgs, userSettings, ... }:
+{ config, pkgs, settings, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = userSettings.username;
-  home.homeDirectory = "/home/"+userSettings.username;
+  home.username = settings.user.username;
+  home.homeDirectory = "/home/"+settings.user.username;
 
   programs.home-manager.enable = true;
 

@@ -24,7 +24,6 @@ rec{
     tor-browser
     dmenu
     rofi
-    syncthing
 
     zoom-us
     kotatogram-desktop
@@ -148,7 +147,7 @@ rec{
         cp $src/settings/fdmprinter.def.json $out/share/cura-slicer
         cp $src/settings/base.ini $out/share/cura-slicer
         sed -i 's+#!/usr/bin/perl+#! /usr/bin/env nix-shell\n#! nix-shell -i perl -p perl538 perl538Packages.JSON+g' $out/bin/cura-slicer
-        sed -i 's+/usr/share+/home/${userSettings.username}/.nix-profile/share+g' $out/bin/cura-slicer
+        sed -i 's+/usr/share+/home/${settings.user.username}/.nix-profile/share+g' $out/bin/cura-slicer
       '';
       propagatedBuildInputs = with pkgs; [
         curaengine_stable

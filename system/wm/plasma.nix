@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-stable, userSettings, ... }:
+{ config, lib, pkgs, pkgs-stable, settings, ... }:
 {
 imports = [
             ./wayland.nix
@@ -62,7 +62,7 @@ imports = [
       };
   #    pam.services.gtklock = {};
       login.enableGnomeKeyring = true;
-      ${userSettings.username}.kwallet.enable=true;
+      ${settings.user.username}.kwallet.enable=true;
     };
   };
 

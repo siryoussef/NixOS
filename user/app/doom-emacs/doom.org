@@ -2176,9 +2176,9 @@ Any git package can be configured for a particular commit or branch:
 * Nix Integration
 In order to have Nix load my Doom Emacs configuration [[./doom.nix][doom.nix]], which I source in the =imports= block of my [[../../../profiles/work/home.nix][home.nix]].
 #+BEGIN_SRC nix :tangle doom.nix
-{ config, lib, pkgs, pkgs-emacs, pkgs-stable, inputs, userSettings, systemSettings, ... }:
+{ config, lib, pkgs, pkgs-emacs, pkgs-stable, inputs, settings, ... }:
 let
-  themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../../themes"+("/"+userSettings.theme)+"/polarity.txt"));
+  themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../../themes"+("/"+settings.user.theme)+"/polarity.txt"));
   dashboardLogo = ./. + "/nix-" + themePolarity + ".webp";
 in
 {
@@ -2316,15 +2316,15 @@ in
 
   ;; Import relevant variables from flake into emacs
 
-  (setq user-full-name "''+userSettings.name+''") ; name
-  (setq user-username "''+userSettings.username+''") ; username
-  (setq user-mail-address "''+userSettings.email+''") ; email
-  (setq user-home-directory "/home/''+userSettings.username+''") ; absolute path to home directory as string
-  (setq user-default-roam-dir "''+userSettings.defaultRoamDir+''") ; absolute path to home directory as string
-  (setq system-nix-profile "''+systemSettings.profile+''") ; what profile am I using?
-  (setq system-wm-type "''+userSettings.wmType+''") ; wayland or x11?
-  (setq doom-font (font-spec :family "''+userSettings.font+''" :size 20)) ; import font
-  (setq dotfiles-dir "''+userSettings.dotfilesDir+''") ; import location of dotfiles directory
+  (setq user-full-name "''+settings.user.name+''") ; name
+  (setq user-username "''+settings.user.username+''") ; username
+  (setq user-mail-address "''+settings.user.email+''") ; email
+  (setq user-home-directory "/home/''+settings.user.username+''") ; absolute path to home directory as string
+  (setq user-default-roam-dir "''+settings.user.defaultRoamDir+''") ; absolute path to home directory as string
+  (setq system-nix-profile "''+settings.system.profile+''") ; what profile am I using?
+  (setq system-wm-type "''+settings.user.wmType+''") ; wayland or x11?
+  (setq doom-font (font-spec :family "''+settings.user.font+''" :size 20)) ; import font
+  (setq dotfiles-dir "''+settings.user.dotfilesDir+''") ; import location of dotfiles directory
  '';
 }
 #+END_SRC

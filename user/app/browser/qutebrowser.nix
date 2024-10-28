@@ -1,4 +1,4 @@
-{ config, pkgs, userSettings, ... }:
+{ config, pkgs, settings, ... }:
 let generateHomepage = name: font: config:
   ''<!DOCTYPE html>
     <html>
@@ -336,7 +336,7 @@ c.colors.tabs.selected.odd.bg = base02
 c.colors.tabs.selected.even.fg = base05
 c.colors.tabs.selected.even.bg = base02
 
-font = "''+userSettings.font+''"
+font = "''+settings.user.font+''"
 
 c.fonts.default_family = font
 c.fonts.default_size = '14pt'
@@ -356,17 +356,17 @@ Gamedev
 Bard
   '';
 
-  home.file.".config/qutebrowser/qute-home.html".text = generateHomepage "Default" userSettings.font config;
+  home.file.".config/qutebrowser/qute-home.html".text = generateHomepage "Default" settings.user.font config;
   home.file.".config/qutebrowser/logo.png".source = ./qutebrowser-logo.png;
-  home.file.".browser/Teaching/config/qute-home.html".text = generateHomepage "Teaching" userSettings.font config;
+  home.file.".browser/Teaching/config/qute-home.html".text = generateHomepage "Teaching" settings.user.font config;
   home.file.".browser/Teaching/config/logo.png".source = ./qutebrowser-logo.png;
-  home.file.".browser/Tech/config/qute-home.html".text = generateHomepage "Tech" userSettings.font config;
+  home.file.".browser/Tech/config/qute-home.html".text = generateHomepage "Tech" settings.user.font config;
   home.file.".browser/Tech/config/logo.png".source = ./qutebrowser-logo.png;
-  home.file.".browser/Gaming/config/qute-home.html".text = generateHomepage "Gaming" userSettings.font config;
+  home.file.".browser/Gaming/config/qute-home.html".text = generateHomepage "Gaming" settings.user.font config;
   home.file.".browser/Gaming/config/logo.png".source = ./qutebrowser-logo.png;
-  home.file.".browser/Gamedev/config/qute-home.html".text = generateHomepage "Gamedev" userSettings.font config;
+  home.file.".browser/Gamedev/config/qute-home.html".text = generateHomepage "Gamedev" settings.user.font config;
   home.file.".browser/Gamedev/config/logo.png".source = ./qutebrowser-logo.png;
-  home.file.".browser/Bard/config/qute-home.html".text = generateHomepage "Bard" userSettings.font config;
+  home.file.".browser/Bard/config/qute-home.html".text = generateHomepage "Bard" settings.user.font config;
   home.file.".browser/Bard/config/logo.png".source = ./qutebrowser-logo.png;
 
 }

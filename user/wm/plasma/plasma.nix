@@ -7,7 +7,7 @@
 #     sddm = {
 #       settings = { Autologin = {
 #                    Session = "plasmawayland";
-#                    User = userSettings.username;
+#                    User = settings.user.username;
 #   }; };
 #       settings.Wayland.SessionDir = "${pkgs.plasma5Packages.plasma-workspace}/share/wayland-sessions";
 #       #autoLogin.minimumUid = 1000 ;

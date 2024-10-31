@@ -1,8 +1,7 @@
-{pkgs, pkgs-stable, pkgs-kdenlive,...}:
-# let
-# pkgs=pkgs;
-# in
+{pkgs, pkgs-stable, pkgs-kdenlive, inputs,...}:
 rec{
+inherit inputs pkgs pkgs-stable pkgs-kdenlive;
+settings = {inherit inputs pkgs pkgs-stable pkgs-kdenlive system user paths;};
   # ---- SYSTEM SETTINGS ---- #
 system = rec{
         arch = "x86_64-linux"; # system arch
@@ -53,8 +52,8 @@ paths={
       flake=/etc/nixos;
       dotfiles= /. + "/Shared/@Repo/dotfiles";
       };
-pkglists=import paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;};
-storage=let settings = import ./settings.nix; in import paths.storage{inherit settings;}; #FIXME
+pkglists=import paths.pkglists{inherit settings;};
+storage= let config=config; in /*import ./settings.nix;*/ import paths.storage{inherit settings config;}; #FIXME GiveUp improving it or putting it in settings or Replace mkOutOfStoreSymlink (~ reimplement it or wait for impermanence fix to work outside nixos) or find a method import config from outside (worst trial!).
 
 }
 

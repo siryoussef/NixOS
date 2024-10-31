@@ -1,6 +1,12 @@
 # This file is for central package control, it's target is to make nix package management easier when defining several environments
 
-{pkgs, pkgs-stable,pkgs-kdenlive,...}:
+{settings,...}:
+let
+inputs=settings.inputs;
+pkgs=settings.pkgs;
+pkgs-stable=settings.pkgs-stable;
+pkgs-kdenlive=settings.pkgs-kdenlive;
+in
 rec{
   home=(with pkgs; [
     # Nix tools
@@ -26,7 +32,7 @@ rec{
     rofi
     zoom-us
     kotatogram-desktop
-    kdePackages.neochat
+#     kdePackages.neochat FIXME "olm-3.2.16" ~ insecure!
     whatsapp-for-linux
     beeper
 
@@ -172,6 +178,7 @@ rec{
     nodePackages.ungit
   ] ++ [ pkgs-kdenlive.kdenlive ]
 #   ++ (with pkgs-stable;[ floorp ])
+  ++[inputs.system-manager.packages.${settings.system.arch}.system-manager]
   );
 root= [
 
@@ -251,7 +258,22 @@ system = with pkgs; [
     efivar
     exfatprogs
     tmsu
-    ]);
+    ])
+    ++(with inputs; (map (pkg: (with pkg;(packages.${settings.system.arch}.default)))  ([
+                fh
+                agenix
+                snowfall-flake
+                nixos-conf-editor
+#                 snow
+#                 nix-software-center
+#                 thorium-browser
+                zen-browser
+                NixVirt
+                ]))
+                ++(with winapps.packages.${settings.system.arch};[winapps winapps-launcher])
+                ++[
+                thorium-browser.defaultPackage.${settings.system.arch}
+                ]);
 plasma={
   system=((((with pkgs; [
     gnome-control-center

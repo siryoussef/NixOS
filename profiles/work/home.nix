@@ -2,7 +2,7 @@
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home = let storage= import settings.paths.storage{inherit settings config;}; list=import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in {
+  home = let storage= import settings.paths.storage{inherit settings config;}; in {
     username = settings.user.username;
     homeDirectory = "/home/"+settings.user.username;
     stateVersion = "24.05"; # Please read the comment before changing.
@@ -14,7 +14,7 @@
       BROWSER = settings.user.browser;
       };
 #     persistence =storage.persistent.user;
-    packages = list.home ++[inputs.system-manager.packages.${settings.system.arch}.system-manager];
+    packages = settings.pkglists.home;
     file=storage.homeLinks.user;
 #     file.".config/kdedefaults".source= config.lib.file.mkOutOfStoreSymlink ./user/wm/plasma/dotfiles/kdedefaults;
     };

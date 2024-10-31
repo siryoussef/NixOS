@@ -1,8 +1,8 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, settings, inputs, lib, ... }:
+{ config, settings, inputs, lib, ... }:
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home = let storage= import settings.paths.storage{inherit settings config;}; list=import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in {
+  home = let storage= import settings.paths.storage{inherit settings config;};  in {
     username = "root";
     homeDirectory = "/root";
     stateVersion = "24.05"; # Please read the comment before changing.
@@ -14,7 +14,7 @@
       BROWSER = settings.user.browser;
       };
 #     persistence =storage.persistent.user;
-    packages = list.root ++[inputs.system-manager.packages.${settings.system.arch}.system-manager];
+    packages = settings.pkglists.root ++[inputs.system-manager.packages.${settings.system.arch}.system-manager];
     file=storage.homeLinks.user;
 #     file.".config/kdedefaults".source= config.lib.file.mkOutOfStoreSymlink ./user/wm/plasma/dotfiles/kdedefaults;
     };
@@ -25,7 +25,7 @@
 #               (if ((settings.user.editor == "emacs") || (settings.user.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               inputs.stylix.homeManagerModules.stylix
 #              (./. + "../../../user/wm"+("/"+settings.user.wm+"/"+settings.user.wm)+".nix") # My window manager selected from flake
-#               ../../user/shell/sh.nix # My zsh and bash config
+              ../user/shell/sh.nix # My zsh and bash config
 #               ../../user/shell/cli-collection.nix # Useful CLI apps
 #               ../../user/bin/phoenix.nix # My nix command wrapper
 #               ../../user/app/doom-emacs/doom.nix # My doom emacs config

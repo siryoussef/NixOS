@@ -181,6 +181,8 @@
       inputs.nixpkgs.follows="nixpkgs-unstable";
       };
     impermanence.url = /*"git+file:///Shared/@Repo/impermanence/";*/ "github:siryoussef/impermanence";
+    symlink.url ="github:schuelermine/nix-symlink?rev=c0efee35a02b779d75b4a103e1df5067249cb5a9";
+    impurity.url = "github:outfoxxed/impurity.nix";
     system-manager = {
       url = "github:numtide/system-manager";
       inputs={
@@ -190,13 +192,14 @@
     };
     wfvm={url = "git+https://git.m-labs.hk/M-Labs/wfvm";
       inputs.nixpkgs.follows = "nixpkgs";};
-    winapps={url="github:siryoussef/winapps";
+    winapps={url=/*"github:siryoussef/winapps";*/ "path:/Shared/@Repo/winapps";
       inputs.nixpkgs.follows = "nixpkgs";};
     robotnix={url="github:siryoussef/robotnix";
       inputs={
         nixpkgs.follows="nixpkgs";
         nixpkgs-unstable.follows="nixpkgs-unstable";
-        };
-        };
+      };
+    };
+    envil={url="github:YPares/envil"; inputs.nixpkgs.follows="nixpkgs";};
   };
-  }
+}

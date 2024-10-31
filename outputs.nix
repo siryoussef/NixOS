@@ -1,6 +1,6 @@
 {inputs,self,...}:
 let
-      settings = import ./settings.nix {inherit pkgs pkgs-stable pkgs-kdenlive;};
+      settings = import ./settings.nix {inherit inputs pkgs pkgs-stable pkgs-kdenlive;};
 #       Storage = import settings.paths.storage{inherit settings config;};
       # create patched nixpkgs
 

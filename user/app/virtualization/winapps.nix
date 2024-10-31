@@ -1,5 +1,19 @@
-{settings, inputs, lib, ...}: rec {
+{settings, inputs, lib, pkgs, ...}: rec {
   home.file={
+    "/winapps.sh"={ executable=true; text = ''
+    #!/usr/bin/env bash
+echo "Script started at $(date)" >> /home/${settings.user.username}/winapps-setup.log
+echo "Current PATH: $PATH" >> /home/${settings.user.username}/winapps-setup.log
+# Wait until the Windows VM is running
+    while [[ "$(${pkgs.doas}/bin/doas ${pkgs.libvirt}/bin/virsh domstate RDPWindows)" != "running" ]];
+    do ${pkgs.doas}/bin/doas virsh domstate RDPWindows  &>> /home/${settings.user.username}/winapps-setup.log && echo "Waiting for Windows VM to boot..."  >> /home/${settings.user.username}/winapps-setup.log
+       sleep 3  # Wait for 3 seconds before checking again
+    done
+echo "windows-vm started at $(date)" >> /home/${settings.user.username}/winapps-setup.log
+${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --uninstall >> /home/${settings.user.username}/winapps-setup.log
+${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps >> /home/${settings.user.username}/winapps-setup.log 2>&1
+ln -s $(which winapps) /home/${settings.user.username}/.local/bin
+'';};
     ".config/winapps/winapps.conf".text = ''
 
 
@@ -18,7 +32,7 @@
 # - All characters following a '#' are ignored.
 
 # [WINDOWS USERNAME]
-RDP_USER="Youssef"
+RDP_USER=${settings.user.name}
 
 # [WINDOWS PASSWORD]
 RDP_PASS=" "
@@ -109,13 +123,13 @@ FREERDP_COMMAND=""
 
   '';
 
- ".local/bin/winapps"= /*lib.hm.dag.entryAfter "winlink" ["home-activation-runWinapps-setup"]*/ {source="${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps";};
+#  ".local/bin/winapps"= /*lib.hm.dag.entryAfter "winlink" ["home-activation-runWinapps-setup"]*/ {source="${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps";};
 };
 # home.activation.runWinapps-setup = /*lib.hm.dag.entryAfter ["writeBoundary" "graphical-session.target" "libvirt.service" "multi-user.target"]*/ lib.hm.dag.entryBetween /*["home-file-.local-bin-winapps"]*/ "winsetup" ["winlink"] ["writeBoundary"] ''
 # #!/bin/sh
 # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # Wait until the Windows VM is running
-#     while [ "$(sudo virsh domstate RDPWindows)" != "running" ];
+#     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
 #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 #       sleep 3  # Wait for 10 seconds before checking again
 #     done
@@ -136,7 +150,7 @@ FREERDP_COMMAND=""
 # #     #!/bin/sh
 # # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # # Wait until the Windows VM is running
-# #     while [ "$(sudo virsh domstate RDPWindows)" != "running" ];
+# #     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
 # #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 # #       sleep 3  # Wait for 10 seconds before checking again
 # #     done
@@ -149,7 +163,7 @@ FREERDP_COMMAND=""
 # #       ExecStartPre = ''  # Wait for the Windows VM to be in running state
 # # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # # Wait until the Windows VM is running
-# #     while [ "$(sudo virsh domstate RDPWindows)" != "running" ];
+# #     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
 # #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 # #       sleep 3  # Wait for 3 seconds before checking again
 # #     done

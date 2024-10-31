@@ -148,7 +148,7 @@ DiscMounts = rec{
 
      })
      ;
-BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mode=777"];}) rec{
+BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mode=777" ];}) rec{
   "/etc/nixos" = { device = "/Shared/@Repo/NixOS";};
   "/etc/nixos/secrets" = { device = "/Shared/@Repo/NixOS-private";};
   Downloads = { mountPoint = "/home/"+username+"/Downloads"; device = "/Volume/@Storage/Downloads"; depends = [ "/" "/home" "/Volume"]; };
@@ -176,9 +176,9 @@ BindMounts =(builtins.mapAttrs(x: y: y // {fsType = "none"; options=["bind" "mod
   thunderbird= { mountPoint = "/home/"+username+"/.thunderbird"; device = userdir+"/.thunderbird";  };
 
    ## Waydroid
-  waydroidData={ mountPoint = "/home/"+username+"/.local/share/waydroid"; device = HSPS.waydroid+"/.local/share/waydroid";};
+  waydroidData={ mountPoint = "/home/"+username+"/.local/share/waydroid"; device = HSPS.waydroid;};
   waydroidSystem={ mountPoint = "/var/lib/waydroid"; device = userdir+"/waydroid/System"; };
-  waydroidDownloadsShareMain= { mountPoint = "/home/"+username+"/.local/share/waydroid/data/media/0/Download"; device = "/home/"+username+"/Downloads"; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
+  waydroidDownloadsShareMain= { mountPoint = "/home/"+username+"/.local/share/waydroid/data/media/0/Download"; device = Downloads.device; depends = [ "/" "/home" "/Volume" ] ++ (map(x: "${x.mountPoint}")[Downloads waydroidData]); }; #could be simpler without the map function if one variable & may work perfectly without the depends option at all ! ,  but this is for educatory purposes to help in future modifications
 
    ## Plasma config files!!
 #    kateConfig={ mountPoint = "/home/"+username+"/kate"; device = userdir+"/.config/kate";  };
@@ -212,10 +212,33 @@ persistent={
   };
 
                   ##    3rd: home.file+mkOutOfStoreSymlink  ##
-
+# symlink = mylink: mytarget: settings.inputs.symlink.symlink {
+#       system = settings.system.arch;
+#       utils = settings.pkgs.coreutils;
+#       # ↑ This is optional if in impure mode. It is replaced with busybox from nixpkgs.
+#       shell = "${settings.pkgs.bash}/bin/sh";
+#       # ↑ This is optional if utils provides …/bin/sh, like if using busybox.
+#       link = mylink;
+#       target = mytarget;
+#       link-label = "link-label";
+      # ↑ This is optional if link doesn't depend on a derivation.
+#       target-label = "target-label";
+      # ↑ This is optional if target doesn't depend on a derivation.
+#     };
+mkOOSLinkSet2 = { prefix, linkSet }:
+    builtins.listToAttrs (map (y: { name = y; value ={ source = let
+      symlink = settings.inputs.symlink.symlink {
+      system = settings.system.arch;
+      utils = settings.pkgs.coreutils;
+      # ↑ This is optional if in impure mode. It is replaced with busybox from nixpkgs.
+      shell = "${settings.pkgs.bash}/bin/sh";
+      # ↑ This is optional if utils provides …/bin/sh, like if using busybox.
+      link = y;
+      target = (/. + (prefix + "/${y}"));};
+      in "${symlink}";  }; }) (with linkSet; (files++directories)));
         # Abstract function to generate symlinked home links (make out of store link set)
 mkOOSLinkSet = { prefix, linkSet }:
-    builtins.listToAttrs (map (y: { name = y; value ={ source = config.lib.file.mkOutOfStoreSymlink(/. + (prefix + "/${y}"));};}) (with linkSet; (files++directories)));
+    builtins.listToAttrs (map (y: { name = y; value ={ source =  config.lib.file.mkOutOfStoreSymlink(/. + (prefix + "/${y}"));};}) (with linkSet; (files++directories)));
 
 homeLinks={
   user= mkOOSLinkSet {prefix=userdir; linkSet = (links.user.${userdir}); };

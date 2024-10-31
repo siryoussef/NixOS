@@ -21,6 +21,7 @@
       ../../system/app/appsupport.nix
       ../../system/virtualisation/virtualisation.nix
       ../../system/app/syncthing.nix
+#       ../../system/app/samba.nix
       ../../system/security.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
@@ -119,7 +120,7 @@ environment = {
   sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
 #   persistence.${settings.system.persistentStorage} = let storage= import settings.paths.storage{inherit settings config;}; persistent = storage.persistent; in (persistent.system // {users.${settings.user.username}=persistent.user;});
   # List packages installed in system profile.
-  systemPackages = /*let list = import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;}; in*/ settings.pkglists.system;
+#   systemPackages = settings.pkglists.work.system;
   };
 fonts.fontDir.enable = true;
 xdg.portal = {
@@ -201,19 +202,6 @@ services = {
     alsa = { enable = true; support32Bit = true; };
     pulse.enable = true;
   };
-  samba-wsdd.enable = true;
-  samba = {
-    enable = true;
-    nmbd.enable = true;
-    winbindd.enable = true;
-    openFirewall= true;
-    nsswins = true;
-    settings =
-    { Shared = { path = "/Shared"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky shared volume"; };
-      Labvol = { path = "/Volume"; "read only" = false; browseable = "yes"; "guest ok" = "yes"; comment = "Wanky Main Volume"; };
-    };
-  };
-
   logrotate.checkConfig = false;
   #logrotate is disabled due to an error during build
 };

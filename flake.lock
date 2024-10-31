@@ -512,6 +512,26 @@
         "type": "github"
       }
     },
+    "envil": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1730281535,
+        "narHash": "sha256-F0JWOID8zDaKYofDRN35+rKlJH/HWWlhSOV37kJGe6c=",
+        "owner": "YPares",
+        "repo": "envil",
+        "rev": "2666ee5a98200d5027565234cc2e1a44d617221f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "YPares",
+        "repo": "envil",
+        "type": "github"
+      }
+    },
     "evil-escape": {
       "flake": false,
       "locked": {
@@ -837,6 +857,20 @@
         "owner": "edolstra",
         "repo": "flake-compat",
         "type": "github"
+      }
+    },
+    "flake-compat_21": {
+      "locked": {
+        "lastModified": 1696426674,
+        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
+        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
+        "revCount": 57,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/edolstra/flake-compat/1.0.1/018afb31-abd1-7bff-a5e4-cff7e18efb7a/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz"
       }
     },
     "flake-compat_3": {
@@ -2184,6 +2218,21 @@
       "original": {
         "owner": "siryoussef",
         "repo": "impermanence",
+        "type": "github"
+      }
+    },
+    "impurity": {
+      "locked": {
+        "lastModified": 1689836741,
+        "narHash": "sha256-82KeRg2sAqDXCdzVs8P8GoqVaPsZjkWgrfsj6kgOLTY=",
+        "owner": "outfoxxed",
+        "repo": "impurity.nix",
+        "rev": "bbc41b69ab5485cd55aa315d08cff865781d3913",
+        "type": "github"
+      },
+      "original": {
+        "owner": "outfoxxed",
+        "repo": "impurity.nix",
         "type": "github"
       }
     },
@@ -3617,6 +3666,7 @@
         "eaf": "eaf",
         "eaf-browser": "eaf-browser",
         "emacs-pin-nixpkgs": "emacs-pin-nixpkgs",
+        "envil": "envil",
         "fh": "fh",
         "flake-parts": "flake-parts",
         "fleek": "fleek",
@@ -3627,6 +3677,7 @@
         "hyprland-plugins": "hyprland-plugins",
         "hyprlock": "hyprlock",
         "impermanence": "impermanence",
+        "impurity": "impurity",
         "kdenlive-pin-nixpkgs": "kdenlive-pin-nixpkgs",
         "kwin-effects-forceblur": "kwin-effects-forceblur",
         "lix-module": "lix-module",
@@ -3675,6 +3726,7 @@
         "snowflakeos": "snowflakeos",
         "snowflakeos-module-manager": "snowflakeos-module-manager_2",
         "stylix": "stylix",
+        "symlink": "symlink",
         "system-manager": "system-manager",
         "systems": "systems_27",
         "thorium-browser": "thorium-browser",
@@ -4307,6 +4359,22 @@
       "original": {
         "owner": "danth",
         "repo": "stylix",
+        "type": "github"
+      }
+    },
+    "symlink": {
+      "locked": {
+        "lastModified": 1640518396,
+        "narHash": "sha256-7jN3hQOLLZng3u+1lsgR5BMzn2F31ER4p9ocEZi4O1I=",
+        "owner": "schuelermine",
+        "repo": "nix-symlink",
+        "rev": "c0efee35a02b779d75b4a103e1df5067249cb5a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "schuelermine",
+        "repo": "nix-symlink",
+        "rev": "c0efee35a02b779d75b4a103e1df5067249cb5a9",
         "type": "github"
       }
     },
@@ -4987,23 +5055,21 @@
     },
     "winapps": {
       "inputs": {
+        "flake-compat": "flake-compat_21",
         "flake-utils": "flake-utils_23",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1728231580,
-        "narHash": "sha256-+xLRX8JtcmMOn8KYeRhwrq9rw+Ch3AxYkLtO4AGfHQg=",
-        "owner": "siryoussef",
-        "repo": "winapps",
-        "rev": "2acdc44dac6cab977231f0a7944a8eaa7994ea27",
-        "type": "github"
+        "lastModified": 0,
+        "narHash": "sha256-Oa/vAZYpDMD8EeUv1ie36HJDLzILMcZcR3I8qxcG1FI=",
+        "path": "/Shared/@Repo/winapps",
+        "type": "path"
       },
       "original": {
-        "owner": "siryoussef",
-        "repo": "winapps",
-        "type": "github"
+        "path": "/Shared/@Repo/winapps",
+        "type": "path"
       }
     },
     "ws-butler": {

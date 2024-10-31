@@ -3,12 +3,16 @@
   let  OCIDirectory = "/Shared/@Containers/OCI/Root";
   in {
   imports = [
-#     ./winapps.nix
+    ./winapps.nix
     ./android.nix
+#     ./arch-linux.nix
     ( import ./OCIstorageDriver.nix {storageDriver = "overlay"; inherit pkgs settings lib;} )
   ];
   users.users.${settings.user.username}.extraGroups = [ "docker" "podman" ];
-  security.doas.extraRules=[{users=["${settings.user.username}"]; noPass=true; cmd="virsh";}];
+  security.doas.extraRules=[
+    {users=["${settings.user.username}"]; noPass=true; cmd="virsh";}
+    {users=["${settings.user.username}"]; noPass=true; cmd="${pkgs.libvirt}/bin/virsh";}
+    {users=["${settings.user.username}"]; noPass=true; cmd="${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup";}];
   environment={
     systemPackages = let pkglists=settings.pkglists; in pkglists.virtualisation.system;
     persistence= let storage = import settings.paths.storage{inherit settings config;}; in storage.persistent.libvirt.system;
@@ -16,6 +20,7 @@
   programs.virt-manager={ enable = true; package= pkgs.virt-manager;};
 
   fileSystems={
+    sharedDownloads= {device = "/home/"+settings.user.username+"/Downloads"; mountPoint="/Volume/@Pot/Software/DiskImgs/VirtDir/Downloads"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
     RootlessOCIConfig = {mountPoint = "/home/"+settings.user.username+"/.config/containers"; device = "/etc/nixos/user/containersConf"; options = ["bind" "rw" "user" "exec"]; fsType="auto";};
 
 #     libvirt= {mountPoint ="/var/lib/libvirt"; device = "/Shared/libvirt/var/lib/libvirt"; options=["bind"]; fsType="auto";};
@@ -69,6 +74,7 @@
       backend = "podman";
       containers = {
         "genpod"={
+          autoStart= false;
           image="docker.io/gentoo/stage3:latest";
 #           imageFile=""; workdir = "";
           user=settings.user.username+":users";

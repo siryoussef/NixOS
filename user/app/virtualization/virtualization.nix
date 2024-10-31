@@ -7,9 +7,8 @@ imports=[
   # Various packages related to virtualization, compatability and sandboxing
   home=let
     storage= import settings.paths.storage{inherit settings config;};
-    pkgslists= import settings.paths.pkglists{inherit pkgs pkgs-stable pkgs-kdenlive;};
   in{
-    packages= pkgslists.virtualisation.user;
+    packages= settings.pkglists.virtualisation.user;
     file=
 #       storage.homeLinks.libvirt//
       {".config/libvirt/qemu.conf".text = '' nvram = [ "/run/libvirt/nix-ovmf/AAVMF_CODE.fd:/run/libvirt/nix-ovmf/AAVMF_VARS.fd", "/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd" ] '';};

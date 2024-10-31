@@ -19,32 +19,25 @@
                   nurpkgs = import nixpkgs-patched { system = settings.system.arch; };
                 };
               in {
-                nixpkgs.overlays = with inputs;[nur.overlay ];
+                nixpkgs={overlays = with inputs;[nur.overlay ];};
                 imports = [ nur-no-pkgs.repos.iopq.modules.xraya  ];
                 services.xraya.enable = false;
-                environment.systemPackages = (map (pkg: (with pkg;(packages.${settings.system.arch}.default)))  (with inputs;[
-                fh
-                agenix
-                snowfall-flake
-                nixos-conf-editor
-#                 snow
-#                 nix-software-center
-#                 thorium-browser
-                zen-browser
-                NixVirt
-                ]))
-                ++(with inputs.winapps.packages.${settings.system.arch};[winapps winapps-launcher])
-                ++[
-                pkgs.nur.repos.ataraxiasjel.waydroid-script
-                inputs.thorium-browser.defaultPackage.${settings.system.arch}
-                ];
+                environment.systemPackages = settings.pkglists.system ++
+                [pkgs.nur.repos.ataraxiasjel.waydroid-script];
               home-manager= rec{
+                users.root={
+                  imports=[
+#                     ./user/app/virtualization/virtualization.nix
+                    ./manager/rootHome.nix
+                    ];
+                };
                 users.${settings.user.username} = import unifiedHome.path; #import ./users/default/home.nix;
                 extraSpecialArgs = unifiedHome.extraSpecialArgs;
-                sharedModules = (if useGlobalPkgs == false then unifiedHome.modules++unifiedHome.nixpkgs else unifiedHome.modules);
-                useGlobalPkgs = true;
+                sharedModules = (if useGlobalPkgs == true then unifiedHome.modules else unifiedHome.modules++unifiedHome.nixpkgs );
+                useGlobalPkgs = false;
                 useUserPackages = true;
                 backupFileExtension = "backup";
+                verbose=false;
               };
                 programs={ nh={flake= ./.; /*package=perSystem.packages.nh;*/};
                   fuse.userAllowOther = true;

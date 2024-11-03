@@ -26,6 +26,7 @@ links={
         "session"
         "obsidian"
         "GitHub Desktop"
+        "Code"
         ])++[
 #         "Downloads"
         "Music"

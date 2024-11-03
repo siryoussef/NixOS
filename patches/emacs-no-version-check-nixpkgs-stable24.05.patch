@@ -1,0 +1,24 @@
+diff --git a/pkgs/build-support/emacs/generic.nix b/pkgs/build-support/emacs/generic.nix
+
+--- a/pkgs/build-support/emacs/generic.nix
++++ b/pkgs/build-support/emacs/generic.nix
+     
+@@ -23,7 +23,7 @@
+ in
+ 
+ { pname
+-, version
++, version ? null
+ , buildInputs ? []
+ , packageRequires ? []
+ , meta ? {}
+@@ -31,7 +31,8 @@
+ }@args:
+ 
+ stdenv.mkDerivation (finalAttrs: ({
+-  name = "emacs-${pname}-${finalAttrs.version}";
++#   name = "emacs-${pname}-${finalAttrs.version}";
++name = args.name or "emacs-${finalAttrs.pname}${lib.optionalString (version != null) "-${version}"}";
+ 
+   unpackCmd = args.unpackCmd or ''
+     case "$curSrc" in

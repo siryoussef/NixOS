@@ -28,7 +28,6 @@
 #       ../../system/app/develop.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
-      ./nixpkgs-options.nix
 ];
 
   boot = {
@@ -255,27 +254,6 @@ systemd = {
 */
 
   # firejail
-nix = {
-  # Fix nix path
-  nixPath = [ "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-                  "nixos-config=$HOME/dotfiles/system/configuration.nix"
-                  "/nix/var/nix/profiles/per-user/root/channels"
-                ];
-  package = pkgs.nixFlakes;
-  extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
-  checkAllErrors = true;
-  checkConfig = true;
-  optimise = { automatic = true; dates = [ "weekly" ]; };
-  gc = { automatic = (if config.programs.nh.clean.enable==true then false else true);  dates = "weekly"; };
-  #extraOptions = '' experimental-features = nix-command flakes '';
-  channel.enable = true;
-  settings = { auto-optimise-store = true;
-               experimental-features = ["nix-command " "flakes" /*"configurable-impure-env"*/ "auto-allocate-uids"] ; };
-  #registry = { };
-  #registry = { "flakes"=[]  "version" 2; };
-};
 
 programs = {
   nh={enable=true; clean={enable=true; dates="weekly"; extraArgs="--keep 5 --keep-since 3d";};};

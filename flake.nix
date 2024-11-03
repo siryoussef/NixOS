@@ -12,37 +12,40 @@
     download-speed=0; # unlimited
     eval-cache=true;
     fallback = false; # fallback to build from source if a binary attripute fails
-    flake-registry = "https://channels.nixos.org/flake-registry.json";
+#     flake-registry = "https://channels.nixos.org/flake-registry.json";
     experimental-features=["nix-command" "flakes" "repl-flake"];
   };
 
   inputs ={
     systems={url = "path:./systems.nix"; flake = false;};
-#     settings.url = "git+file:///etc/nixos/settings";
     flake-parts.url = "github:hercules-ci/flake-parts";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
-#       home-manager.url = ("git+path:///etc/nixos/settings.nix").home-manager;
-
+    nixpkgs.follows = "nixpkgs-unstable";
+    home-manager.follows = "home-manager-unstable";
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
 #     nixpkgsRef={url = "path:///etc/nixos/nixpkgsRef";};
-    nixpkgs.follows = /*"nixpkgsRef"; */ "nixpkgs-unstable";
 #     nixpkgsRef={url = "path:./nixpkgsRef.nix"; flake = false;};
 
-    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
-    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";#"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
-    nixpkgs-r2311.url = "nixpkgs/nixos-23.11";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";#"https://flakehub.com/f/NixOS/nixpkgs/*.tar.gz";
+    nixpkgs-r2311.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-r2211.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixpkgs-python.url = "https://flakehub.com/f/cachix/nixpkgs-python/1.2.0.tar.gz";
-    kdenlive-pin-nixpkgs.url = "nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
-    nwg-dock-hyprland-pin-nixpkgs.url = "nixpkgs/2098d845d76f8a21ae4fe12ed7c7df49098d3f15";
-    emacs-pin-nixpkgs.url = "nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
-    chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    kdenlive-pin-nixpkgs.url = "github:NixOS/nixpkgs/cfec6d9203a461d9d698d8a60ef003cac6d0da94";
+    nwg-dock-hyprland-pin-nixpkgs.url = "github:NixOS/nixpkgs/2098d845d76f8a21ae4fe12ed7c7df49098d3f15";
+    emacs-pin-nixpkgs.url = "github:NixOS/nixpkgs/f8e2ebd66d097614d51a56a755450d4ae1632df1";
+    chaotic={url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+      inputs={
+        nixpkgs.follows="nixpkgs";
+        home-manager.follows="home-manager";
+      };
+    };
 
 
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     nh={url = "github:viperML/nh"; inputs.nixpkgs.follows="nixpkgs";};
@@ -53,25 +56,25 @@
 
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs-unstable"; };
+      inputs.nixpkgs.follows = "nixpkgs"; };
     snowfall-flake = {
       url = "https://flakehub.com/f/snowfallorg/flake/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs-unstable" ;};
+      inputs.nixpkgs.follows = "nixpkgs" ;};
     snowfall-thaw = {
       url = "https://flakehub.com/f/snowfallorg/thaw/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
         };
     snowfall-dotbox = {
       url = "https://flakehub.com/f/snowfallorg/dotbox/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
 		};
     snowflakeos.url = "github:siryoussef/snowflakeos-modules";
     snowflakeos-module-manager = {
       url = "github:snowfallorg/snowflakeos-module-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
       };
     nix-data={url = "github:snowfallorg/nix-data";
-      inputs.nixpkgs.follows = "nixpkgs-unstable" ;};
+      inputs.nixpkgs.follows = "nixpkgs" ;};
     nix-software-center.url = "github:vlinkz/nix-software-center";
     nixos-conf-editor.url = "github:vlinkz/nixos-conf-editor";
     snow.url = "github:snowflakelinux/snow";
@@ -85,8 +88,8 @@
     NixVirt = {
       url = "https://flakehub.com/f/AshleyYakeley/NixVirt/*.tar.gz";
       inputs={
-        nixpkgs.follows = "nixpkgs-unstable";
-#         home-manager.follows = "home-manager-unstable";
+        nixpkgs.follows = "nixpkgs";
+#         home-manager.follows = "home-manager";
         };
       };
     nix-gui={url = "github:nix-gui/nix-gui";};
@@ -95,8 +98,8 @@
     plasma-manager = {
       url = "github:nix-community/plasma-manager";#"github:mcdonc/plasma-manager/enable-look-and-feel-settings";
       inputs={
-        nixpkgs.follows = "nixpkgs-unstable";
-        home-manager.follows = "home-manager-unstable";
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
         };
       };
     hyprland = {
@@ -123,7 +126,7 @@
 
 
     kwin-effects-forceblur={ url = "github:taj-ny/kwin-effects-forceblur";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";};
+      inputs.nixpkgs.follows = "nixpkgs";};
 
     scientific-fhs.url = "github:olynch/scientific-fhs";
 
@@ -137,7 +140,7 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";};
 
     nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs";
-      inputs={nixpkgs.follows = "nixpkgs-unstable";
+      inputs={nixpkgs.follows = "nixpkgs";
         nix-straight.follows = "nix-straight"; }; };
 
     nix-straight={url = "github:librephoenix/nix-straight.el/pgtk-patch";
@@ -163,7 +166,7 @@
     blocklist-hosts = {url = "github:StevenBlack/hosts"; flake = false;};
 
 
-    zen-browser={url = "github:MarceColl/zen-browser-flake";
+    zen-browser={url = "github:ch4og/zen-browser-flake" /*"github:MarceColl/zen-browser-flake"*/;
       inputs.nixpkgs.follows = "nixpkgs";};
     thorium-browser={url = #"github:siryoussef/nix-thorium";
 #     "git+https://codeberg.org/Tomkoid/thorium-browser-nix";
@@ -174,11 +177,11 @@
     agenix={
       url = "github:ryantm/agenix";
       # optional, not necessary for the module
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
       };
     quickgui={
       url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
-      inputs.nixpkgs.follows="nixpkgs-unstable";
+      inputs.nixpkgs.follows="nixpkgs";
       };
     impermanence.url = /*"git+file:///Shared/@Repo/impermanence/";*/ "github:siryoussef/impermanence";
     symlink.url ="github:schuelermine/nix-symlink?rev=c0efee35a02b779d75b4a103e1df5067249cb5a9";
@@ -186,7 +189,7 @@
     system-manager = {
       url = "github:numtide/system-manager";
       inputs={
-        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs";
 #         nixpkgs-stable.follows = "nixpkgs-stable";
         };
     };
@@ -196,7 +199,7 @@
       inputs.nixpkgs.follows = "nixpkgs";};
     robotnix={url="github:siryoussef/robotnix";
       inputs={
-        nixpkgs.follows="nixpkgs";
+        nixpkgs.follows="nixpkgs-stable";
         nixpkgs-unstable.follows="nixpkgs-unstable";
       };
     };

@@ -1,7 +1,6 @@
-{pkgs, lib,...}:
+{pkgs', pkgs, lib,...}:
 {
-nixpkgs = {
-    config= {
+nixpkgs.config= {
       allowUnfree = true;
       allowBroken = false;
       allowUnsupportedSystem = false;
@@ -11,5 +10,4 @@ nixpkgs = {
       checkMeta = true;
       warnUndeclaredOptions = false;
       };
-    };
 }

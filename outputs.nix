@@ -1,6 +1,6 @@
 {inputs,self,...}:
 let
-      settings = import ./settings.nix {inherit inputs pkgs pkgs-stable pkgs-kdenlive;};
+      settings = import ./settings.nix {inherit inputs pkgs';};
 #       Storage = import settings.paths.storage{inherit settings config;};
       # create patched nixpkgs
 
@@ -20,39 +20,40 @@ let
         (import inputs.nixpkgs { system = settings.system.arch; rocmSupport = (if settings.system.gpu == "amd" then true else false); }).applyPatches {
           name = "nixpkgs-patched";
           src = inputs.nixpkgs;
-          patches = [ ./patches/emacs-no-version-check.patch ];
+          patches =if inputs.nixpkgs == inputs.nixpkgs-unstable then [  ./patches/emacs-no-version-check.patch ] else [./patches/emacs-no-version-check-nixpkgs-stable24.05.patch];
         };
 
       # configure pkgs
-      pkgs = import nixpkgs-patched {
-        system = settings.system.arch;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = (_: true);
-        };
-        overlays = with inputs;[
+      overlays = with inputs;[
           rust-overlay.overlays.default
           snowfall-flake.overlays.default
           ytdlp-gui.overlay
+          nur.overlay
           ];
+      config = let options = import ./nix-pkgs-options/common.nix {inherit pkgs' lib;}; in options.nixpkgs.config;
+      pkgs = import nixpkgs-patched {
+        system = settings.system.arch;
+        inherit overlays config;
       };
 
       pkgs-stable = import inputs.nixpkgs-stable {
         system = settings.system.arch;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = (_: true);
-        };
+        inherit overlays config;
+      };
+
+      pkgs-unstable = import inputs.nixpkgs-unstable {
+        system = settings.system.arch;
+        inherit overlays config;
       };
 
       pkgs-r2311 = import inputs.nixpkgs-r2311 {
         system = settings.system.arch;
-          config.allowUnfree = true;
+        inherit overlays config;
       };
 
       pkgs-r2211 = import inputs.nixpkgs-r2211 {
         system = settings.system.arch;
-          config.allowUnfree = true;
+        inherit overlays config;
       };
 
       pkgs-emacs = import inputs.emacs-pin-nixpkgs {
@@ -67,12 +68,24 @@ let
         system = settings.system.arch;
       };
 
+      pkgs'={
+        main=pkgs;
+        stable= pkgs-stable;
+        unstable=pkgs-unstable;
+        r2311=pkgs-r2311;
+        r2211=pkgs-r2211;
+        emacs=pkgs-emacs;
+        kdenlive=pkgs-kdenlive.kdenlive;
+        nwg-dock-hyprland=pkgs-nwg-dock-hyprland;
+      };
+
 
       # configure lib
       lib = nixpkgs.lib//inputs.NixVirt.lib;
 
       unifiedHome = {
         extraSpecialArgs = {
+          inherit pkgs';
           inherit pkgs-stable;
           inherit pkgs-emacs;
           inherit pkgs-kdenlive;
@@ -87,8 +100,8 @@ let
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
-        nixpkgs = [(./. + "/profiles" + ("/" + settings.system.profile)
-              + "/nixpkgs-options.nix")];
+        nixpkgs = [(./nix-pkgs-options/home.nix)];
+#         [(./. + "/profiles" + ("/" + settings.system.profile)+ "/nixpkgs-options.nix")];
 
         path = (./. + "/profiles" + ("/" + settings.system.profile)
               + "/home.nix"); # load home.nix from selected PROFILE
@@ -138,7 +151,7 @@ let
             flaky-os = inputs.wfvm.lib.makeWindowsImage { installCommands= with inputs.wfvm.lib.layers;[anaconda3 msys2]; };
             virtdeclare = inputs.NixVirt.packages.${system}.default;
             nh = inputs.nh.packages.${system}.default;
-          };
+        };
         apps =  {
           default = self.apps.${system}.install;
           install = {
@@ -155,7 +168,8 @@ let
           ({config,...}:import ./manager{inherit settings lib pkgs config ;})
         ];
         };
-        devShells.${settings.system.arch}.default=import ./NixDevEnvs/shell.nix{inherit pkgs-stable pkgs;};
+        devShells.${settings.system.arch}.default=settings.pkglists.shells.NixDevEnv;
+#         import ./NixDevEnvs/shell.nix{inherit pkgs-stable pkgs ;};
         homeConfigurations = {
         root = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -168,7 +182,7 @@ let
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         }; };
 
-        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings unifiedHome home-manager nixpkgs-patched lib inputs pkgs-stable;};
+        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings unifiedHome home-manager nixpkgs-patched lib inputs pkgs' pkgs-stable;};
 
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although

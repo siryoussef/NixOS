@@ -1,7 +1,7 @@
-{pkgs, pkgs-stable, pkgs-kdenlive, inputs,...}:
+{pkgs', inputs,...}:
 rec{
-inherit inputs pkgs pkgs-stable pkgs-kdenlive;
-settings = {inherit inputs pkgs pkgs-stable pkgs-kdenlive system user paths;};
+inherit inputs pkgs';
+settings = {inherit inputs pkgs' system user paths;};
   # ---- SYSTEM SETTINGS ---- #
 system = rec{
         arch = "x86_64-linux"; # system arch
@@ -29,7 +29,7 @@ user = rec {
         defaultRoamDir = "Personal.p"; # Default org roam directory relative to ~/Org
         term = "konsole"; # Default terminal command;
         font = "Intel One Mono"; # Selected font
-        fontPkg = pkgs.intel-one-mono; # Font package
+        fontPkg = pkgs'.main.intel-one-mono; # Font package
         editor =  "kate";  #"emacsclient"; # Default editor;
         # editor spawning translator
         # generates a command that can be used to spawn editor inside a gui

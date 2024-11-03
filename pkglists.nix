@@ -3,12 +3,10 @@
 {settings,...}:
 let
 inputs=settings.inputs;
-pkgs=settings.pkgs;
-pkgs-stable=settings.pkgs-stable;
-pkgs-kdenlive=settings.pkgs-kdenlive;
+pkgs'=settings.pkgs'; pkgs=pkgs'.main; pkgs-stable=pkgs'.stable;
 in
 rec{
-  home=(with pkgs; [
+  home=(with pkgs'.unstable; [
     # Nix tools
     fh
     haskellPackages.nix-tree
@@ -46,7 +44,6 @@ rec{
     obsidian
     logseq
     jujutsu
-    dvc-with-remotes
 
     # Office
     lyx
@@ -176,8 +173,11 @@ rec{
     texinfo
     libffi zlib
     nodePackages.ungit
-  ] ++ [ pkgs-kdenlive.kdenlive ]
-#   ++ (with pkgs-stable;[ floorp ])
+  ] ++ [ pkgs'.kdenlive ]
+  ++ (with pkgs'.stable;[
+#     floorp
+    dvc-with-remotes
+  ])
   ++[inputs.system-manager.packages.${settings.system.arch}.system-manager]
   );
 root= [
@@ -251,7 +251,7 @@ system = with pkgs; [
     # grub2_xen
 
     ]
-    ++ (with pkgs-stable; [
+    ++ (with pkgs'.stable; [
 #     floorp
     efibootmgr
     efitools
@@ -395,7 +395,7 @@ virtualisation={
       dive
       ]
       ++
-      (with pkgs-stable;[
+      (with pkgs'.stable;[
       quickemu
       quickgui
       ]);
@@ -471,7 +471,7 @@ jupyter={
   };
 };
 shells={
-  NixDevEnv= with pkgs-stable;mkShell{
+  NixDevEnv= with pkgs-stable; mkShell{
     name = "pip-env"; buildInputs =(with pkgs-stable.python3.pkgs; [
       jupyterlab-git
       jupyterlab-lsp

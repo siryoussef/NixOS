@@ -1,7 +1,9 @@
-{ config, pkgs, pkgs-stable, pkgs-r2211, pkgs-emacs, pkgs-kdenlive, settings, inputs, lib, ... }:
+{ config, pkgs', pkgs, settings, inputs, lib, ... }:
+
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
+    
   home = let storage= import settings.paths.storage{inherit settings config;}; in {
     username = settings.user.username;
     homeDirectory = "/home/"+settings.user.username;
@@ -12,6 +14,7 @@
       SPAWNEDITOR = settings.user.spawnEditor;
       TERM = settings.user.term;
       BROWSER = settings.user.browser;
+      MANPATH = "${pkgs'.main.man}/bin/man";
       };
 #     persistence =storage.persistent.user;
     packages = settings.pkglists.home;
@@ -30,7 +33,7 @@
 
 
   };};};};
-  imports = [
+  imports = [ 
 #               (if ((settings.user.editor == "emacs") || (settings.user.editor == "emacsclient")) then inputs.nix-doom-emacs.hmModule else null)
 #               inputs.stylix.homeManagerModules.stylix
              (./. + "../../../user/wm"+("/"+settings.user.wm+"/"+settings.user.wm)+".nix") # My window manager selected from flake
@@ -51,6 +54,8 @@
 #               ../../user/style/stylix.nix # Styling and themes for my apps
               ../../user/lang/cc/cc.nix # C and C++ tools
 #               ../../user/lang/godot/godot.nix # Game development
+              ../../user/app/android-sdk/android-sdk.nix
+              ../../user/app/vscode/vscode.nix
               #../../user/pkgs/blockbench.nix # Blockbench ## marked as insecure
               ../../user/hardware/bluetooth.nix # Bluetooth
 

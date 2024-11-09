@@ -1,4 +1,4 @@
-{settings, unifiedHome, home-manager, nixpkgs-patched, lib, inputs, pkgs-stable, pkgs',...}:{
+{settings, unifiedHome, home-manager, nixpkgs-patched, lib, inputs, pkgs, pkgs',...}:{
         ${settings.system.hostname} = lib.nixosSystem {
 #           system = settings.system.arch;
           modules = (map (pkg: inputs.${pkg}.nixosModules.${pkg} ) [
@@ -62,10 +62,8 @@
           ]; # load configuration.nix from selected PROFILE
           specialArgs = {
             # pass config variables from above
-            inherit pkgs';
-            inherit pkgs-stable;
-            inherit settings;
-            inherit inputs;
+            inherit pkgs' settings inputs;
+            inherit pkgs lib;
           };
         };
         }

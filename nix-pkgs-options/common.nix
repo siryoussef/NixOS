@@ -1,4 +1,4 @@
-{pkgs', lib,...}:
+{pkgs', lib, inputs,...}:
 {
 imports=[
 #   ./config.nix
@@ -14,15 +14,20 @@ nixpkgs = {
       enableParallelBuildingByDefault = false;
       checkMeta = true;
       warnUndeclaredOptions = false;
+
+      android_sdk.accept_license = true;
       };
     };
 nix={
 # 	package = pkgs.nixVersions.latest;
   # Fix nix path
 	nixPath = [
-		"nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-		"nixos-config=$HOME/dotfiles/system/configuration.nix"
-		"/nix/var/nix/profiles/per-user/root/channels"
+      "nixpkgs=${inputs.nixpkgs}"
+      "nixpkgs-stable=${inputs.nixpkgs-stable}"
+      "nixpkgs-unstable=${inputs.nixpkgs-unstable}"
+# 		"nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+# 		"nixos-config=$HOME/dotfiles/system/configuration.nix"
+# 		"/nix/var/nix/profiles/per-user/root/channels"
 #   "$HOME/.nix-defexpr/channels"
 #   "darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
 	];

@@ -1,15 +1,15 @@
-{ pkgs,pkgs-stable, ... }:
+{ pkgs',... }:
 
 {
   # Module installing  as default browser
-  home.packages = [ pkgs.zen ];
+  home.packages = [ pkgs'.main.zen ];
 
   home.sessionVariables = {
     DEFAULT_BROWSER = "${pkgs.zen}/bin/zen";
   };
   programs.firefox = {
     enable = true;
-    package = pkgs-stable.zen;
+    package = pkgs'.stable.zen;
     nativeMessagingHosts = /*{
     packages =*/ with pkgs; [ uget-integrator browserpass];
   # uget-integrator = true;

@@ -1,8 +1,8 @@
-{ pkgs-stable, ... }:
+{ pkgs', ... }:
 
 {
   # Fonts are nice to have
-  fonts.packages = with pkgs-stable; [
+  fonts.packages = with pkgs'.stable; [
     # Fonts
     (nerdfonts.override { fonts = [ "Inconsolata" ]; })
     powerline

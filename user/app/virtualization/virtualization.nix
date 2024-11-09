@@ -1,4 +1,4 @@
-{ pkgs, pkgs-stable, pkgs-kdenlive, settings,inputs, config, ... }:
+{ pkgs', settings,inputs, config, ... }:
 
 {
 imports=[

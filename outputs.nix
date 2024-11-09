@@ -27,10 +27,11 @@ let
       overlays = with inputs;[
           rust-overlay.overlays.default
           snowfall-flake.overlays.default
+          android-nixpkgs.overlays.default
           ytdlp-gui.overlay
           nur.overlay
           ];
-      config = let options = import ./nix-pkgs-options/common.nix {inherit pkgs' lib;}; in options.nixpkgs.config;
+      config = let options = import ./nix-pkgs-options/common.nix {inherit pkgs' lib inputs;}; in options.nixpkgs.config;
       pkgs = import nixpkgs-patched {
         system = settings.system.arch;
         inherit overlays config;
@@ -82,21 +83,29 @@ let
 
       # configure lib
       lib = nixpkgs.lib//inputs.NixVirt.lib;
-
-      unifiedHome = {
-        extraSpecialArgs = {
-          inherit pkgs';
-          inherit pkgs-stable;
-          inherit pkgs-emacs;
-          inherit pkgs-kdenlive;
-          inherit pkgs-nwg-dock-hyprland;
-          inherit settings;
-          inherit inputs;
+      android-sdk= {lib, pkgs',...}: let pkgs=pkgs'.main; in rec{
+              # inherit lib;
+              android-sdk= { enable = true;
+                # path = "${config.home.homeDirectory}/.android/sdk"; # Optional; default path is "~/.local/share/android".
+                packages = settings.pkglists.android-sdk-34;
+              };
           };
+      specialArgs ={
+          inherit pkgs' settings inputs;
+          inherit pkgs;
+          };
+      unifiedHome = {
+        extraSpecialArgs = specialArgs;
         modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" ])
-         ++ (with inputs;[impermanence.nixosModules.home-manager.impermanence
-         NixVirt.homeModules.default chaotic.homeManagerModules.default])
+         ++ (with inputs;[
+            impermanence.nixosModules.home-manager.impermanence
+            NixVirt.homeModules.default 
+            chaotic.homeManagerModules.default
+            android-nixpkgs.hmModule
+            ])
+            
          ++ [
+          # android-sdk
 #               inputs.plasma-manager.homeManagerModules.plasma-manager
 #               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
           ];
@@ -108,8 +117,8 @@ let
 
         };/*./patches/emacs-no-version-check.patch*/
       # Systems that can run tests:
-      supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
-
+      # supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      supportedSystems = import inputs.systems;
       # Function to generate a set based on supported systems:
       forAllSystems = lib.genAttrs supportedSystems;
 
@@ -151,6 +160,7 @@ let
             flaky-os = inputs.wfvm.lib.makeWindowsImage { installCommands= with inputs.wfvm.lib.layers;[anaconda3 msys2]; };
             virtdeclare = inputs.NixVirt.packages.${system}.default;
             nh = inputs.nh.packages.${system}.default;
+            android-sdk = inputs.android-nixpkgs.sdk.${system} (settings.pkglists.android-sdk-34);
         };
         apps =  {
           default = self.apps.${system}.install;
@@ -182,7 +192,7 @@ let
           extraSpecialArgs = unifiedHome.extraSpecialArgs;
         }; };
 
-        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings unifiedHome home-manager nixpkgs-patched lib inputs pkgs' pkgs-stable;};
+        nixosConfigurations = import ./nixosConfigurations.nix{inherit settings unifiedHome home-manager nixpkgs-patched lib inputs pkgs' pkgs;};
 
         # The usual flake attributes can be defined here, including system-
         # agnostic ones like nixosModule and system-enumerating ones, although

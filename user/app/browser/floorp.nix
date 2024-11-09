@@ -1,17 +1,17 @@
-{ pkgs,pkgs-stable, ... }:
+{ pkgs', ... }:
 
 {
   # Module installing  as default browser
-  home.packages = [ pkgs.floorp ];
+  home.packages = [ pkgs'.unstable.floorp ];
 
   home.sessionVariables = {
-    DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";
+    DEFAULT_BROWSER = "${pkgs'.unstable.floorp}/bin/floorp";
   };
   programs.firefox = {
     enable = true;
-    package = pkgs-stable.floorp;
+    package = pkgs'.stable.floorp;
     nativeMessagingHosts = /*{
-    packages =*/ with pkgs; [ uget-integrator browserpass];
+    packages =*/ with pkgs'.main; [ uget-integrator browserpass];
   # uget-integrator = true;
   # browserpass = true; ##deprecated
 #     };

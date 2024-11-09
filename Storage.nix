@@ -18,6 +18,7 @@ links={
         "onlyoffice"
         "kdevelop"
         "KotatogramDesktop"
+        "KDE/neochat"
         "kate"
 #         "fish"
         "whatsapp-for-linux"
@@ -26,7 +27,6 @@ links={
         "session"
         "obsidian"
         "GitHub Desktop"
-        "Code"
         ])++[
 #         "Downloads"
         "Music"
@@ -35,7 +35,6 @@ links={
         "Videos"
         "VirtualBox VMs"
         "Desktop"
-        ".vscode"
         ".gnupg"
         ".ssh"
         ".nixops"
@@ -45,6 +44,7 @@ links={
         "kdeconnect"
         ".cache/zen"
         ".zen"
+        ".cache/KDE/neochat"
 #         ".floorp"
 #         { directory = ".gnupg"; mode = "0700"; }
 #         { directory = ".ssh"; mode = "0700"; }
@@ -62,18 +62,22 @@ links={
         ".gtkrc-2.0"
         ".bash_history"
         ".gitconfig"
+        ".config/neochatrc"
+        ".config/KDE/neochat.conf"
       ];
       allowOther=true;
     };
+  libvirt={
+      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
+      user.${userdir}= {directories=[".config/libvirt"]; files=[];};
+  };
+  vscode.user.${userdir} ={ directories =[ ".config/Code" ".vscode" ]; files=[]; };
+
   waydroid=rec{
       system."${userdir}/waydroid"={directories=["/var/lib/waydroid"]; users.${username}={directories=user.${HSPS.waydroid}.directories;};};
       user.${HSPS.waydroid}={directories=[".local/share/waydroid"]; files=[];};
   };
-  libvirt={
-      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
-      user.${userdir}= {directories=[".config/libvirt"]; files=[];};
 
-  };
   plasma={
       system={
         directories=[];
@@ -241,9 +245,11 @@ mkOOSLinkSet2 = { prefix, linkSet }:
 mkOOSLinkSet = { prefix, linkSet }:
     builtins.listToAttrs (map (y: { name = y; value ={ source =  config.lib.file.mkOutOfStoreSymlink(/. + (prefix + "/${y}"));};}) (with linkSet; (files++directories)));
 
-homeLinks={
+homeLinks= {
   user= mkOOSLinkSet {prefix=userdir; linkSet = (links.user.${userdir}); };
   libvirt=mkOOSLinkSet {prefix=(userdir); linkSet=(links.libvirt.user.${userdir}); };
+  vscode=mkOOSLinkSet {prefix=(userdir); linkSet=(links.vscode.user.${userdir}); };
+
   plasma=mkOOSLinkSet {prefix=(HSPS.plasma); linkSet=(links.plasma.user.${HSPS.plasma}); };
   waydroid=mkOOSLinkSet {prefix=(HSPS.waydroid); linkSet=(links.waydroid.user.${HSPS.waydroid}); };
   };# A set to implement symlinking in home-manager in different manner than persistence module (to be further compared with persistence!)

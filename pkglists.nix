@@ -6,6 +6,7 @@ inputs=settings.inputs;
 pkgs'=settings.pkgs'; pkgs=pkgs'.main; pkgs-stable=pkgs'.stable;
 in
 rec{
+
   home=(with pkgs'.unstable; [
     # Nix tools
     fh
@@ -16,11 +17,15 @@ rec{
     nix-top
     nil
     dconf2nix
+#     nixfmt-rfc-style
+    alejandra
+ 
     # app tools
     appstream
     appstream-glib
     # Core
     unrar
+    bindfs
 #     alacritty
 #     qutebrowser
     microsoft-edge
@@ -30,17 +35,25 @@ rec{
     rofi
     zoom-us
     kotatogram-desktop
-#     kdePackages.neochat FIXME "olm-3.2.16" ~ insecure!
+    kdePackages.neochat #FIXME "olm-3.2.16" ~ insecure!
     whatsapp-for-linux
     beeper
 
     # Code/text
-    vscode-fhs
-    #vscodium-fhs
     vim
     wget
     nodePackages.bash-language-server
     github-desktop
+    # (pkgs.writeScriptBin "github-desktop-wrapped" ''
+    #   #!/bin/sh
+    #   export PATH=${pkgs.vscode}/bin:$PATH
+    #   exec ${pkgs.github-desktop}/bin/github-desktop "$@"
+    # '')
+    # (pkgs.writeShellApplication {
+    #   name = "github-desktop-wrapped";
+    #   executable = "${pkgs.github-desktop}/bin/github-desktop";
+    #   runtimeInputs = [ vscode ];
+    # })
     obsidian
     logseq
     jujutsu
@@ -179,6 +192,7 @@ rec{
     dvc-with-remotes
   ])
   ++[inputs.system-manager.packages.${settings.system.arch}.system-manager]
+
   );
 root= [
 
@@ -426,27 +440,94 @@ virtualisation={
       lxqt.qtermwidget
     ];
 };
-systemDevEnv=((with pkgs;[
-    jupyter-all
-    mysqltuner
-    mysql-workbench
-    pkgs.rPackages.Anaconda
-    # grafana
-         # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
+vscode = (with pkgs'.main;[
+  vscode-fhs 
+  vscode-extensions.kamadorueda.alejandra
+  # vscode-extensions.brettm12345.nixfmt-vscode
+  #vscodium-fhs
+  ]);
+
+games=(with pkgs'.main; [
+    # Games
+    pegasus-frontend
+    libfaketime
+    airshipper
+    qjoypad
+    superTux
+    superTuxKart
+    gamepad-tool
+  ]) ++ (with pkgs'.stable; [
+    pokefinder
+  ]);
+android-sdk-34 = (sdkPkgs: with sdkPkgs;[
+                  build-tools-34-0-0
+                  cmdline-tools-latest
+                  emulator
+                  platforms-android-34
+                  sources-android-34
+                ]);
+mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
+      jupyterlab-git
+      jupyterlab-lsp
+      jupyterlab-widgets
+      jupyter-collaboration
+#       # Python requirements (enough to get a virtualenv going).
+      psutil
+#       tensorflow
+#       keras
+      pyarrow
+      pandas
+      numpy
+      matplotlib
+#       seaborn
+      scikit-learn
+#
+      ipykernel
+#       jupyter # Errors as a built input
+      pytest
+      setuptools
+      wheel
+      venvShellHook
+      ipython-sql
+      
+      pymysql
+      imbalanced-learn
+      statsmodels
+      clickclick
+      click
+      openpyxl
+      nltk
+      spyder
+      spyder-kernels
+      pyls-spyder
+      qdarkstyle
+    ]))
+    (pkgs'.stable.python3.withPackages (p: with p;  [
+      sqlalchemy_1_4
+    ]))
+    ]
+    ++ (with pkgs'.main; [
+#       azure-cli
+      kubectl
+      libffi
+      openssl
+      gcc
+      unzip
+      grafana
+      metabase
+      # jupyter-all
+      mysqltuner
+      mysql-workbench
+      # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
     ]) ++
-    (with pkgs-stable;[
+    (with pkgs'.stable;[
       devenv
-      ]) ++
-    (with pkgs;(with python311Packages;[
-    ipykernel
-    pandas
-    numpy
-    matplotlib
-    spyder
-    spyder-kernels
-    pyls-spyder
-#     qdarkstyle
-    ])));
+      ])
+    # ++(with pkgs'.main.python311Packages;[
+    
+    #  ])
+     ;
+systemDevEnv=mainDevEnv;
 jupyter={
   lab= pkgs.python3.withPackages (p: with p; [
         jupyterhub
@@ -470,48 +551,10 @@ jupyter={
           ]));
   };
 };
+
 shells={
   NixDevEnv= with pkgs-stable; mkShell{
-    name = "pip-env"; buildInputs =(with pkgs-stable.python3.pkgs; [
-      jupyterlab-git
-      jupyterlab-lsp
-      jupyterlab-widgets
-      jupyter-collaboration
-#       # Python requirements (enough to get a virtualenv going).
-      psutil
-#       tensorflow
-#       keras
-      pyarrow
-      pandas
-      matplotlib
-#       seaborn
-      scikit-learn
-#
-      ipykernel
-#       jupyter # Errors as a built input
-      pytest
-      setuptools
-      wheel
-      venvShellHook
-      ipython-sql
-      sqlalchemy_1_4
-      pymysql
-      imbalanced-learn
-      statsmodels
-      clickclick
-      click
-      openpyxl
-      nltk
-    ])
-    ++ (with pkgs;[
-#       azure-cli
-      kubectl
-      libffi
-      openssl
-      gcc
-      unzip
-    ])
-    ;
+    name = "pip-env"; buildInputs = mainDevEnv;
     venvDir = "venv3";
     src = null;
     postVenv = ''

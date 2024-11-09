@@ -1,4 +1,4 @@
- { pkgs, pkgs-stable, settings, ... }:
+ { pkgs', settings, ... }:
 {
 environment.systemPackages= settings.pkglists.systemDevEnv;
 services = {
@@ -22,18 +22,16 @@ services = {
     language = "python";
 #     logo32 = "${env.sitePackages}/ipykernel/resources/logo-32x32.png";
 #     logo64 = "${env.sitePackages}/ipykernel/resources/logo-64x64.png";
-    extraPaths = {
-      "cool.txt" = pkgs.writeText "cool" "cool content";
-    };
+#     extraPaths = {"cool.txt" = pkgs'.main.writeText "cool" "cool content"; };
   };
 };
 
-  jupyter.package = pkgs-stable.python311Packages.notebook;
+  jupyter.package = pkgs'.stable.python311Packages.notebook;
 
 
     mysql = {
         enable = true ;
-        package = /*pkgs.mysql80;*/  pkgs.mariadb;
+        package = /*pkgs'.main.mysql80;*/  pkgs'.main.mariadb;
 #         bindAddress = "0.0.0.0";
         initialScript = ./mysqlscript.txt;
        /*

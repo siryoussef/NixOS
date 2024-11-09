@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-emacs, pkgs-stable, inputs, settings, ... }:
+{ config, lib, pkgs', inputs, settings, ... }:
 let
   themePolarity = lib.removeSuffix "\n" (builtins.readFile (./. + "../../../../themes"+("/"+settings.user.theme)+"/polarity.txt"));
   dashboardLogo = ./. + "/nix-" + themePolarity + ".webp";
@@ -13,7 +13,7 @@ in
 
   programs.doom-emacs = {
     enable = true;
-    emacsPackage = pkgs-emacs.emacs29-pgtk;
+    emacsPackage = pkgs'.emacs.emacs29-pgtk;
     doomPrivateDir = ./.;
     # This block from https://github.com/znewman01/dotfiles/blob/be9f3a24c517a4ff345f213bf1cf7633713c9278/emacs/default.nix#L12-L34
     # Only init/packages so we only rebuild when those change.
@@ -24,7 +24,7 @@ in
         filter = path: type:
           builtins.elem (baseNameOf path) [ "init.el" "packages.el" ];
       };
-      in pkgs-emacs.linkFarm "doom-packages-dir" [
+      in pkgs'.emacs.linkFarm "doom-packages-dir" [
         {
           name = "init.el";
           path = "${filteredPath}/init.el";
@@ -35,7 +35,7 @@ in
         }
         {
           name = "config.el";
-          path = pkgs-emacs.emptyFile;
+          path = pkgs'.emacs.emptyFile;
         }
       ];
   # End block
@@ -46,7 +46,7 @@ in
       extension = ".el";
   };
 
-  home.packages = (with pkgs-emacs; [
+  home.packages = (with pkgs'.emacs; [
     emacs-lsp-booster
     file
     wmctrl
@@ -67,17 +67,17 @@ in
       pymupdf
       markdown
     ]))
-  ]) ++ (with pkgs-stable; [
+  ]) ++ (with pkgs'.stable; [
     nodejs
     nodePackages.mermaid-cli
-  ]) ++ (with pkgs; [
+  ]) ++ (with pkgs'.main; [
     openssl
     stunnel
   ]);
 
   services.mbsync = {
     enable = true;
-    package = pkgs-stable.isync;
+    package = pkgs'.stable.isync;
     frequency = "*:0/5";
   };
 

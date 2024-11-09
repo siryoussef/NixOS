@@ -19,7 +19,7 @@ system = rec{
 user = rec {
         username = "youssef"; # username
         name = "Youssef"; # name/identifier
-        email = "youssef@disroot.org"; # email (used for certain configurations)
+        email = "siryoussef@hotmail.com"; # email (used for certain configurations)
         dotfilesDir = "~/.dotfiles"; # absolute path of the local repo
         theme = "uwunicorn-yt"; # selcted theme from my themes directory (./themes/)
         wm = "plasma"; # Selected window manager or desktop environment; must select one in both ./user/wm/ and ./system/wm/
@@ -30,7 +30,7 @@ user = rec {
         term = "konsole"; # Default terminal command;
         font = "Intel One Mono"; # Selected font
         fontPkg = pkgs'.main.intel-one-mono; # Font package
-        editor =  "kate";  #"emacsclient"; # Default editor;
+        editor =  "code";  #"emacsclient"; # Default editor;
         # editor spawning translator
         # generates a command that can be used to spawn editor inside a gui
         # EDITOR and TERM session variables must be set in home.nix or other module
@@ -46,11 +46,13 @@ user = rec {
                            editor);
         persistentStorage = "/Shared/@Persistent/home/"+"${username}";
       };
+secrets= import paths.secrets;
 paths={
       pkglists = builtins.path{path=./pkglists.nix;};
       storage = builtins.path{path=./Storage.nix;};
       flake=/etc/nixos;
       dotfiles= /. + "/Shared/@Repo/dotfiles";
+      secrets = builtins.path{path=./secrets/secrets0.nix;};
       };
 pkglists=import paths.pkglists{inherit settings;};
 storage= let config=config; in /*import ./settings.nix;*/ import paths.storage{inherit settings config;}; #FIXME GiveUp improving it or putting it in settings or Replace mkOutOfStoreSymlink (~ reimplement it or wait for impermanence fix to work outside nixos) or find a method import config from outside (worst trial!).

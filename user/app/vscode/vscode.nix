@@ -1,0 +1,38 @@
+{settings, config,...}:
+{
+home.packages=settings.pkglists.vscode;
+home.file=let storage= import settings.paths.storage{inherit settings config;}; in storage.homeLinks.vscode // {".config/Code/User/settings.json"={ #FIXME
+  enable = false; text = ''
+{
+    "easycode.model": "gpt-3.5-turbo",
+    "easycode.codeLens": true,
+    "easycode.useActiveViewContext": true,
+    "easycode.userEmail": "${settings.user.email}",
+    "easycode.openAI ApiKey": "${settings.secrets.openAIKey}",
+    "easycode.useOwnApiKey": true,
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "[nix]": {}
+
+  "nix.serverPath": "nixd",
+  "nix.enableLanguageServer": true,
+  "nix.serverSettings": {
+    "nixd": {
+      "formatting": {
+        "command": [ "alejandra" ], // or nixfmt or nixpkgs-fmt
+      },
+      // "options": {
+      //    "nixos": {
+      //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").nixosConfigurations.CONFIGNAME.options"
+      //    },
+      //    "home_manager": {
+      //      "expr": "(builtins.getFlake \"/PATH/TO/FLAKE\").homeConfigurations.CONFIGNAME.options"
+      //    },
+      // },
+    }
+  }
+}
+
+''; };
+};
+}

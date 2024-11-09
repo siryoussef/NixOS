@@ -2,12 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-stable, lib, settings, ... }:
-# let
-# pkglists = import ../../pkglists.nix;
-# syspkgs = pkglists.system;
-# in
-{
+{ config, pkgs', settings, ... }:
+let pkgs=pkgs'.main;
+in{
   imports =
     [
       ../../system/hardware-configuration.nix
@@ -25,7 +22,7 @@
       ../../system/security.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
-#       ../../system/app/develop.nix
+      ../../system/app/develop.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
 ];

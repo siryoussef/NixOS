@@ -1,8 +1,8 @@
-{ pkgs, pkgs-stable, ... }:
+{ pkgs', settings, ... }:
 let
   myRetroarch =
-    (pkgs.retroarch.override {
-      cores = with pkgs.libretro; [
+    (pkgs'.main.retroarch.override {
+      cores = with pkgs'.main.libretro; [
         vba-m
         (desmume.overrideAttrs (oldAttrs: {
           preConfigure = ''
@@ -22,19 +22,8 @@ let
     });
 in
 {
-  home.packages = (with pkgs; [
-    # Games
-    pegasus-frontend
-    myRetroarch
-    libfaketime
-    airshipper
-    qjoypad
-    superTux
-    superTuxKart
-    gamepad-tool
-  ]) ++ (with pkgs-stable; [
-    pokefinder
-  ]);
+  home.packages = settings.pkglists.games
+  ++[pkgs'.main.myRetroarch];
 
   nixpkgs.config = {
     allowUnfree = true;

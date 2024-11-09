@@ -17,10 +17,22 @@
   };
 
   inputs ={
-    systems={url = "path:./systems.nix"; flake = false;};
+    systems.follows = "systemsFile"; 
+    systemsFile={url = "path:./systems.nix"; flake = false;};
+    x86_64.url="github:nix-systems/x86_64-linux";
+
+    flake-utils={url = "github:numtide/flake-utils"; inputs.systems.follows="systems";};
     flake-parts.url = "github:hercules-ci/flake-parts";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs={
+        nixpkgs.follows = "nixpkgs";
+        # flake-utils.follows = "flake-utils";
+      };
+    };
+
     nixpkgs.follows = "nixpkgs-unstable";
     home-manager.follows = "home-manager-unstable";
 #     nixpkgs={url = "path:///etc/nixos/testing/nixpkgsRef/default.nix"; flake=false;};
@@ -173,7 +185,7 @@
 #       "git+file:///Shared/@Repo/thorium-browser-nix/";
       "github:siryoussef/thorium-browser-nix";
       inputs.nixpkgs.follows="nixpkgs";
-      };
+    };
     agenix={
       url = "github:ryantm/agenix";
       # optional, not necessary for the module
@@ -182,7 +194,7 @@
     quickgui={
       url = "https://flakehub.com/f/quickemu-project/quickgui/1.2.10.tar.gz";
       inputs.nixpkgs.follows="nixpkgs";
-      };
+    };
     impermanence.url = /*"git+file:///Shared/@Repo/impermanence/";*/ "github:siryoussef/impermanence";
     symlink.url ="github:schuelermine/nix-symlink?rev=c0efee35a02b779d75b4a103e1df5067249cb5a9";
     impurity.url = "github:outfoxxed/impurity.nix";
@@ -191,7 +203,7 @@
       inputs={
         nixpkgs.follows = "nixpkgs";
 #         nixpkgs-stable.follows = "nixpkgs-stable";
-        };
+      };
     };
     wfvm={url = "git+https://git.m-labs.hk/M-Labs/wfvm";
       inputs.nixpkgs.follows = "nixpkgs";};
@@ -199,10 +211,34 @@
       inputs.nixpkgs.follows = "nixpkgs";};
     robotnix={url="github:siryoussef/robotnix";
       inputs={
-        nixpkgs.follows="nixpkgs-stable";
+        nixpkgs.follows="nixpkgs-r2311";
         nixpkgs-unstable.follows="nixpkgs-unstable";
+        androidPkgs.follows="android-nixpkgs";
+        # flake-compat.follows="";
       };
     };
     envil={url="github:YPares/envil"; inputs.nixpkgs.follows="nixpkgs";};
+    # siryoussef.url = "github:siryoussef/android-nixpkgs";
+    android-nixpkgs = {
+      # follows= "siryoussef";
+      # url = "github:siryoussef/android-nixpkgs";
+
+      # The main branch follows the "canary" channel of the Android SDK
+      # repository. Use another android-nixpkgs branch to explicitly
+      # track an SDK release channel.
+      #
+      # url = "github:tadfisher/android-nixpkgs/stable";
+      # url = "github:tadfisher/android-nixpkgs/beta";
+      # url = "github:tadfisher/android-nixpkgs/preview";
+      url = "github:tadfisher/android-nixpkgs/canary";
+
+      # If you have nixpkgs as an input, this will replace the "nixpkgs" input
+      # for the "android" flake.
+      inputs={
+        nixpkgs.follows = "nixpkgs"; 
+        flake-utils.follows="flake-utils";
+        devshell.follows="devshell";
+      };
+    };
   };
 }

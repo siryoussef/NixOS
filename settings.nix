@@ -52,7 +52,7 @@ paths={
       storage = builtins.path{path=./Storage.nix;};
       flake=/etc/nixos;
       dotfiles= /. + "/Shared/@Repo/dotfiles";
-      secrets = builtins.path{path=./secrets/secrets0.nix;};
+      secrets = builtins.path{path=./secrets/secrets.nix;};
       };
 pkglists=import paths.pkglists{inherit settings;};
 storage= let config=config; in /*import ./settings.nix;*/ import paths.storage{inherit settings config;}; #FIXME GiveUp improving it or putting it in settings or Replace mkOutOfStoreSymlink (~ reimplement it or wait for impermanence fix to work outside nixos) or find a method import config from outside (worst trial!).

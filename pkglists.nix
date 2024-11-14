@@ -21,10 +21,13 @@ rec{
     alejandra
  
     # app tools
-    appstream
+#     appstream
     appstream-glib
     # Core
     unrar
+    lha
+    zip
+    arj
     bindfs
 #     alacritty
 #     qutebrowser
@@ -313,9 +316,9 @@ plasma={
     kpipewire
     plymouth-kcm
     plasma-disks
-    kdenlive
-    plasmatube
     appstream-qt
+
+
     kmailtransport
     kaccounts-providers
     kaccounts-integration
@@ -334,12 +337,23 @@ plasma={
     with pkgs;[
       libreoffice-qt
       krusader
+      kdiff3
+
+      krename
       pcmanfm-qt
+
     # plasma-browser-integration
     ]++(with pkgs.kdePackages;[
       kate
       kcalc
       filelight
+      konqueror
+
+      kompare
+      plasmatube
+      flatpak-kcm
+      discover
+
     ]
     )++(with pkgs.libsForQt5;[
       kdevelop
@@ -441,7 +455,7 @@ virtualisation={
     ];
 };
 vscode = (with pkgs'.main;[
-  vscode-fhs 
+#   vscode-fhs
   vscode-extensions.kamadorueda.alejandra
   # vscode-extensions.brettm12345.nixfmt-vscode
   #vscodium-fhs
@@ -573,7 +587,7 @@ shells={
     '';
   };
 };
-flatpaks= (map(pkg:{appId = pkg; origin = "flathub";})[
+flatpaks= (map(pkg:{appId = pkg; origin = "flathub"; branch = "stable";})[
       "io.github._0xzer0x.qurancompanion"
       "io.github.flattool.Warehouse"
       "org.spyder_ide.spyder"
@@ -583,18 +597,32 @@ flatpaks= (map(pkg:{appId = pkg; origin = "flathub";})[
       "org.sqlitebrowser.sqlitebrowser"
       "com.github.tchx84.Flatseal"
       "org.gnome.Boxes"
-      ]) ++ (map(pkg:{appId = pkg; origin = "flathub-beta";})[
+      "com.brave.Browser"
+      ]) ++ (map(pkg:{appId = pkg; origin = "flathub-beta"; branch = "stable";})[
       "org.signal.Signal"
-
-      ]) ++[
-      { appId = "com.brave.Browser"; origin = "flathub";  }
-#       { appId = "org.signal.Signal"; origin = "flathub-beta";}
 #       "com.obsproject.Studio"
 #       "im.riot.Riot"
-    ];
-flatpakRepos= [
-      {name = "flathub-beta"; location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";}
-      {name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo";}
+      ]);
+
+flatpaksForNixFlatpak = map (flatpak: {
+    appId = flatpak.appId;
+    origin = flatpak.origin;
+  }) flatpaks;
+flatpaksForDeclarativeFlatpak = map (flatpak:
+    "${flatpak.origin}:app/${flatpak.appId}//${flatpak.branch}"
+  ) flatpaks;
+
+## Remotes for nix-flatpak format 
+flatpakRepos= [ 
+      {name = "flathub-beta"; location = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";}
+      {name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo";}
       {name = "gnome-nightly"; location = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";}
       ];
+## Remotes for declarative-flatpak format
+flatpakReposDec = builtins.listToAttrs (map (remote: { ##
+    name = remote.name;
+    value = remote.location;
+  }) flatpakRepos);
+# out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
+# [ ":${./foobar.flatpak}" "flathub:/root/testflatpak.flatpakref" ]
 }

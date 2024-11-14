@@ -204,10 +204,11 @@ persistent={
 		{ directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
 		];
 		files = [
-		"/etc/machine-id"
+# 		"/etc/machine-id" # causes an error in the switch mechanism
 		{ file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
 		];
     };
+    opensearch.system.${settings.system.persistentStorage}.directories=["/var/lib/opensearch"];
     user=links.user;
 
     libvirt=links.libvirt;

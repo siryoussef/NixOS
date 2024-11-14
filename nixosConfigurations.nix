@@ -10,6 +10,7 @@
           NixVirt
           lix-module
           chaotic
+          # declarative-flatpak
           ]))++[
           home-manager.nixosModules.home-manager
           inputs.qnr.nixosModules.local-registry

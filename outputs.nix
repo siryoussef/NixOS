@@ -96,18 +96,18 @@ let
           };
       unifiedHome = {
         extraSpecialArgs = specialArgs;
-        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) ["nix-flatpak" "plasma-manager" ])
-         ++ (with inputs;[
+        modules =  (map (pkg: ( inputs.${pkg}.homeManagerModules.${pkg} ) ) [
+          # "nix-flatpak"
+          "plasma-manager" 
+          ])++(map (pkg: (pkg.homeManagerModules.default))(with inputs;[
+            chaotic
+            declarative-flatpak
+          ]))++ (with inputs;[
             impermanence.nixosModules.home-manager.impermanence
             NixVirt.homeModules.default 
-            chaotic.homeManagerModules.default
             android-nixpkgs.hmModule
-            ])
-            
-         ++ [
-          # android-sdk
-#               inputs.plasma-manager.homeManagerModules.plasma-manager
-#               inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
+            ])++ [
+          # android-sdk 
           ];
         nixpkgs = [(./nix-pkgs-options/home.nix)];
 #         [(./. + "/profiles" + ("/" + settings.system.profile)+ "/nixpkgs-options.nix")];

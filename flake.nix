@@ -65,7 +65,13 @@
     qnr.url = "github:divnix/quick-nix-registry";
 
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
-
+    declarative-flatpak={
+      url = "github:GermanBread/declarative-flatpak/stable-v3";
+      inputs={
+        nixpkgs.follows="nixpkgs";
+        utils.follows="flake-utils";
+      };
+    };
     snowfall-lib = {
       url = "https://flakehub.com/f/snowfallorg/lib/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs"; };
@@ -227,10 +233,10 @@
       # repository. Use another android-nixpkgs branch to explicitly
       # track an SDK release channel.
       #
-      # url = "github:tadfisher/android-nixpkgs/stable";
+      url = "github:tadfisher/android-nixpkgs/stable";
       # url = "github:tadfisher/android-nixpkgs/beta";
       # url = "github:tadfisher/android-nixpkgs/preview";
-      url = "github:tadfisher/android-nixpkgs/canary";
+      # url = "github:tadfisher/android-nixpkgs/canary";
 
       # If you have nixpkgs as an input, this will replace the "nixpkgs" input
       # for the "android" flake.

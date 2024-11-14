@@ -48,8 +48,6 @@
             ];
 
 
-  services.syncthing={ enable = true; tray.enable=true;};
-
 xdg = {
   enable = true;
   userDirs = {

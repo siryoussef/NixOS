@@ -38,8 +38,6 @@
     nodePackages.ungit
   ];
 
-  services.syncthing.enable = true;
-
   xdg.enable = true;
   xdg.userDirs = {
     enable = true;

@@ -23,8 +23,10 @@ in{
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
       ../../system/app/develop.nix
+      ../../system/app/dataApps.nix
       ../../secrets/networks.nix
       ../../secrets/hashedPassword.nix
+
 ];
 
   boot = {
@@ -78,7 +80,7 @@ users = {
   mutableUsers = false;
   users={
     avahi.uid= 999;
-    flatpak.uid=998;
+#
     nm-iodine.uid=997;
     nscd.uid=996;
     rtkit.uid=995;
@@ -95,7 +97,6 @@ users = {
   groups={
     adbusers.gid=999;
     avahi.gid=998;
-    flatpak.gid=997;
     jupyter.gid=996;
     lxd.gid=995;
     msr.gid=994;

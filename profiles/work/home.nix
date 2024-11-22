@@ -62,7 +62,6 @@
             ];
 
 
-#   services.syncthing={ enable = true; tray.enable=true;};
 
 xdg = {
   enable = true;
@@ -87,8 +86,14 @@ xdg = {
     };
   };
    mime.enable = true;
-          mimeApps = { enable = true; /* associations.added = { "application/octet-stream" = "flstudio.desktop;";};*/ };
-          };
+   mimeApps = {
+    enable = true;
+#     associations.added = {
+#       "application/octet-stream" = "flstudio.desktop;";
+#       "application/vnd.ms-powerbi.pbix" = "winapps-powerbi.desktop";
+#     };
+};
+};
 
 
 

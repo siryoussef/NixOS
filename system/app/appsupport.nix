@@ -63,7 +63,11 @@ rec{
       guixbuilder10.uid =1011;
     } else {});
     groups=(if services.flatpak.enable==true then{flatpak.gid=997;} else {})//(if services.guix.enable==true then{guixbuild.gid=1001;} else {});
-};
+  };
+#   environment.persistence = if services.guix.enable==true then let storage=import settings.paths.storage{inherit settings config;}; in storage.persistent.guix else {};
+# home-manager.users.${settings.user.username}=if services.guix.enable==true then {home.file.".config/guix".source= ../../guix;} else {};
+
+
   xdg.portal.enable = true;
 
   boot.binfmt.registrations.appimage = {

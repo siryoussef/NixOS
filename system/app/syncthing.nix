@@ -34,17 +34,50 @@
                 maxFolderConcurrency=null;
               };
               folders={
-                "/home/${settings.user.username}/Downloads"={
+                Downloads={
                   id="Download";
+                  path="~/Downloads";
                   devices=["YTank"];
+                  type="sendreceive"; # one of "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
                   copyOwnershipFromParent=false;
+                  versioning = null; /*[
+                        {versioning={type ="simple"; params.keep = "10";}; }
+                        {versioning={type ="trashcan"; params.cleanoutDays = "1000";};}
+                        {versioning={type ="staggered"; fsPath = "/syncthing/backup"; params = { cleanInterval = "3600"; maxAge = "31536000";};};}
+                        {versioning = {type = "external"; params.versionsPath = pkgs.writers.writeBash "backup" ''
+                                folderpath="$1"
+                                filepath="$2"
+                                rm -rf "$folderpath/$filepath"
+                              '';
+                            };
+                        }
+                        ]*/
+                };
+                Note={
+                  id="Note";
+                  path="~/Note";
+                  devices=["YTank"];
+                  type="sendreceive"; # one of "sendreceive", "sendonly", "receiveonly", "receiveencrypted"
+                  copyOwnershipFromParent=false;
+                  versioning = null; /*[
+                        {versioning={type ="simple"; params.keep = "10";}; }
+                        {versioning={type ="trashcan"; params.cleanoutDays = "1000";};}
+                        {versioning={type ="staggered"; fsPath = "/syncthing/backup"; params = { cleanInterval = "3600"; maxAge = "31536000";};};}
+                        {versioning = {type = "external"; params.versionsPath = pkgs.writers.writeBash "backup" ''
+                                folderpath="$1"
+                                filepath="$2"
+                                rm -rf "$folderpath/$filepath"
+                              '';
+                            };
+                        }
+                        ]*/
                 };
               };
               overrideFolders=false;
               devices={
                 "YTank"={
                   id= "SJH57WL-M6UVVPV-4YWV3DC-MRXL7WX-BHOLRXM-JIW5YP5-BGHVVH4-SVNP4AG";
-                  autoAcceptFolders=true;
+                  autoAcceptFolders=false;
 
                 };
               };
@@ -52,14 +85,5 @@
             };
         };
     };
-
-
-
-
-
-
-
-
-
 
 }

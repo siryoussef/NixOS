@@ -17,9 +17,12 @@
   };
 
   inputs ={
-    systems.follows = "systemsFile"; 
+    systems.follows = 
+    "x86_64-linux"
+    # "systemsFile"
+    ; 
     systemsFile={url = "path:./systems.nix"; flake = false;};
-    x86_64.url="github:nix-systems/x86_64-linux";
+    x86_64-linux.url="github:nix-systems/x86_64-linux";
 
     flake-utils={url = "github:numtide/flake-utils"; inputs.systems.follows="systems";};
     flake-parts.url = "github:hercules-ci/flake-parts";

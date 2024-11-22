@@ -2,8 +2,9 @@
 {  settings, config, ... }:
 rec{
                 ## Abbreviations ##
-userdir = settings.user.persistentStorage;
+userdir = settings.paths.persistentHome;
 username = settings.user.username;
+persistentSystemDir = settings.paths.persistentSystem;
                 ## Home Source Path String ##
 HSPS={
   plasma=((toString settings.paths.dotfiles)+"/plasma");#plasma user dotfiles path string
@@ -23,6 +24,7 @@ links={
 #         "fish"
         "whatsapp-for-linux"
         ])++(map(x: ".config/"+x)[
+        "guix"
         "thorium"
         "session"
         "obsidian"
@@ -68,7 +70,7 @@ links={
       allowOther=true;
     };
   libvirt={
-      system.${settings.system.persistentStorage}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
+      system.${persistentSystemDir}={directories = ["/var/lib/libvirt" "/var/cache/libvirt" "/var/log/libvirt"];};
       user.${userdir}= {directories=[".config/libvirt"]; files=[];};
   };
   vscode.user.${userdir} ={ directories =[ ".config/Code" ".vscode" ]; files=[]; };
@@ -77,6 +79,7 @@ links={
       system."${userdir}/waydroid"={directories=["/var/lib/waydroid"]; users.${username}={directories=user.${HSPS.waydroid}.directories;};};
       user.${HSPS.waydroid}={directories=[".local/share/waydroid"]; files=[];};
   };
+
 
   plasma={
       system={
@@ -194,7 +197,7 @@ fileSystems = DiscMounts//BindMounts;
 
                   ##    2nd: Impermenance module  ##
 persistent={
-	system.${settings.system.persistentStorage}={
+	system.${persistentSystemDir}={
 		directories= [
 # 		"/var/log"
 # 		"/var/lib/bluetooth"
@@ -208,13 +211,24 @@ persistent={
 		{ file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
 		];
     };
-    opensearch.system.${settings.system.persistentStorage}.directories=["/var/lib/opensearch"];
+    opensearch.system.${persistentSystemDir}.directories=["/var/lib/opensearch"];
     user=links.user;
 
     libvirt=links.libvirt;
     plasma=links.plasma;
     waydroid=links.waydroid;
-
+#   guix={
+#     ${settings.paths.guixConf}={
+#       users.${settings.user.username}={
+#         directories=[
+#         ".config/guix"
+#         ];
+#         files=[
+#
+#         ];
+#       };
+#     };
+#   };
   };
 
                   ##    3rd: home.file+mkOutOfStoreSymlink  ##

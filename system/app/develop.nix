@@ -29,22 +29,7 @@ services = {
   jupyter.package = pkgs'.stable.python311Packages.notebook;
 
 
-    mysql = {
-        enable = true ;
-        package = /*pkgs'.main.mysql80;*/  pkgs'.main.mariadb;
-#         bindAddress = "0.0.0.0";
-        initialScript = ./mysqlscript.txt;
-       /*
-        replication = {
-            role = "master";
-            serverId = 1 ;
-            masterUser = settings.user.username;
-            masterHost = settings.system.hostname;
-            masterPassword = "123456";
-            slaveHost = "wanky";
-            };
-            */
-    };
+
 
 };
 

@@ -4,16 +4,17 @@ inherit inputs pkgs';
 settings = {inherit inputs pkgs' system user paths;};
   # ---- SYSTEM SETTINGS ---- #
 system = rec{
-        arch = "x86_64-linux"; # system arch
+        arch = "x86_64-linux"; # system architecture
         system=arch; #for backward combatibility (to be removed)
         hostname = "Snowyfrank"; # hostname
         profile = "work"; # select a profile defined from my profiles directory
         timezone = "Africa/Cairo"; # select timezone
         locale = "en_US.UTF-8"; # select locale
+        language = "en_US"; # Default language
         bootMode = "uefi"; # uefi or bios
         bootMountPath = "/boot/efi"; # mount path for efi boot partition; only used for uefi boot mode
         grubDevice = "/dev/disk/by-label/Boot"; # device identifier for grub; only used for legacy (bios) boot mode
-        persistentStorage ="/Shared/@Persistent";
+        persistentStorage = paths.persistentSystem; #for backward combatibility (to be removed)
       };
   # ----- USER SETTINGS ----- #
 user = rec {
@@ -44,15 +45,18 @@ user = rec {
                                "exec " + term + " -e " + editor
                          else
                            editor);
-        persistentStorage = "/Shared/@Persistent/home/"+"${username}";
+        persistentStorage = paths.persistentHome; #for backward combatibility (to be removed)
       };
 secrets= import paths.secrets;
-paths={
+paths=rec {
       pkglists = builtins.path{path=./pkglists.nix;};
       storage = builtins.path{path=./Storage.nix;};
-      flake=/etc/nixos;
+      flake="/etc/nixos";
+      guixConf=flake+"/guix";
       dotfiles= /. + "/Shared/@Repo/dotfiles";
       secrets = builtins.path{path=./secrets/secrets.nix;};
+      persistentSystem ="/Shared/@Persistent";
+      persistentHome=persistentSystem+"/home/${user.username}";
       };
 pkglists=import paths.pkglists{inherit settings;};
 storage= let config=config; in /*import ./settings.nix;*/ import paths.storage{inherit settings config;}; #FIXME GiveUp improving it or putting it in settings or Replace mkOutOfStoreSymlink (~ reimplement it or wait for impermanence fix to work outside nixos) or find a method import config from outside (worst trial!).

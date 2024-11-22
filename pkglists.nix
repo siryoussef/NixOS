@@ -527,7 +527,7 @@ mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
       openssl
       gcc
       unzip
-      grafana
+
       metabase
       # jupyter-all
       mysqltuner
@@ -536,6 +536,7 @@ mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
     ]) ++
     (with pkgs'.stable;[
       devenv
+      grafana
       ])
     # ++(with pkgs'.main.python311Packages;[
     

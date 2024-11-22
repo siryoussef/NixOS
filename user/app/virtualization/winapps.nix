@@ -1,20 +1,39 @@
-{settings, inputs, lib, pkgs, ...}: rec {
+{settings, inputs, lib, pkgs, ...}:
+let
+sudo=
+"/run/wrappers/bin/doas";
+#"${pkgs.doas}/bin/doas";
+winapps-setup=
+"${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup";
+log="/home/${settings.user.username}/winapps-setup.log";
+
+in
+rec{
   home.file={
-    "/winapps.sh"={ executable=true; text = ''
+    ".local/share/mime/packages/pbix-mime.xml".text =/*xml*/ ''
+      <?xml version="1.0" encoding="UTF-8"?>
+      <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+          <mime-type type="application/vnd.ms-powerbi.pbix">
+              <comment>Power BI Desktop file</comment>
+              <glob pattern="*.pbix"/>
+          </mime-type>
+      </mime-info>
+    '';
+    "/winapps.sh"={ executable=true; text = /*bash*/''
     #!/usr/bin/env bash
-echo "Script started at $(date)" >> /home/${settings.user.username}/winapps-setup.log
-echo "Current PATH: $PATH" >> /home/${settings.user.username}/winapps-setup.log
+echo "Script started at $(date)" >> ${log}
+echo "Current PATH: $PATH" >> ${log}
 # Wait until the Windows VM is running
-    while [[ "$(${pkgs.doas}/bin/doas ${pkgs.libvirt}/bin/virsh domstate RDPWindows)" != "running" ]];
-    do ${pkgs.doas}/bin/doas virsh domstate RDPWindows  &>> /home/${settings.user.username}/winapps-setup.log && echo "Waiting for Windows VM to boot..."  >> /home/${settings.user.username}/winapps-setup.log
+    while [[ "$(${sudo} ${pkgs.libvirt}/bin/virsh domstate RDPWindows)" != "running" ]];
+    do ${sudo} virsh domstate RDPWindows  &>> ${log} && echo "Waiting for Windows VM to boot..."  >> ${log}
        sleep 3  # Wait for 3 seconds before checking again
     done
-echo "windows-vm started at $(date)" >> /home/${settings.user.username}/winapps-setup.log
-${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --uninstall >> /home/${settings.user.username}/winapps-setup.log
-${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps >> /home/${settings.user.username}/winapps-setup.log 2>&1
+echo "windows-vm started at $(date)" >> ${log}
+${winapps-setup} --user --uninstall >> ${log}
+${winapps-setup} --user --setupAllOfficiallySupportedApps >> ${log} 2>&1
 ln -s $(which winapps) /home/${settings.user.username}/.local/bin
 '';};
-    ".config/winapps/winapps.conf".text = ''
+    ".config/winapps/winapps.conf".text =/*toml*/ ''
 
 
 #   RDP_IP="192.168.122.11"  # Assuming the VM uses libvirt default network
@@ -125,17 +144,17 @@ FREERDP_COMMAND=""
 
 #  ".local/bin/winapps"= /*lib.hm.dag.entryAfter "winlink" ["home-activation-runWinapps-setup"]*/ {source="${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps";};
 };
-# home.activation.runWinapps-setup = /*lib.hm.dag.entryAfter ["writeBoundary" "graphical-session.target" "libvirt.service" "multi-user.target"]*/ lib.hm.dag.entryBetween /*["home-file-.local-bin-winapps"]*/ "winsetup" ["winlink"] ["writeBoundary"] ''
+# home.activation.runWinapps-setup = /*lib.hm.dag.entryAfter ["writeBoundary" "graphical-session.target" "libvirt.service" "multi-user.target"]*/ lib.hm.dag.entryBetween /*["home-file-.local-bin-winapps"]*/ "winsetup" ["winlink"] ["writeBoundary"] /*bash*/''
 # #!/bin/sh
 # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # Wait until the Windows VM is running
-#     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
+#     while [ "$(${sudo} virsh domstate RDPWindows)" != "running" ];
 #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 #       sleep 3  # Wait for 10 seconds before checking again
 #     done
 # # echo "Current PATH: $PATH" >> /tmp/winapps-setup.log
 # echo "windows-vm started at $(date)" >> /tmp/winapps-setup.log
-# ${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1
+# ${winapps-setup} --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1
 # '' ;
 #buggy setup
 # systemd.user= /*lib.hm.dag.entryBefore ["home-file-.local-bin-winapps"]*/ {enable =true; services.winappsSetup = {
@@ -145,32 +164,32 @@ FREERDP_COMMAND=""
 #       wants = [ /*"multi-user.target"*/ "libvirtd.service" ];
 #       wantedBy = [ "multi-user.target" ];  # Make sure this service runs during boot
 #     };
-#     script = " ${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1 ";
+#     script = " ${winapps-setup} --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1 ";
 # #     ''
 # #     #!/bin/sh
 # # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # # Wait until the Windows VM is running
-# #     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
+# #     while [ "$(${sudo} virsh domstate RDPWindows)" != "running" ];
 # #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 # #       sleep 3  # Wait for 10 seconds before checking again
 # #     done
 # # # echo "Current PATH: $PATH" >> /tmp/winapps-setup.log
 # # echo "windows-vm started at $(date)" >> /tmp/winapps-setup.log
-# # ${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1
+# # ${winapps-setup} --user --setupAllOfficiallySupportedApps >> /tmp/winapps-setup.log 2>&1
 # #     '';
 #     serviceConfig = {
 #       Type = "oneshot";  # Run the script once and then exit
 # #       ExecStartPre = ''  # Wait for the Windows VM to be in running state
 # # echo "Script started at $(date)" >> /tmp/winapps-setup.log
 # # # Wait until the Windows VM is running
-# #     while [ "$(${pkgs.doas}/bin/doas virsh domstate RDPWindows)" != "running" ];
+# #     while [ "$(${sudo} virsh domstate RDPWindows)" != "running" ];
 # #     do  echo "Waiting for Windows VM to boot..." >> /tmp/winapps-setup.log
 # #       sleep 3  # Wait for 3 seconds before checking again
 # #     done
 # #     echo "Current PATH: $PATH" >> /tmp/winapps-setup.log
 # #     echo "windows-vm started at $(date)" >> /tmp/winapps-setup.log
 # #       '';
-# #       ExecStart = "${inputs.winapps.packages.${settings.system.arch}.winapps}/bin/winapps-setup --user --setupAllOfficiallySupportedApps";
+# #       ExecStart = "${winapps-setup} --user --setupAllOfficiallySupportedApps";
 # #       ExecStartPost = ''  # Log success
 # #         echo "WinApps setup complete at $(date)" >> /var/log/winapps-setup.log;
 # #       '';
@@ -186,4 +205,7 @@ FREERDP_COMMAND=""
 #             };
 #     };
 # };
+xdg.mimeApps.associations.added = {
+      "application/vnd.ms-powerbi.pbix" = "winapps-powerbi.desktop";
+    };
 }

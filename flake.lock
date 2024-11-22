@@ -3508,14 +3508,14 @@
         "symlink": "symlink",
         "system-manager": "system-manager",
         "systems": [
-          "systemsFile"
+          "x86_64-linux"
         ],
         "systemsFile": "systemsFile",
         "thorium-browser": "thorium-browser",
         "vscode": "vscode",
         "wfvm": "wfvm",
         "winapps": "winapps",
-        "x86_64": "x86_64",
+        "x86_64-linux": "x86_64-linux",
         "ytdlp-gui": "ytdlp-gui",
         "zen-browser": "zen-browser"
       }
@@ -4826,7 +4826,7 @@
         "type": "github"
       }
     },
-    "x86_64": {
+    "x86_64-linux": {
       "locked": {
         "lastModified": 1680978846,
         "narHash": "sha256-Gtqg8b/v49BFDpDetjclCYXm8mAnTrUzR0JnE2nv5aw=",

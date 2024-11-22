@@ -5,17 +5,25 @@
 
  **well, Isn't that every nixos users target? , however I have some relatively clearly defined goals** :-
  
- 1- A libreOS yet convenient with modularity in mind.
+ general design goals:-
  
- 2- universal architecture & device compatibilty (cross platform).
+ 1- modularity with abstraction into central files acting as control centers for commonly needed code (storage-related, pkglists' definition-related & general settings) paving the road for managing nix code with a gui app (with beginners in mind)!
  
- 3-universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
+ 2- freedom software as much as possiple (avoiding lockins & improving privacy & security with sacrifycing needs), with better sane default software
+ 
+ 3- A design with better performance, declarativity, easy development & upgrade in mind. 
+ 
+ some other specifics (more variable):-
+ 
+ 1- universal architecture & device compatibilty (cross platform).
+ 
+ 2-universal app compatibilty (think VMs, distrobox, Waydroid & Wine ).
 
- 4- privacy : mainly by using alternative software.
+ 3- privacy : mainly by using alternative software.
  
- 5- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
+ 4- security in resonably performant manner (much more secure than windows & much more performant than qubes ).
 
- 6- universal environment compatibility! , think VMs, Containers, devShells , home-manager on other OSes !
+ 5- universal environment compatibility! , think VMs, Containers, devShells , home-manager on other OSes !
  ....
  Well I lied a little about the targets clarity, however the target gets clearer as we move on
  
@@ -37,6 +45,12 @@
  8-linux-zen kernel for better desktop performance.
 
  9-using lix (a better nix!)
+ 
+ 10-jupyter & python development environments
+ 
+ 11-declarative secure passwords (still needs improvements)
+ 
+ 12-handling root user directory with home-manager
 
  
 # WIP
@@ -45,12 +59,13 @@
  
  2- Configuring Waydroid declaratively.
  
- 3- Configuring jupyter & python environments declaratively (currently a nix-shell environment is working fine).
+ 3- configuring a data pipeline Building a DaC streamlining environment (using DVC, grafana, opensearch, filebeat, influxdb & metabase)
  
- 4- declarative secure passwords.
+ 4- declarative SQL server.
  
  5- configuring virt-manager dotfiles w.dconf declartively
- 6-declarative virt-manager VMs (using NixVirt), starting with a windows VM (currently an imperative setup works fine).
+ 
+ 6-declarative virt-manager VMs (using NixVirt), starting with a windows VM (currently a partially declarative setup).
  
  7-exploring zen browser as an alternative to floorp & firedragon , configuring it's flatpak (or firedragon's one for that matter) to fill in place for the default browser.
  
@@ -64,27 +79,29 @@
 
  12-winapps for using any windows app with best performance inside linux desktop environments/wms!
  
+ 13- adding guix & adjusting it
+ 
 # TODO
 1- declarative wine setup.
 
-2- declarative SQL server.
+2- declarative Waydroid environment (too much big of a target currently , maybe with robotnix , with planning to further develop or to find an alternative if possiple!)
 
-3- declarative Waydroid environment (too much big of a target currently , maybe with robotnix , with planning to further develop or to find an alternative if possiple!)
+3- configuring disko.
 
-4- configuring disko.
+4- nixOnDroid flake config.
 
-5-nixos-wsl flake config.
+5- nixos-wsl flake config.
 
-6-nixOnDroid flake config.
+6- adding homepage-dashboard (via nixos options)
 
-7-adjusting nix-shell environment & adding it to nixos if possiple!
+7- using viola with jupyter for data analytics
 
-8-adding local AI models w.flake-parts services flakes & maybe nixified AI (if found useful, i.e. too old now)
+8- adding local AI models w.flake-parts services flakes & maybe nixified AI (if found useful, i.e. too old now)
 
-9- potentially handling root user directory with home-manager?
+9- fixing emmet's Emacs building errors (readapting emacs customizations to current build )
 
-10- Building a DaC streamlining environment , starting with dvc
+10- adjusting install/upgrade scripts
 
-11- fixing emmet's Emacs building errors (readapting emacs customizations to current build )
+11- creating iso/ install environment / gui nix managers
 
 

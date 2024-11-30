@@ -227,6 +227,23 @@
       };
     };
     envil={url="github:YPares/envil"; inputs.nixpkgs.follows="nixpkgs";};
+    erosanix={url="github:emmanuelrosa/erosanix";
+      inputs={
+        nixpkgs.follows="nixpkgs";
+        # flake-compat.follows="flake-compat";        
+      };
+    }; 
+
+    dream2nix={
+      url = "github:nix-community/dream2nix";
+      inputs={
+        nixpkgs.follows="nixpkgs";
+        # purescript-overlay.follows="purescript-overlay";
+        # purescript-overlay.flake-compat.follows="flake-compat";
+        # pyproject-nix.follows="pyproject-nix";
+      };
+    };
+
     # siryoussef.url = "github:siryoussef/android-nixpkgs";
     android-nixpkgs = {
       # follows= "siryoussef";

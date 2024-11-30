@@ -1,7 +1,7 @@
-{pkgs', inputs,...}:
+{pkgs', inputs, self,...}:
 rec{
 inherit inputs pkgs';
-settings = {inherit inputs pkgs' system user paths;};
+settings = {inherit inputs pkgs' self system user paths;};
   # ---- SYSTEM SETTINGS ---- #
 system = rec{
         arch = "x86_64-linux"; # system architecture

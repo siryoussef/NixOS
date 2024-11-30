@@ -120,7 +120,7 @@ systemd =  {
         LIBVIRT_DEFAULT_URI="qemu:///system";  # Set libvirt to use the system session
       };
     script =
-    ''
+    /*bash*/''
     #!/usr/bin/env bash
 echo "Script started at $(date)" >> /home/${settings.user.username}/winapps-setup.log
 echo "Current PATH: $PATH" >> /home/${settings.user.username}/winapps-setup.log

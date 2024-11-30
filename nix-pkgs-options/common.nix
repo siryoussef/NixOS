@@ -17,6 +17,45 @@ nixpkgs = {
 
       android_sdk.accept_license = true;
       };
+    overlays = (with inputs;[
+                rust-overlay.overlays.default
+                snowfall-flake.overlays.default
+                android-nixpkgs.overlays.default
+                ytdlp-gui.overlay
+                nur.overlay
+                ])++[
+            (final: prev: {
+              voila = final.python311Packages.buildPythonPackage rec {
+                pname = "voila";
+                version = "0.5.8";
+
+                src = final.fetchFromGitHub {
+                  owner = "voila-dashboards";
+                  repo = "voila";
+                  rev = "v${version}";
+                  sha256 = "sha256-Np7tC2sq/imTXpXE1nKQFhF69TK9lgOCXKThOEA9vLs="; # Replace this with the actual hash
+                };
+
+                propagatedBuildInputs = with final.python311Packages; [
+                  notebook
+                  jupyter-server
+                  nbconvert
+                  traitlets
+                ];
+
+                # Fix package discovery error
+                postPatch = ''
+                  echo "from setuptools import setup; setup(packages=['voila'])" > setup.py
+                '';
+
+                meta = with final.lib; {
+                  description = "Voila turns Jupyter notebooks into standalone web applications";
+                  homepage = "https://github.com/voila-dashboards/voila";
+                  license = licenses.bsd3;
+                };
+              };
+            })
+          ];
     };
 nix={
 # 	package = pkgs.nixVersions.latest;

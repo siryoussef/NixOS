@@ -19,6 +19,7 @@ in{
       ../../system/virtualisation/virtualisation.nix
       ../../system/app/syncthing.nix
 #       ../../system/app/samba.nix
+      ../../system/app/selfhost.nix
       ../../system/security.nix
       ../../system/style/stylix.nix
       ../../system/app/sh.nix
@@ -166,8 +167,7 @@ services = {
   emacs = { enable = true; install = true; startWithGraphical = true; defaultEditor = true; };
   upower.enable = true;
   acpid.enable = true;
-  btrfs = { autoScrub = { enable = true; interval = "monthly"; fileSystems = [
-"/Volume" ]; }; };
+#   btrfs = { autoScrub = { enable = true; interval = "monthly"; fileSystems = [ "/Volume" ]; }; };
   physlock.lockOn.hibernate = true;
   redlib.enable = true;
   onlyoffice.enable = false;

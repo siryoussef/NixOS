@@ -1,6 +1,6 @@
-{inputs,self,...}:
+{inputs, self,...}:
 let
-      settings = import ./settings.nix {inherit inputs pkgs';};
+      settings = import ./settings.nix {inherit self inputs pkgs';};
 #       Storage = import settings.paths.storage{inherit settings config;};
       # create patched nixpkgs
 
@@ -24,14 +24,9 @@ let
         };
 
       # configure pkgs
-      overlays = with inputs;[
-          rust-overlay.overlays.default
-          snowfall-flake.overlays.default
-          android-nixpkgs.overlays.default
-          ytdlp-gui.overlay
-          nur.overlay
-          ];
-      config = let options = import ./nix-pkgs-options/common.nix {inherit pkgs' lib inputs;}; in options.nixpkgs.config;
+      nix-pkgs-options= import ./nix-pkgs-options/common.nix {inherit pkgs' lib inputs;}; 
+      overlays = nix-pkgs-options.nixpkgs.overlays;
+      config = nix-pkgs-options.nixpkgs.config;
       pkgs = import nixpkgs-patched {
         system = settings.system.arch;
         inherit overlays config;
@@ -161,6 +156,21 @@ let
             virtdeclare = inputs.NixVirt.packages.${system}.default;
             nh = inputs.nh.packages.${system}.default;
             android-sdk = inputs.android-nixpkgs.sdk.${system} (settings.pkglists.android-sdk-34);
+            # voila = inputs.dream2nix.lib.evalModules {
+            #   packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
+            #   modules = [
+            #     # Import our actual package definiton as a dream2nix module from ./default.nix
+            #     ./voila.nix
+            #     {
+            #       # Aid dream2nix to find the project root. This setup should also works for mono
+            #       # repos. If you only have a single project, the defaults should be good enough.
+            #       paths.projectRoot = ./.;
+            #       # can be changed to ".git" or "flake.nix" to get rid of .project-root
+            #       paths.projectRootFile = "flake.nix";
+            #       paths.package = ./.;
+            #     }
+            #   ];
+            # };
         };
         apps =  {
           default = self.apps.${system}.install;

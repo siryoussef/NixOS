@@ -482,6 +482,7 @@ android-sdk-34 = (sdkPkgs: with sdkPkgs;[
                 ]);
 mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
       jupyterlab-git
+      jupytext
       jupyterlab-lsp
       jupyterlab-widgets
       jupyter-collaboration
@@ -515,6 +516,10 @@ mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
       spyder-kernels
       pyls-spyder
       qdarkstyle
+
+      bash-kernel
+      nix-kernel
+      jupyter-c-kernel
     ]))
     (pkgs'.stable.python3.withPackages (p: with p;  [
       sqlalchemy_1_4
@@ -532,12 +537,14 @@ mainDevEnv= [(pkgs'.unstable.python3.withPackages (p: with p;  [
       # jupyter-all
       mysqltuner
       mysql-workbench
+      voila
       # = { buildInputs = [ pkgs.qdarkstyle_3_02 ]; }; #( till errors are fixed : qdarkstyle & jedi versions not compatible/ packages not seen by spyder)
     ]) ++
     (with pkgs'.stable;[
       devenv
       grafana
       ])
+    # ++[settings.self.packages.${settings.system.arch}.voila]
     # ++(with pkgs'.main.python311Packages;[
     
     #  ])

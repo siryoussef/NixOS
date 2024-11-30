@@ -5,29 +5,37 @@ services = {
     jupyterhub = {
     enable = false;
     jupyterlabEnv = settings.pkglists.jupyter.lab; };
-  jupyter = { enable = true; user = settings.user.username; group = "jupyter"; password = "'sha1:1b961dc713fb:88483270a63e57d18d43cf337e629539de1436ba'"; };
-
-
-  jupyter.kernels =
-  {
-  python3 = let env = settings.pkglists.jupyter.kernels.python3; in{
-    displayName = "Python 3 for machine learning";
-    argv = [
-      "${env.interpreter}"
-      "-m"
-      "ipykernel_launcher"
-      "-f"
-      "{connection_file}"
-    ];
-    language = "python";
-#     logo32 = "${env.sitePackages}/ipykernel/resources/logo-32x32.png";
-#     logo64 = "${env.sitePackages}/ipykernel/resources/logo-64x64.png";
-#     extraPaths = {"cool.txt" = pkgs'.main.writeText "cool" "cool content"; };
+  jupyter = {
+    enable = true; 
+    package = pkgs'.stable.python311Packages.notebook;
+    user = settings.user.username; 
+    group = "jupyter"; 
+    password = settings.secrets.jupyter; 
+    kernels = {
+      python3 = let env = settings.pkglists.jupyter.kernels.python3; in {
+        displayName = "Python 3 for machine learning";
+        argv = [
+          "${env.interpreter}"
+          "-m"
+          "ipykernel_launcher"
+          "-f"
+          "{connection_file}"
+        ];
+        language = "python";
+        # logo32 = "${env.sitePackages}/ipykernel/resources/logo-32x32.png";
+        # logo64 = "${env.sitePackages}/ipykernel/resources/logo-64x64.png";
+        # extraPaths = {"cool.txt" = pkgs'.main.writeText "cool" "cool content"; };
+      };
+    };
+    notebookConfig = /*python*/
+    ''
+      c.notebook.ip = '127.0.0.1'
+      c.notebook.port = 8889
+      c.notebook.token = '3c4d9344a30c00d7bb25c5b247a1b695b1187283e810168d'
+      c.notebook.ip = '127.0.0.1'
+    
+    '';  
   };
-};
-
-  jupyter.package = pkgs'.stable.python311Packages.notebook;
-
 
 
 
